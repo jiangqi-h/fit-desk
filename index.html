@@ -847,7 +847,18 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
       <b style="color:#8b4513">今日多言</b>
       <span class="muted" style="font-size:11px;margin-left:auto" id="kWhisperDate"></span>
     </div>
-    <div id="kWhisperText" style="color:#5a3818;line-height:1.7;font-size:14.5px"></div>
+    <div id="kWhisperText" style="color:#5a3818;line-height:1.7;font-size:14.5px;white-space:pre-line"></div>
+    <div style="margin-top:10px">
+      <button id="btnWhisperEd" type="button" class="btn" style="min-height:36px;padding:6px 12px;font-size:12.5px;background:#f0e2cc;color:#8b4513">✎ 粘贴 / 更新今日多言</button>
+    </div>
+    <div id="whisperEd" style="display:none;margin-top:10px">
+      <textarea id="whisperIn" rows="9" placeholder="把 AI 给的卡片文字粘进来（空行分段）" style="width:100%;box-sizing:border-box;border:1px solid #f5d3a3;border-radius:10px;padding:10px;font-family:inherit;font-size:13.5px;line-height:1.6;background:#ffffff;color:#5a3818"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="whisperSave" type="button" class="btn primary" style="flex:1;min-height:40px">保存</button>
+        <button id="whisperCancel" type="button" class="btn" style="flex:0 0 76px;min-height:40px;background:#f0e2cc;color:#8b4513">取消</button>
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:6px">同一天再粘一次会覆盖当天这条，历史记录不会被删。</div>
+    </div>
   </div>
 
   <div class="card">
@@ -2178,11 +2189,36 @@ function renderMe(){
 // 覆写一条新的「今日多言」（由 AI 在对话结尾调用）
 function setWhisper(text,date){
   if(!Array.isArray(DB.whispers))DB.whispers=[];
-  DB.whispers.push({text:String(text||''),date:date||todayStr()});
+  var d=date||todayStr(),t=String(text||'');
+  // 同一天重复粘贴 → 覆盖，不重复堆积
+  for(var i=DB.whispers.length-1;i>=0;i--){
+    if(DB.whispers[i]&&DB.whispers[i].date===d){DB.whispers[i].text=t;save();renderMe();return;}
+  }
+  DB.whispers.push({text:t,date:d});
   // 控量：最多保留 30 条历史，避免 localStorage 膨胀
   if(DB.whispers.length>30)DB.whispers=DB.whispers.slice(-30);
   save();
   renderMe();
+}
+function bindWhisperEd(){
+  var btn=$('btnWhisperEd'); if(!btn)return;
+  btn.onclick=function(){
+    var box=$('whisperEd'); if(!box)return;
+    if(box.style.display==='none'){
+      var w=DB.whispers&&DB.whispers.length?DB.whispers[DB.whispers.length-1]:null;
+      var ta=$('whisperIn');
+      ta.value=w?(w.text||''):'';
+      box.style.display='block';
+      ta.focus();
+      try{ta.setSelectionRange(0,ta.value.length);}catch(e){try{ta.select();}catch(e2){}}
+    }else{box.style.display='none';}
+  };
+  var sv=$('whisperSave'); if(sv)sv.onclick=function(){
+    var t=($('whisperIn').value||'').trim();
+    if(!t){toast('内容不能为空');return;}
+    setWhisper(t); $('whisperEd').style.display='none'; toast('今日多言已更新');
+  };
+  var cc=$('whisperCancel'); if(cc)cc.onclick=function(){$('whisperEd').style.display='none';};
 }
 
 /* ================= 事件 ================= */
@@ -2639,7 +2675,7 @@ function markKeyCards(){
   var cs=document.querySelectorAll('.card');
   for(var i=0;i<cs.length;i++)cs[i].classList.add('hov');
 }
-markKeyCards();
+markKeyCards();bindWhisperEd();
 window.__d=todayStr();
 setInterval(function(){if(todayStr()!==window.__d){window.__d=todayStr();fill();render();}},60000);
 </script>
