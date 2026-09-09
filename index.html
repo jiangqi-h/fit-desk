@@ -8,24 +8,58 @@
 <title>减脂作战台</title>
 <style>
 :root{
-  --bg:#F1ECE3; --card:#FCFAF5; --card2:#EAE3D7; --text:#2C2B26; --sub:#7C766A; --line:#DFD8CA;
-  --brand:#1F4A3C; --brand2:#14332A; --brand-soft:#E2E9E2;
-  --peach:#C4633B; --peach-soft:#F7E8DE;
-  --ok:#1F4A3C; --ok-soft:#E2E9E2;
-  --warn:#B8860B; --warn-soft:#F7EEDA;
-  --danger:#C4553F; --danger-soft:#F8E4DE;
-  --shadow:0 12px 34px rgba(44,43,38,.10);
-  --radius:18px;
+  /* ---- 基础 ---- */
+  --bg:#F3F7FC; --bg2:#E9F0F9;
+  --card:#FFFFFF; --card2:#F1F6FC; --card3:#E4EDF7;
+  --text:#152330; --text2:#33475C; --sub:#6C8299; --line:#E2EBF5;
+  /* ---- 主色：浅蓝 ---- */
+  --brand:#2F80ED; --brand2:#5FA8F5; --brand3:#8FC4FA;
+  --brand-soft:#E8F2FE; --brand-soft2:#D2E5FD;
+  --brand-grad:linear-gradient(135deg,#2F80ED,#5FA8F5);
+  /* ---- 强调：活力橙 ---- */
+  --peach:#FF8A3D; --peach-soft:#FFF1E7;
+  --accent:#FF8A3D; --accent2:#FFB07A; --accent-soft:#FFF1E7;
+  --accent-grad:linear-gradient(135deg,#FF8A3D,#FFB07A);
+  /* ---- 状态色（带渐变） ---- */
+  --ok:#12B886; --ok2:#3AD9A6; --ok-soft:#E4FAF3;
+  --ok-grad:linear-gradient(135deg,#12B886,#3AD9A6);
+  --warn:#F0952E; --warn2:#FFC078; --warn-soft:#FEF6E9;
+  --warn-grad:linear-gradient(135deg,#F0952E,#FFC078);
+  --danger:#E8554C; --danger2:#FF8B84; --danger-soft:#FDEDEB;
+  --danger-grad:linear-gradient(135deg,#E8554C,#FF8B84);
+  /* ---- 形状 ---- */
+  --shadow:0 1px 2px rgba(16,35,48,.04),0 6px 20px rgba(16,35,48,.06);
+  --shadow-lg:0 2px 6px rgba(16,35,48,.05),0 16px 44px rgba(16,35,48,.10);
+  --shadow-brand:0 6px 20px rgba(47,128,237,.24);
+  --radius:20px; --radius-sm:14px; --radius-xs:10px;
+  --ring:0 0 0 3px var(--brand-soft2);
+  /* ---- 字体 ---- */
+  --font:-apple-system,BlinkMacSystemFont,"Inter","PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",ui-monospace,"Roboto Mono",Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme:dark){
-  :root{--bg:#111916;--card:#18231f;--card2:#202e29;--text:#eef8f3;--sub:#a6b8b1;--line:#30423b;
-  --brand:#70cbb0;--brand2:#a1e4cf;--brand-soft:#263f36;
-  --peach:#f0a1aa;--peach-soft:#432d31;
-  --ok:#70cbb0;--ok-soft:#263f36;
-  --warn:#e5c766;--warn-soft:#3d3823;
-  --danger:#ef8585;--danger-soft:#442929;
-  --shadow:0 14px 36px rgba(0,0,0,.25);}
+/* 深色主题：手动切换（默认跟随浅色，不跟系统） */
+[data-theme=dark]{
+  --bg:#0E1620; --bg2:#152130;
+  --card:#17222F; --card2:#1E2C3C; --card3:#28394C;
+  --text:#E8F1FA; --text2:#C3D4E4; --sub:#8AA0B8; --line:#26374A;
+  --brand:#5FA8F5; --brand2:#8FC4FA; --brand3:#B6DAFC;
+  --brand-soft:#1C3249; --brand-soft2:#25415E;
+  --brand-grad:linear-gradient(135deg,#3A8FE8,#6FB3F7);
+  --peach:#FFA064; --peach-soft:#3A2A1E;
+  --accent:#FF9A55; --accent2:#FFBE8F; --accent-soft:#3A2A1E;
+  --accent-grad:linear-gradient(135deg,#FF8A3D,#FFB07A);
+  --ok:#2ED3A0; --ok2:#63E7BE; --ok-soft:#123528;
+  --ok-grad:linear-gradient(135deg,#12B886,#3AD9A6);
+  --warn:#FFB44D; --warn2:#FFD08F; --warn-soft:#3A2E18;
+  --warn-grad:linear-gradient(135deg,#F0952E,#FFC078);
+  --danger:#FF7A70; --danger2:#FFA9A3; --danger-soft:#3D2220;
+  --danger-grad:linear-gradient(135deg,#E8554C,#FF8B84);
+  --shadow:0 1px 2px rgba(0,0,0,.24),0 8px 24px rgba(0,0,0,.30);
+  --shadow-lg:0 2px 8px rgba(0,0,0,.30),0 18px 48px rgba(0,0,0,.38);
+  --shadow-brand:0 6px 22px rgba(47,128,237,.34);
+  --ring:0 0 0 3px rgba(95,168,245,.28);
 }
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--text);
   font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
@@ -37,7 +71,7 @@ h1{font-size:17px;margin:0}
 .card h2 .tag{font-size:11px;font-weight:400;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:5px}
 .muted{color:var(--sub);font-size:12.5px}
 .between{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;font:inherit;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 input[type=checkbox]{min-height:auto;width:auto}
@@ -79,6 +113,7 @@ input[type=file]{min-height:auto;padding:0}
 .week-strip .wd .dot.y{background:var(--warn)}
 .week-strip .wd .dot.r{background:var(--danger)}
 /* 底部抽屉 */
+[data-theme=dark] nav{background:color-mix(in srgb,var(--card) 90%,transparent)}
 .sheet-mask{position:fixed;inset:0;background:rgba(10,20,16,.45);z-index:120;display:none}
 .sheet-mask.open{display:block}
 .sheet-panel{position:fixed;left:0;right:0;bottom:0;z-index:130;background:var(--card);border-radius:22px 22px 0 0;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translateY(105%);transition:transform .28s ease;padding:0 16px calc(16px + env(safe-area-inset-bottom))}
@@ -93,7 +128,7 @@ header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px
 header .inner{max-width:560px;margin:0 auto}
 .subline{font-size:12px;color:var(--sub);margin-top:2px}
 
-.hero{background:linear-gradient(135deg,#1F4A3C,#2F6B57);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(135deg,#2F80ED,#5FA8F5);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
 .hero .big{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.5px}
 .hero .lbl{font-size:12px;opacity:.9}
 .hero .chips{display:flex;gap:8px;margin-top:12px}
@@ -104,7 +139,7 @@ header .inner{max-width:560px;margin:0 auto}
 .bar2{height:11px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
 .bar2>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
 .mark{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-top:5px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
 
 .why{background:var(--card);border-left:3px solid var(--brand);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:13px}
 .why b{display:block;font-size:12px;color:var(--brand);margin-bottom:4px}
@@ -171,14 +206,14 @@ li{margin-bottom:5px;font-size:13px}
 
 /* ===== v2 高级感升级 ===== */
 /* 卡片微调：更柔阴影 + 更大圆角 */
-.card{border-radius:20px;box-shadow:0 10px 30px rgba(44,43,38,.07)}
+.card{border-radius:20px;box-shadow:var(--shadow)}
 .card h2{font-weight:600;letter-spacing:.2px}
-header{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(252,250,245,.88)}
-@media (prefers-color-scheme:dark){header{background:rgba(24,35,31,.9)}}
+header{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:color-mix(in srgb,var(--card) 88%,transparent)}
+[data-theme=dark] header{background:color-mix(in srgb,var(--card) 90%,transparent)}
 
 /* 底部导航：毛玻璃 + 线性图标 + 顶指示条 */
-nav{background:rgba(252,250,245,.86);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
-  border-top:1px solid var(--line);box-shadow:0 -6px 26px rgba(44,43,38,.06);
+nav{background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--line);box-shadow:0 -6px 26px rgba(16,35,48,.08);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
 nav button{position:relative;padding:6px 0 5px;gap:4px;color:var(--sub);font-size:10.5px;
   transition:color .2s ease,opacity .15s;letter-spacing:.3px}
@@ -238,9 +273,220 @@ nav .nb{font-size:10.5px}
 .wk7 .r7 .pbar>i{display:block;height:100%;background:var(--brand);border-radius:99px}
 .wk7 .r7 .k7{text-align:right;font-variant-numeric:tabular-nums}
 .wk7 .r7 .g7{text-align:right;font-size:11px;font-weight:700}
+
+/* ================= v3 视觉升级 ================= */
+/* 防横向溢出：所有嵌入内容与表单不得撑破容器 */
+img,svg,video,canvas,input,select,textarea,table{max-width:100%}
+.row12>*,.cols2>*,.g3>*,.grid2>*,.mark,.between{min-width:0}
+body{overflow-x:hidden}
+body{font-family:var(--font);-webkit-font-smoothing:antialiased;background:
+  radial-gradient(1200px 500px at 50% -10%,var(--brand-soft) 0%,transparent 60%),var(--bg);
+  background-attachment:fixed;}
+
+/* ---- 字号层级 H1–H6 ---- */
+h1{font-size:22px;font-weight:800;letter-spacing:-.4px;line-height:1.25;margin:0}
+h2{font-size:17px;font-weight:700;letter-spacing:-.25px;margin:0}
+h3{font-size:15.5px;font-weight:700;margin:0}
+h4{font-size:14px;font-weight:600;margin:0}
+h5{font-size:13px;font-weight:600;margin:0}
+h6{font-size:12px;font-weight:600;color:var(--sub);margin:0}
+.card h2{font-size:15.5px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+/* 数字统一等宽 */
+.num,td.num,.big,.score-big,.ring b,.ring small,.kv b,.macro-row strong,.r7 b,.wk7 b{
+  font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---- 卡片：更柔的阴影 + 入场 ---- */
+.card{transition:transform .22s ease,box-shadow .22s ease;border:1px solid var(--line)}
+.card{animation:cardIn .38s cubic-bezier(.22,.9,.3,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(hover:hover){.card.hov:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}}
+
+/* ---- 12 列栅格 ---- */
+.row12{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
+.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+@media(max-width:560px){.c3,.c4,.c5{grid-column:span 6}.c7,.c8{grid-column:span 12}}
+/* 桌面端：内容更宽、双列 */
+@media(min-width:860px){
+  .wrap{max-width:900px;padding:16px}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+}
+
+/* ---- 图标：统一线性 ---- */
+.ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.ic.sm{width:17px;height:17px}.ic.lg{width:26px;height:26px}
+.ic-badge{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}
+.ic-badge.b{background:var(--brand-soft);color:var(--brand)}
+.ic-badge.g{background:var(--ok-soft);color:var(--ok)}
+.ic-badge.o{background:var(--accent-soft);color:var(--accent)}
+.ic-badge.w{background:var(--warn-soft);color:var(--warn)}
+.ic-badge.d{background:var(--danger-soft);color:var(--danger)}
+
+/* ---- 动效 ---- */
+.page{animation:pageIn .3s cubic-bezier(.22,.9,.3,1)}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+button,.chip,.cup,.wd,.eat-opt,.seg,.todo .item{transition:transform .12s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease}
+button:active,.chip:active,.cup:active,.wd:active,.eat-opt:active{transform:scale(.965)}
+.btn{display:block;width:100%;min-height:48px;border:0;border-radius:var(--radius-sm);
+  font:600 15px/1 var(--font);cursor:pointer;padding:14px}
+.btn.primary{background:var(--brand-grad);color:#fff;box-shadow:var(--shadow-brand)}
+.btn.accent{background:var(--accent-grad);color:#fff;box-shadow:0 6px 20px rgba(255,138,61,.28)}
+.btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.btn:active{transform:scale(.975)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:16px;height:16px;border:2px solid var(--brand-soft2);border-top-color:var(--brand);
+  border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:-2px}
+.skel{background:linear-gradient(90deg,var(--card2) 25%,var(--card3) 37%,var(--card2) 63%);
+  background-size:400% 100%;animation:skel 1.3s ease infinite;border-radius:8px;height:12px}
+@keyframes skel{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* ---- 触摸目标 ≥44px ---- */
+.chip{min-height:34px;display:inline-flex;align-items:center}
+nav button{min-height:52px}
+.segmented button{min-height:40px}
+input,select,textarea{min-height:46px}
+
+/* ---- 自定义滚动条 ---- */
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--card3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--sub)}
+
+/* ---- focus 效果 ---- */
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:var(--ring)}
+button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
+
+/* ---- 渐变进度 ---- */
+.pbar{height:10px;background:var(--card2);border-radius:99px;overflow:hidden}
+.pbar>i{display:block;height:100%;border-radius:99px;background:var(--brand-grad);
+  transition:width .5s cubic-bezier(.22,.9,.3,1)}
+.pbar.ok>i{background:var(--ok-grad)}.pbar.warn>i{background:var(--warn-grad)}
+.pbar.danger>i{background:var(--danger-grad)}.pbar.accent>i{background:var(--accent-grad)}
+.macro-row .progress>i{background:var(--brand-grad)}
+.bar2>i{background:var(--brand-grad)}
+
+/* ---- 环形进度（多色） ---- */
+.ring2{--v:0;--sz:104px;width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
+  display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--rc,var(--brand)) calc(var(--v)*1%),var(--card2) 0)}
+.ring2:after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
+  box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
+.ring2>div{position:relative;z-index:1;text-align:center;line-height:1.15}
+.ring2 b{display:block;font-size:20px;font-weight:800;font-family:var(--mono)}
+.ring2 small{font-size:10.5px;color:var(--sub);font-weight:600}
+
+/* ---- 仪表盘（综合分） ---- */
+.gauge{position:relative;width:150px;height:84px;margin:2px auto 0;overflow:hidden}
+.gauge .arc{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;
+  box-sizing:border-box;border:13px solid var(--card2);border-bottom-color:transparent;border-right-color:transparent;
+  transform:rotate(-45deg)}
+.gauge .val{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;box-sizing:border-box;
+  border:13px solid var(--brand);border-bottom-color:transparent;border-right-color:transparent;
+  transform:rotate(-45deg);transition:transform .8s cubic-bezier(.22,.9,.3,1)}
+.gauge .num{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:30px;font-weight:800;
+  font-family:var(--mono);line-height:1}
+
+/* ---- 趋势箭头 ---- */
+.trend{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:700;
+  font-family:var(--mono);padding:2px 7px;border-radius:99px}
+.trend.up{background:var(--ok-soft);color:var(--ok)}
+.trend.down{background:var(--danger-soft);color:var(--danger)}
+.trend.flat{background:var(--card2);color:var(--sub)}
+
+/* ---- 迷你柱状图（围度对比） ---- */
+.bars{display:flex;align-items:flex-end;gap:10px;height:96px;padding:0 2px}
+.bars .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.bars .bcol i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;
+  background:var(--brand-grad);min-height:4px;transition:height .6s cubic-bezier(.22,.9,.3,1)}
+.bars .bcol.g i{background:var(--ok-grad)}
+.bars .bcol.o i{background:var(--accent-grad)}
+.bars .bcol span{font-size:10.5px;color:var(--sub);white-space:nowrap}
+.bars .bcol em{font-size:11px;font-weight:700;font-style:normal;font-family:var(--mono)}
+
+.bars .bg{flex:1;display:flex;gap:4px;align-items:flex-end;height:100%;position:relative}
+.bars .bg .bl{position:absolute;left:0;right:0;bottom:-15px;text-align:center;font-size:10.5px;color:var(--sub)}
+.bars{margin-bottom:16px}
+/* ---- 饼图（热量/成本分布） ---- */
+.pie-wrap{display:flex;align-items:center;gap:14px}
+.pie{--a:0;--b:0;width:88px;height:88px;border-radius:50%;flex:none;
+  background:conic-gradient(var(--brand) 0 calc(var(--a)*1%),var(--accent) 0 calc(var(--b)*1%),var(--ok) 0);
+  display:grid;place-items:center;position:relative}
+.pie:after{content:"";position:absolute;inset:19px;border-radius:50%;background:var(--card);
+  box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
+.pie>span{position:relative;z-index:1;font-size:12px;font-weight:700;font-family:var(--mono);text-align:center;line-height:1.2}
+.legend{display:grid;gap:6px;font-size:12px;flex:1;min-width:0}
+.legend div{display:flex;align-items:center;gap:7px}
+.legend i{width:9px;height:9px;border-radius:3px;flex:none}
+.legend b{margin-left:auto;font-family:var(--mono);font-size:12.5px}
+
+/* ---- 时间轴（饮食） ---- */
+.tl{position:relative;padding-left:20px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--brand),var(--card3));border-radius:99px}
+.tl .ti{position:relative;padding:0 0 12px}
+.tl .ti:before{content:"";position:absolute;left:-19px;top:6px;width:10px;height:10px;border-radius:50%;
+  background:var(--card);border:2.5px solid var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.tl .ti.o:before{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tl .ti.g:before{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
+.tl .tt{font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:.3px;margin-bottom:4px}
+
+/* ---- 训练强度指示器 ---- */
+.inten{display:flex;gap:4px;align-items:center}
+.inten i{flex:1;height:6px;border-radius:99px;background:var(--card2)}
+.inten i.on{background:var(--accent-grad)}
+.inten.i1 i:nth-child(-n+1).on{background:var(--ok-grad)}
+.inten.i2 i:nth-child(-n+2).on{background:var(--ok-grad)}
+.inten.i3 i:nth-child(-n+3).on{background:var(--warn-grad)}
+
+/* ---- 顶部渐变 hero（浅蓝） ---- */
+.hero{background:linear-gradient(135deg,#2F80ED 0%,#5FA8F5 55%,#7FC0F8 100%);
+  color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow-brand);position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;
+  background:rgba(255,255,255,.10)}
+.hero:after{content:"";position:absolute;right:20px;bottom:-50px;width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,.07)}
+.hero>*{position:relative;z-index:1}
+.hero .big{font-size:36px;font-weight:800;line-height:1.05;letter-spacing:-1px}
+
+/* ---- 计划页：分段 + 卡片折叠 ---- */
+.plan-seg{margin:0 0 14px;position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:15}
+.plan-seg button{min-height:42px}
+.card.foldable>h2{cursor:pointer;user-select:none}
+.card.foldable>h2:after{content:"收起";margin-left:auto;font-size:11px;font-weight:700;
+  color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:99px;flex:none}
+.card.foldable.fold>h2:after{content:"展开";color:var(--sub);background:var(--card2)}
+.card.foldable.fold>*:not(h2){display:none}
+.card.foldable.fold{padding-bottom:13px}
+/* ---- 启动画面 ---- */
+#splash{position:fixed;inset:0;z-index:999;background:var(--brand-grad);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;
+  transition:opacity .45s ease,visibility .45s}
+#splash.hide{opacity:0;visibility:hidden}
+#splash .logo{width:74px;height:74px;border-radius:22px;background:rgba(255,255,255,.18);
+  display:grid;place-items:center;font-size:34px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
+#splash .st{font-size:16px;font-weight:700;letter-spacing:.5px}
+#splash .ss{font-size:12.5px;opacity:.8}
+
+/* ---- 离线提示条 ---- */
+#offbar{position:fixed;left:0;right:0;bottom:0;z-index:140;background:var(--warn);color:#fff;
+  padding:9px 14px;font-size:12.5px;font-weight:600;text-align:center;display:none}
+#offbar.show{display:block}
+
+/* ---- 添加到主屏幕引导 ---- */
+#a2hs{position:fixed;left:14px;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:135;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;
+  box-shadow:var(--shadow-lg);display:none}
+#a2hs.show{display:block;animation:cardIn .35s ease both}
+
 </style>
 </head>
 <body>
+<div id="splash"><div class="logo">💪</div><div class="st">减脂作战台</div><div class="ss">正在准备你的数据…</div></div>
+<div id="offbar"></div>
+<div id="a2hs"></div>
 
 <header>
   <div class="inner">
@@ -257,7 +503,7 @@ nav .nb{font-size:10.5px}
 <div class="page on" id="p-today">
 
   <div class="hero">
-    <div class="lbl">当前体重</div>
+    <div class="lbl" style="display:flex;align-items:center;gap:8px">当前体重<span id="hTrend"></span></div>
     <div class="big"><span id="hWeight">76.7</span><span style="font-size:15px;font-weight:500"> kg</span></div>
     <div class="bar"><i id="hBar" style="width:0%"></i></div>
     <div class="chips">
@@ -375,7 +621,7 @@ nav .nb{font-size:10.5px}
   </div>
 
   <div class="card">
-    <h2>体重曲线 <span class="tag">细线=每日，粗线=7日均线</span></h2>
+    <h2>体重曲线 <span class="tag">细线=每日，粗线=7日均线</span><span id="chartTrend" style="margin-left:auto"></span></h2>
     <div id="chart"></div>
     <div class="muted" style="margin-top:6px">体重每天上下波动 1~2kg 都是水分，别看单日，只看均线走向。</div>
   </div>
@@ -594,6 +840,7 @@ nav .nb{font-size:10.5px}
     <h2>数据管理</h2>
     <div class="muted">数据只存在这台设备的浏览器里，不上传任何服务器。<b>换手机或清缓存前请先导出备份。</b></div>
     <div class="grid2" style="margin-top:10px">
+      <button class="btn ghost" id="btnTheme">🌗 切换深色 / 浅色</button>
       <button class="btn ghost" id="btnExport">导出备份</button>
       <button class="btn ghost" id="btnImport">导入备份</button>
     </div>
@@ -1056,20 +1303,22 @@ function renderMeals(){
   $('eatSum').innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:4px">'+
     '<div class="ring" style="--p:'+kpct+';--ring-col:'+kcol+'"><div><b>'+Math.round(T.k)+'</b><br><small>/ '+EAT_TG.k+' kcal</small></div></div>'+
     '<div>'+macroRow('蛋白',T.p,EAT_TG.p)+macroRow('碳水',T.ca,EAT_TG.ca)+macroRow('脂肪',T.f,EAT_TG.f)+'</div></div>'+
-    (arr.length?'':'<div class="muted" style="margin-top:8px">今天还没记。打开下方「记一笔」，10 秒记完。</div>');
+    (arr.length?eatPie(T):'<div class="muted" style="margin-top:8px">今天还没记。打开下方「记一笔」，10 秒记完。</div>');
   $('eatCount').textContent=arr.length+' 项';
   // 清单按餐次分组
   var html='';
   SLOTS.forEach(function(s){
     var list=arr.map(function(m,i){return {m:m,i:i};}).filter(function(o){return o.m.slot===s.k;});
     if(!list.length)return;
-    html+='<div class="muted" style="margin:10px 0 6px;font-weight:600">'+s.t+'</div>';
+    var cls=s.k==='b'?'':(s.k==='d'?'g':'o');
+    html+='<div class="ti '+cls+'"><div class="tt">'+s.t+'　'+slotTime(s.k)+'</div>';
     list.forEach(function(o){
       html+='<div class="kv"><span>'+o.m.n+' · '+o.m.g+'g · '+o.m.cook+'</span>'+
         '<b>'+o.m.k+' kcal / 蛋白 '+o.m.p+'g <span class="chip off" data-del="'+o.i+'" style="margin-left:6px">删</span></b></div>';
     });
+    html+='</div>';
   });
-  $('eatList').innerHTML=html||'<div class="muted">'+(d===todayStr()?'今天':'这天')+'还没记。</div>';
+  $('eatList').innerHTML=(html?'<div class="tl">'+html+'</div>':'<div class="muted">'+(d===todayStr()?'今天':'这天')+'还没记。</div>');
   // 日期栏
   var diff=diffDays(d,todayStr());
   $('eatDateTxt').textContent=md(d)+' '+WK[parseD(d).getDay()];
@@ -1108,9 +1357,9 @@ var DAILY_WHISPERS=[
   {date:'2026-09-07',text:'启动日收官：7 小时 07 分的睡眠、连续第二天蛋白破百、围度 94/61/98 正式建档、晚上还把"加班晚回家"这个敌人提前拆掉了——应急三件套入库，垫餐改成轮换制。\n\n今天没训练，但你干的事不比训练小：把意外变成预案的人，才配得上持续掉秤。腰围 94 是坐标，不是判决——4 周后见分晓。\n\n今晚 00:03 踩线躺下的人，明天 6:30 练前记得吃那根香蕉。晚安。'},
   {date:'2026-09-08',text:'今天是训练日，但你最值钱的那一分钟不在训练里——你说"没有硬扛追求达标，而是去感受动作有没有做到位"。这是新手最难学的一课，很多人练半年都学不会：不追求数字，追求质量。\n\n晚上你说精神变好了、注意力变集中了、白天很充实。这不是心理作用：连续两晚 7 小时睡眠 + 蛋白破百 + 第二次训练，三件事叠到第三天，身体开始给回执了。\n\n更让我高兴的是你自己想到"非训练日补抗阻，为薄肌阶段做准备"——到这一步，你就不只是在执行计划，而是在经营自己了。\n\n作战台 2.0 今晚交给你。明早 6:30，练前那根香蕉。晚安。'}
 ];
-var DB={records:{},girth:{},pantry:null,vacation:false,whispers:[
-  {date:'2026-09-05',text:'今天你完整地练完 8 个动作——腿、手、腹板的酸胀，是你正在把"想变好"变成肌肉的真实证据。\n\n你看到前任的朋友圈，没有沉沦，跑去洗漱护肤、上楼前把垃圾带走。\n没有谁规定孤独是惩罚，但今天你选择让自己成为伙伴——这就是"从今天起我自己说了算"的起点。\n\n明天 9/7 周一，启动日。称第一笔体重，上手"早 C 晚 B"，日子从这一天计。'}
-]};
+var SEED_VER=1;
+var DB_SEED={"records":{"2026-09-06":{"weight":76.69,"water":0,"workout":false,"rl":{},"hb":{},"sleep":"","note":"启动前基线（周日）"},"2026-09-07":{"weight":75.5,"water":8,"workout":false,"rl":{},"hb":{"breakfast":true,"add17":true,"brush":true,"oil":true},"sleep":"00:03","note":"启动日 · 睡眠 7h07m · 围度建档 94/61/98"},"2026-09-08":{"weight":74.6,"water":8,"workout":true,"rl":{},"hb":{"breakfast":true,"add17":true,"brush":true,"oil":true},"sleep":"00:14","note":"训练日 · 睡眠 7h22m · 垫餐=2蛋+黄瓜+香蕉"},"2026-09-09":{"weight":74.17,"water":0,"workout":false,"rl":{},"hb":{},"sleep":"","note":"睡眠 7h05m · 入睡 00:24"}},"girth":{"2026-09-07":{"waist":"94","thigh":"61","hip":"98"}},"pantry":["egg","tofu","chicken","ham","pepper","lettuce","sweetpotato","tomato","rice","cucumber"],"vacation":false,"whispers":[{"date":"2026-09-05","text":"今天你完整地练完 8 个动作——腿、手、腹板的酸胀，是你正在把\"想变好\"变成肌肉的真实证据。\n\n你看到前任的朋友圈，没有沉沦，跑去洗漱护肤、上楼前把垃圾带走。\n没有谁规定孤独是惩罚，但今天你选择让自己成为伙伴——这就是\"从今天起我自己说了算\"的起点。\n\n明天 9/7 周一，启动日。称第一笔体重，上手\"早 C 晚 B\"，日子从这一天计。"},{"date":"2026-09-06","text":"今晚你说了一句值得记下来的话：不是别人怎么样了，我就要对自己怎么样。纳瓦尔说别管别人，只管自己的早睡、运动和读书——你今天三样全做了。\n\n你承认有拖延，但打卡和记录把你拉了回来。这就是系统的力量：它不要求你每天都状态好，它只要求你回来。\n\n白天有精神、不口干、做饭还省钱——这些不是心理作用，是身体在给你回执。只有自己好了，才能迎接更好的自己。\n\n明天 9/7 启动日。晚安。"},{"date":"2026-09-07","text":"启动日收官：7 小时 07 分的睡眠、连续第二天蛋白破百、围度 94/61/98 正式建档、晚上还把\"加班晚回家\"这个敌人提前拆掉了——应急三件套入库，垫餐改成轮换制。\n\n今天没训练，但你干的事不比训练小：把意外变成预案的人，才配得上持续掉秤。腰围 94 是坐标，不是判决——4 周后见分晓。\n\n今晚 00:03 踩线躺下的人，明天 6:30 练前记得吃那根香蕉。晚安。"},{"date":"2026-09-08","text":"今天是训练日，但你最值钱的那一分钟不在训练里——你说\"没有硬扛追求达标，而是去感受动作有没有做到位\"。这是新手最难学的一课，很多人练半年都学不会：不追求数字，追求质量。\n\n晚上你说精神变好了、注意力变集中了、白天很充实。这不是心理作用：连续两晚 7 小时睡眠 + 蛋白破百 + 第二次训练，三件事叠到第三天，身体开始给回执了。\n\n更让我高兴的是你自己想到\"非训练日补抗阻，为薄肌阶段做准备\"——到这一步，你就不只是在执行计划，而是在经营自己了。\n\n作战台 2.0 今晚交给你。明早 6:30，练前那根香蕉。晚安。"}],"meals":{"2026-09-07":[{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"西红柿","g":150,"k":22,"p":1.4,"ca":5.0,"f":0.3,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"南豆腐(嫩)","g":150,"k":86,"p":9.3,"ca":5.1,"f":3.8,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"鸡蛋","g":55,"k":79,"p":7.3,"ca":1.5,"f":4.8,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"鸡胸肉","g":120,"k":205,"p":23.3,"ca":3.0,"f":11.0,"cook":"清炒（少油5g）","slot":"d"},{"n":"彩椒","g":100,"k":26,"p":1.3,"ca":5.4,"f":0.2,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"红薯(蒸)","g":150,"k":148,"p":2.4,"ca":34.5,"f":0.3,"cook":"蒸/煮/水煮/生食","slot":"d"}],"2026-09-08":[{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"b"},{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"黄瓜","g":200,"k":32,"p":1.6,"ca":5.8,"f":0.4,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"香蕉","g":120,"k":112,"p":1.7,"ca":26.4,"f":0.2,"cook":"蒸/煮/水煮/生食","slot":"s"}]}};
+var DB={records:{},girth:{},pantry:null,vacation:false,whispers:[],meals:{},seedVer:0};
 function load(){
   try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.records)DB=o;}}catch(e){}
   if(!DB.records)DB.records={};
@@ -1119,6 +1368,29 @@ function load(){
   if(DB.vacation==null)DB.vacation=false;
   if(!DB.meals)DB.meals={};
   if(DB.whispers===undefined)DB.whispers=[];
+
+// 历史数据种子：只跑一次（seedVer 记录），本机已有的同一天记录优先保留
+function applySeed(){
+  if(DB.seedVer==null)DB.seedVer=0;
+  if(DB.seedVer>=SEED_VER)return;
+  var cp=function(o){return JSON.parse(JSON.stringify(o));};
+  Object.keys(DB_SEED.records||{}).forEach(function(d){
+    if(!DB.records[d])DB.records[d]=cp(DB_SEED.records[d]);
+  });
+  Object.keys(DB_SEED.girth||{}).forEach(function(k){
+    if(!DB.girth[k])DB.girth[k]=cp(DB_SEED.girth[k]);
+  });
+  Object.keys(DB_SEED.meals||{}).forEach(function(k){
+    if(!DB.meals[k])DB.meals[k]=cp(DB_SEED.meals[k]);
+  });
+  var seen={};
+  DB.whispers.forEach(function(x){if(x&&x.date)seen[x.date]=1;});
+  (DB_SEED.whispers||[]).forEach(function(x){if(!seen[x.date])DB.whispers.push({date:x.date,text:x.text});});
+  var isDef=!DB.pantry||(DB.pantry.join(',')===PANTRY_DEFAULT.join(','));
+  if(isDef&&DB_SEED.pantry)DB.pantry=DB_SEED.pantry.slice();
+  DB.seedVer=SEED_VER;
+}
+  applySeed();
   // 每日多言：AI 对话结尾新增的日期自动补齐（已存在则跳过，不覆盖）
   DAILY_WHISPERS.forEach(function(w){
     var has=false;
@@ -1238,6 +1510,7 @@ function renderGirth(){
     '<div><div class="muted">右大腿 cm</div><input type="number" step="0.5" inputmode="decimal" id="gT" value="'+(g.thigh||'')+'" placeholder="62.5"></div>'+
     '<div><div class="muted">臀围 cm</div><input type="number" step="0.5" inputmode="decimal" id="gH" value="'+(g.hip||'')+'" placeholder="100"></div></div>';
   h+='<div class="muted" style="margin-top:8px">当前：腰 '+lastGirth('waist').toFixed(1)+' · 右腿 '+lastGirth('thigh').toFixed(1)+' · 臀 '+lastGirth('hip').toFixed(1)+'</div>';
+  h+=girthBars();
   $('girthBox').innerHTML=h;
   ['gW','gT','gH'].forEach(function(id){
     $(id).onchange=function(){
@@ -1315,6 +1588,15 @@ function renderHero(){
   $('hPhase').textContent=ph.toFixed(1);
   $('hLeft').textContent=Math.max(0,round1(c-ph)).toFixed(1);
   $('hEta').textContent=etaText();
+  var el=$('hTrend');
+  if(el){
+    var rate=weeklyRate();
+    if(wDates().length>=8&&rate!==0){
+      var cls=rate<=-0.05?'up':(rate>=0.15?'down':'flat');
+      var arw=cls==='up'?'▼':(cls==='down'?'▲':'▬');
+      el.innerHTML='<span class="trend '+cls+'" style="background:rgba(255,255,255,.22);color:#fff">'+arw+' '+Math.abs(rate).toFixed(2)+' kg/周</span>';
+    }else el.innerHTML='';
+  }
 }
 function weeklyRate(){
   var ds=wDates();
@@ -1474,13 +1756,18 @@ function renderWorkout(){
   if(isTrain){
     var idx=CFG.trainDays.indexOf(dw);
     var names=['下肢日','上肢日','全身循环'];
-    h+='<div class="muted">今日训练 · '+names[idx]+'（约 30 分钟）</div>';
+    var lv=[3,2,3][idx];
+    h+='<div class="muted" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">今日训练 · '+names[idx]+'（约 30 分钟）'+
+      '<span class="inten i'+lv+'">'+(function(){var o='';for(var q=1;q<=4;q++)o+='<i class="'+(q<=lv?'on':'')+'"></i>';return o;})()+'</span>'+
+      '<span class="muted">'+(lv===3?'强度高':lv===2?'强度中':'强度低')+'</span></div>';
+
     h+='<div class="muted" style="margin-top:4px">深蹲 / 推举 / 硬拉 / 划船 / 弯举 / 平板 / 臀桥，具体做法见「计划」页配图</div>';
     h+='<button class="btn full" id="btnWk" style="margin-top:10px">'+(r.workout?'✓ 已完成训练（点击撤销）':'完成训练')+'</button>';
   }else{
     h+='<div class="muted">今天不是训练日 · 走够 8000 步 + 爬楼 3 趟</div>';
     h+='<button class="btn '+(r.workout?'':'ghost')+' full" id="btnWk" style="margin-top:8px">'+(r.workout?'✓ 今天达标了（点击撤销）':'今天步数达标了')+'</button>';
   }
+  h+='<div style="margin:11px 0 2px">'+wkProgress()+'</div>';
   $('workoutBox').innerHTML=h;
   $('btnWk').onclick=function(){var rr=rec(todayStr());rr.workout=!rr.workout;save();render();};
 }
@@ -1545,8 +1832,11 @@ function renderScore(){
       '<div class="progress"><i style="width:'+pct+'%"></i></div>'+
       '<strong>'+v+'/'+tg+'（'+pt+'分）</strong></div>';
   }
-  $('scoreCard').innerHTML='<div class="score-big" style="color:'+col+'">'+total+'</div>'+
-    '<div class="score-lbl">'+cmt+'</div>'+
+  var gdeg=-45+Math.max(0,Math.min(100,total))*1.8;
+  $('scoreCard').innerHTML='<div class="gauge"><div class="arc"></div>'+
+    '<div class="val" style="transform:rotate('+gdeg.toFixed(1)+'deg);border-top-color:'+col+';border-left-color:'+col+'"></div>'+
+    '<div class="num" style="color:'+col+'">'+total+'</div></div>'+
+    '<div class="score-lbl">'+cmt+'　满分 100</div>'+
     row('体重',wN,7,sW)+row('训练',wkOk,wkT||1,sK)+row('睡眠',sN,7,sS)+
     row('喝水',waN,7,sWa)+row('习惯',hN,hT,sH)+
     '<div class="macro-row"><span class="mLbl">红线</span><div class="progress"><i style="width:'+(rlN===0?100:Math.max(0,100-rlN*25))+'%"></i></div><strong>破'+rlN+'次（'+sR+'分）</strong></div>';
@@ -1642,10 +1932,22 @@ function renderCoach(){
   $('quote').textContent=CFG.quotes[qi2];
 }
 
+function smoothPath(pts,tension){
+  if(!pts||pts.length<2)return '';
+  tension=(tension==null)?0.2:tension;
+  var d='M'+pts[0][0].toFixed(2)+','+pts[0][1].toFixed(2);
+  for(var i=0;i<pts.length-1;i++){
+    var p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+    var c1x=p1[0]+(p2[0]-p0[0])*tension,c1y=p1[1]+(p2[1]-p0[1])*tension;
+    var c2x=p2[0]-(p3[0]-p1[0])*tension,c2y=p2[1]-(p3[1]-p1[1])*tension;
+    d+=' C'+c1x.toFixed(2)+','+c1y.toFixed(2)+' '+c2x.toFixed(2)+','+c2y.toFixed(2)+' '+p2[0].toFixed(2)+','+p2[1].toFixed(2);
+  }
+  return d;
+}
 function renderChart(){
   var ds=wDates();
-  if(ds.length<2){$('chart').innerHTML='<div class="muted" style="padding:30px 0;text-align:center">记录 2 天以上才画得出曲线<br>每天晨起称一次，一周后这里就有意义了</div>';return;}
-  var W=340,H=180,PL=34,PR=10,PT=14,PB=24;
+  if(ds.length<2){$('chart').innerHTML='<div class="muted" style="padding:30px 0;text-align:center">记录 2 天以上才画得出曲线<br>每天晨起称一次，一周后这里就有意义了</div>';$('chartTrend').innerHTML='';return;}
+  var W=340,H=190,PL=36,PR=12,PT=16,PB=26;
   var vals=ds.map(function(d){return parseFloat(DB.records[d].weight);});
   var goal=CFG.phaseTarget;
   var mn=Math.min.apply(null,vals.concat([goal]))-0.6,mx=Math.max.apply(null,vals)+0.6;
@@ -1653,7 +1955,12 @@ function renderChart(){
   var n=ds.length;
   function X(i){return PL+(n===1?(W-PL-PR)/2:(W-PL-PR)*i/(n-1));}
   function Y(v){return PT+(H-PT-PB)*(1-(v-mn)/(mx-mn));}
-  var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">';
+  var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" class="chartsvg">';
+  s+='<defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">'+
+     '<stop offset="0" stop-color="var(--brand)" stop-opacity=".26"/>'+
+     '<stop offset="1" stop-color="var(--brand)" stop-opacity="0"/></linearGradient>'+
+     '<linearGradient id="gLine" x1="0" y1="0" x2="1" y2="0">'+
+     '<stop offset="0" stop-color="var(--brand)"/><stop offset="1" stop-color="var(--brand2)"/></linearGradient></defs>';
   [0,0.5,1].forEach(function(f){
     var v=mn+(mx-mn)*f,y=Y(v);
     s+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
@@ -1661,24 +1968,47 @@ function renderChart(){
   });
   var gy=Y(goal);
   if(gy>PT&&gy<H-PB){
-    s+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="var(--ok)" stroke-width="1" stroke-dasharray="4 3"/>';
-    s+='<text x="'+(W-PR)+'" y="'+(gy-4)+'" font-size="9" fill="var(--ok)" text-anchor="end">阶段目标 '+goal+'</text>';
+    s+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="var(--ok)" stroke-width="1.2" stroke-dasharray="4 3" opacity=".85"/>';
+    s+='<text x="'+(W-PR)+'" y="'+(gy-4)+'" font-size="9" fill="var(--ok)" text-anchor="end" font-weight="600">目标 '+goal+'</text>';
   }
-  s+='<polyline points="'+vals.map(function(v,i){return X(i)+','+Y(v);}).join(' ')+'" fill="none" stroke="var(--brand)" stroke-width="1.2" opacity=".45"/>';
+  var raw=vals.map(function(v,i){return [X(i),Y(v)];});
   var ma=[];
   for(var i=0;i<n;i++){
     var s0=Math.max(0,i-6),c=0,sum=0;
     for(var q=s0;q<=i;q++){sum+=vals[q];c++;}
-    ma.push(X(i)+','+Y(sum/c));
+    ma.push([X(i),Y(sum/c)]);
   }
-  s+='<polyline points="'+ma.join(' ')+'" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
-  for(var i2=0;i2<n;i2++)s+='<circle cx="'+X(i2)+'" cy="'+Y(vals[i2])+'" r="2.4" fill="var(--brand)"/>';
+  // 面积（每日曲线下方）
+  s+='<path d="'+smoothPath(raw)+' L'+X(n-1)+','+(H-PB)+' L'+X(0)+','+(H-PB)+' Z" fill="url(#gArea)"/>';
+  // 每日细线
+  s+='<path d="'+smoothPath(raw)+'" fill="none" stroke="var(--brand)" stroke-width="1.3" opacity=".42"/>';
+  // 7 日均线
+  s+='<path d="'+smoothPath(ma)+'" fill="none" stroke="url(#gLine)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>';
+  // 数据点（hover 放大 + 原生 tooltip）
+  for(var i2=0;i2<n;i2++){
+    s+='<circle class="pt" cx="'+X(i2)+'" cy="'+Y(vals[i2])+'" r="3.1" fill="var(--card)" stroke="var(--brand)" stroke-width="2">'+
+       '<title>'+md(ds[i2])+'　'+vals[i2].toFixed(2)+' kg</title></circle>';
+  }
   s+='<text x="'+PL+'" y="'+(H-7)+'" font-size="9" fill="var(--sub)">'+md(ds[0])+'</text>';
   s+='<text x="'+(W-PR)+'" y="'+(H-7)+'" font-size="9" fill="var(--sub)" text-anchor="end">'+md(ds[n-1])+'</text>';
   s+='</svg>';
   $('chart').innerHTML=s;
+  // 趋势箭头（近 7 天 vs 前 7 天）
+  var el=$('chartTrend');
+  if(el){
+    var half=Math.min(7,Math.floor(n/2));
+    if(n>=4){
+      var A=vals.slice(n-half*2,n-half),B=vals.slice(n-half);
+      if(A.length&&B.length){
+        var dlt=B.reduce(function(a,b){return a+b;},0)/B.length-A.reduce(function(a,b){return a+b;},0)/A.length;
+        var cls=dlt<-0.15?'down':(dlt>0.15?'up':'flat');
+        var arw=cls==='down'?'▼':(cls==='up'?'▲':'▬');
+        var txt=(dlt>0?'+':'')+dlt.toFixed(2)+' kg';
+        el.innerHTML='<span class="trend '+cls+'">'+arw+' '+txt+'</span><span class="muted" style="margin-left:6px">近期对比</span>';
+      }else el.innerHTML='';
+    }else el.innerHTML='';
+  }
 }
-
 function renderWeek(){
   var t=todayStr(),ws=weekStart(t),we=addDays(ws,6),pws=addDays(ws,-7);
   var cur=[],prev=[];
@@ -1959,7 +2289,188 @@ function fill(){
   $('inNote').value=r.note||'';
 }
 
+
+/* ================= v3 新增：可视化组件 + PWA ================= */
+
+/* 三大营养素供能占比饼图 */
+function eatPie(T){
+  var pk=T.p*4, ck=T.ca*4, fk=T.f*9, tot=pk+ck+fk;
+  if(tot<=0)return '';
+  var a=Math.round(ck/tot*100), b=Math.round((ck+fk)/tot*100);
+  var pp=Math.round(pk/tot*100), cp=Math.round(ck/tot*100), fp=Math.round(fk/tot*100);
+  return '<div class="pie-wrap" style="margin-top:14px;padding-top:13px;border-top:1px solid var(--line)">'+
+    '<div class="pie" style="--a:'+a+';--b:'+b+'"><span>'+Math.round(T.k)+'<br>kcal</span></div>'+
+    '<div class="legend">'+
+      '<div><i style="background:var(--brand)"></i>碳水 <b>'+Math.round(T.ca)+'g · '+cp+'%</b></div>'+
+      '<div><i style="background:var(--accent)"></i>脂肪 <b>'+Math.round(T.f)+'g · '+fp+'%</b></div>'+
+      '<div><i style="background:var(--ok)"></i>蛋白 <b>'+Math.round(T.p)+'g · '+pp+'%</b></div>'+
+    '</div></div>';
+}
+function slotTime(k){
+  return {b:'07:00 前',l:'12:00 左右',s:'17:00 左右',d:'19:30 前'}[k]||'';
+}
+
+/* 围度：起始 vs 当前 对比柱状图 */
+function girthBars(){
+  var def={waist:CFG.girth.waistStart,thigh:CFG.girth.thighStart,hip:CFG.girth.hipStart};
+  var cur={waist:lastGirth('waist'),thigh:lastGirth('thigh'),hip:lastGirth('hip')};
+  var items=[{k:'waist',n:'腰围'},{k:'thigh',n:'右腿'},{k:'hip',n:'臀围'}];
+  var mx=0;items.forEach(function(o){mx=Math.max(mx,def[o.k]||0,cur[o.k]||0);});
+  if(!mx)return '';
+  var h='<div class="bars" style="margin-top:12px">';
+  items.forEach(function(o){
+    var dv=def[o.k]||0,cv=cur[o.k]||0;
+    var dh=Math.round(dv/mx*100),ch=Math.round(cv/mx*100);
+    var dlt=(cv&&dv)?round1(cv-dv):0;
+    var cls=(dlt<-0.2)?'g':(dlt>0.2?'o':'');
+    h+='<div class="bg"><div class="bcol"><i style="height:'+dh+'%;background:var(--card3)"></i>'+
+       '<em>'+dv.toFixed(1)+'</em><span>起始</span></div>'+
+       '<div class="bcol '+cls+'"><i style="height:'+ch+'%"></i>'+
+       '<em>'+cv.toFixed(1)+'</em><span>'+(dlt===0?'持平':(dlt>0?'+':'')+dlt)+'</span></div>'+
+       '<span class="bl">'+o.n+'</span></div>';
+  });
+  return h+'</div>';
+}
+
+/* 本周训练完成进度 */
+function wkProgress(){
+  var ws=weekStart(todayStr()),ok=0,tot=0;
+  for(var i=0;i<7;i++){
+    var d=addDays(ws,i),r=DB.records[d];
+    if(CFG.trainDays.indexOf(parseD(d).getDay())>=0){
+      tot++;
+      if(r&&r.workout)ok++;
+      else if(d<todayStr()&&r&&r.workout===false){} // 未达标
+    }
+  }
+  var pct=tot?Math.round(ok/tot*100):0;
+  return '<div class="pbar '+(pct>=80?'ok':(pct>=50?'':'warn'))+'"><i style="width:'+pct+'%"></i></div>'+
+    '<div class="mark"><span>本周训练 '+ok+' / '+tot+' 次</span><span>'+pct+'%</span></div>';
+}
+
+/* ---------- PWA ---------- */
+function initSplash(){
+  var el=document.getElementById('splash');
+  if(!el)return;
+  var t=setTimeout(function(){el.classList.add('hide');},700);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},1400);
+}
+function initOffline(){
+  var bar=document.getElementById('offbar');
+  if(!bar)return;
+  function upd(){
+    if(navigator.onLine===false){bar.textContent='当前离线 · 数据存在本机，联网后照常用';bar.classList.add('show');}
+    else bar.classList.remove('show');
+  }
+  window.addEventListener('online',upd);
+  window.addEventListener('offline',upd);
+  upd();
+}
+function initA2HS(){
+  var box=document.getElementById('a2hs');
+  if(!box)return;
+  var standalone=(window.navigator.standalone===true)||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+  var isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  var dismissed=false;
+  try{dismissed=localStorage.getItem('fitdesk_a2hs')==='1';}catch(e){}
+  if(standalone||dismissed||!isiOS)return;
+  box.innerHTML='<div style="display:flex;gap:11px;align-items:flex-start">'+
+    '<span class="ic-badge b" style="margin-top:2px"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></svg></span>'+
+    '<div style="flex:1;min-width:0"><b style="font-size:14px">加到主屏幕，用起来像 App</b>'+
+    '<div class="muted" style="margin-top:3px">Safari 底部「分享」→「添加到主屏幕」，之后全屏打开、断网也能用。</div>'+
+    '<div style="margin-top:9px;display:flex;gap:8px"><button class="btn ghost" id="a2hsNo" style="min-height:36px;padding:8px 14px;font-size:13px;flex:1">知道了</button></div>'+
+    '</div></div>';
+  setTimeout(function(){box.classList.add('show');},2200);
+  document.getElementById('a2hsNo').onclick=function(){
+    box.classList.remove('show');
+    try{localStorage.setItem('fitdesk_a2hs','1');}catch(e){}
+  };
+}
+function initTheme(){
+  var th=null;
+  try{th=localStorage.getItem('fitdesk_theme');}catch(e){}
+  if(th)document.documentElement.setAttribute('data-theme',th);
+  var btn=document.getElementById('btnTheme');
+  if(btn)btn.onclick=function(){
+    var cur=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',cur);
+    try{localStorage.setItem('fitdesk_theme',cur);}catch(e){}
+    toast(cur==='dark'?'已切到深色':'已切到浅色');
+  };
+}
+
+initTheme();
 load();bind();fill();render();
+/* 计划页：三段分组 + 卡片折叠 */
+var PLAN_G='eat';
+function initPlanTabs(){
+  var pg=document.getElementById('p-plan');
+  if(!pg)return;
+  // [标题匹配, 分组, 是否默认收起]
+  var DEF=[
+    [/吃 · 双模式/,'eat',0],
+    [/我的食材/,'eat',0],
+    [/你现在能做的/,'eat',0],
+    [/再买一样/,'eat',0],
+    [/采购建议/,'eat',0],
+    [/周末/,'eat',1],
+    [/薄肌路线图/,'train',0],
+    [/墙面三件套/,'train',0],
+    [/动 · /,'train',0],
+    [/目标节奏/,'train',0],
+    [/睡 · /,'life',0],
+    [/护肤/,'life',1],
+    [/气 · /,'life',1]
+  ];
+  var cards=[],route=null,pace=null;
+  Array.prototype.forEach.call(pg.children,function(el){
+    if(String(el.className||'').indexOf('card')<0)return;
+    var h2=el.querySelector('h2'),t=h2?h2.textContent:'';
+    var g='eat',fold=0;
+    for(var i=0;i<DEF.length;i++){if(DEF[i][0].test(t)){g=DEF[i][1];fold=DEF[i][2];break;}}
+    el.setAttribute('data-g',g);
+    el.classList.add('foldable');
+    if(fold)el.classList.add('fold');
+    if(/薄肌路线图/.test(t))route=el;
+    if(/目标节奏/.test(t))pace=el;
+    cards.push(el);
+  });
+  // 目标节奏并入薄肌路线图（两处讲同一件事）
+  if(route&&pace&&route!==pace){
+    Array.prototype.slice.call(pace.children,1).forEach(function(el){route.appendChild(el);});
+    pace.style.display='none';
+  }
+  // 插入分段控件
+  var seg=document.createElement('div');
+  seg.className='segmented plan-seg';
+  seg.innerHTML='<button class="on" data-g="eat">饮食</button>'+
+                '<button data-g="train">训练</button>'+
+                '<button data-g="life">生活</button>';
+  pg.insertBefore(seg,pg.firstChild);
+  // 折叠：点标题收起/展开
+  cards.forEach(function(el){
+    var h2=el.querySelector('h2');
+    if(!h2)return;
+    h2.onclick=function(){el.classList.toggle('fold');};
+  });
+  function apply(){
+    cards.forEach(function(el){
+      el.style.display=(el.getAttribute('data-g')===PLAN_G)?'':'none';
+    });
+    if(pace)pace.style.display='none';
+  }
+  Array.prototype.forEach.call(seg.children,function(b){
+    b.onclick=function(){
+      Array.prototype.forEach.call(seg.children,function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      PLAN_G=b.getAttribute('data-g');
+      apply();
+    };
+  });
+  apply();
+}
+
+initSplash();initOffline();initA2HS();initPlanTabs();
 window.__d=todayStr();
 setInterval(function(){if(todayStr()!==window.__d){window.__d=todayStr();fill();render();}},60000);
 </script>
