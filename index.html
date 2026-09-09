@@ -77,12 +77,11 @@ input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 input[type=checkbox]{min-height:auto;width:auto}
 input[type=file]{min-height:auto;padding:0}
-.eat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px;max-height:236px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.eat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px}
 .eat-opt{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:11px;min-height:62px;display:flex;flex-direction:column;justify-content:center;text-align:left;cursor:pointer}
 .eat-opt.on{border-color:var(--brand);background:var(--brand-soft)}
 .eat-opt b{font-size:13.5px;font-weight:700}
 .eat-opt span{font-size:11.5px;color:var(--sub);margin-top:2px}
-@media(max-width:400px){.eat-grid{max-height:200px}}
 /* toast 轻提示 */
 .toast-stack{position:fixed;left:16px;right:16px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:150;display:grid;gap:8px}
 .toast{background:var(--text);color:var(--card);border-radius:13px;padding:12px 15px;box-shadow:var(--shadow);font-size:13.5px;animation:toast-in .22s ease}
@@ -92,7 +91,7 @@ input[type=file]{min-height:auto;padding:0}
 .ring:after{content:"";width:74px;height:74px;border-radius:50%;background:var(--card);position:absolute}
 .ring>div{position:relative;z-index:1;text-align:center;line-height:1.2}
 .ring b{font-size:18px;font-weight:800}
-.ring small{font-size:10px;color:var(--sub);font-weight:600}
+.ring small{font-size:11px;color:var(--sub);font-weight:600}
 /* 三大营养素行 */
 .macro-row{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;margin:9px 0}
 .macro-row .mLbl{font-size:12.5px;color:var(--sub);font-weight:600}
@@ -107,7 +106,7 @@ input[type=file]{min-height:auto;padding:0}
 .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
 .week-strip .wd{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 2px;text-align:center;min-height:60px;display:flex;flex-direction:column;gap:4px;justify-content:center}
 .week-strip .wd.today{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
-.week-strip .wd .dl{font-size:10px;color:var(--sub);line-height:1.3}
+.week-strip .wd .dl{font-size:11px;color:var(--sub);line-height:1.3}
 .week-strip .wd .dots{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
 .week-strip .wd .dot{width:7px;height:7px;border-radius:50%;background:var(--card2)}
 .week-strip .wd .dot.g{background:var(--ok)}
@@ -132,8 +131,8 @@ header .inner{max-width:560px;margin:0 auto}
 .hero{background:linear-gradient(135deg,#2F80ED,#5FA8F5);color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
 .hero .big{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.5px}
 .hero .lbl{font-size:12px;opacity:.9}
-.hero .chips{display:flex;gap:8px;margin-top:12px}
-.hero .chip{background:rgba(255,255,255,.2);border-radius:8px;padding:6px 8px;font-size:11.5px;flex:1;text-align:center}
+.hero .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-top:12px}
+.hero .chip{background:rgba(255,255,255,.2);border-radius:8px;padding:6px 8px;font-size:11.5px;text-align:center;min-width:0}
 .hero .chip b{display:block;font-size:15px;font-weight:700;margin-top:1px}
 .bar{height:8px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden;margin-top:12px}
 .bar>i{display:block;height:100%;background:#fff;border-radius:4px;transition:width .4s}
@@ -152,7 +151,7 @@ header .inner{max-width:560px;margin:0 auto}
 .todo .item.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
 
 .cups{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-top:8px}
-.cup{aspect-ratio:1;border-radius:6px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--sub);cursor:pointer}
+.cup{aspect-ratio:1;border-radius:6px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sub);cursor:pointer}
 .cup.on{background:#3b9ae1;border-color:#3b9ae1;color:#fff}
 
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
@@ -177,6 +176,7 @@ input[type=number],input[type=time],input[type=text]{width:100%;font:inherit;fon
 
 table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:7px 4px;text-align:left;border-bottom:1px solid var(--line)}
+td:first-child,th:first-child{width:1%;white-space:nowrap;padding-right:8px}
 th{color:var(--sub);font-weight:500;font-size:12px}
 .num{font-variant-numeric:tabular-nums;text-align:right}
 
@@ -216,7 +216,7 @@ header{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:
 nav{background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid var(--line);box-shadow:0 -6px 26px rgba(16,35,48,.08);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-nav button{position:relative;padding:6px 0 5px;gap:4px;color:var(--sub);font-size:10.5px;
+nav button{position:relative;padding:6px 0 5px;gap:4px;color:var(--sub);font-size:11px;
   transition:color .2s ease,opacity .15s;letter-spacing:.3px}
 nav button .ico{width:24px;height:24px;display:grid;place-items:center;transition:transform .28s cubic-bezier(.34,1.4,.5,1)}
 nav button .ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -226,10 +226,10 @@ nav button.on:before{content:"";position:absolute;top:0;left:50%;margin-left:-9p
   background:linear-gradient(90deg,var(--brand),var(--brand2));animation:nbIn .3s ease}
 @keyframes nbIn{from{width:0;margin-left:0;opacity:0}to{width:18px;margin-left:-9px;opacity:1}}
 nav button:active{opacity:.65}
-nav .nb{font-size:10.5px}
+nav .nb{font-size:11px}
 /* 未完成徽标 */
 .dot-badge{position:absolute;top:1px;left:50%;margin-left:6px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;
-  background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;line-height:17px;text-align:center;font-style:normal;
+  background:var(--danger);color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;font-style:normal;
   border:1.5px solid var(--card);box-shadow:0 2px 7px rgba(0,0,0,.14)}
 .dot-badge[hidden]{display:none}
 .dot-badge.all-done{background:var(--ok);margin-left:8px}
@@ -394,7 +394,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
 .ring2>div{position:relative;z-index:1;text-align:center;line-height:1.15}
 .ring2 b{display:block;font-size:20px;font-weight:800;font-family:var(--mono)}
-.ring2 small{font-size:10.5px;color:var(--sub);font-weight:600}
+.ring2 small{font-size:11px;color:var(--sub);font-weight:600}
 
 /* ---- 仪表盘（综合分） ---- */
 .gauge{position:relative;width:150px;height:84px;margin:2px auto 0;overflow:hidden}
@@ -421,11 +421,11 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   background:var(--brand-grad);min-height:4px;transition:height .6s cubic-bezier(.22,.9,.3,1)}
 .bars .bcol.g i{background:var(--ok-grad)}
 .bars .bcol.o i{background:var(--accent-grad)}
-.bars .bcol span{font-size:10.5px;color:var(--sub);white-space:nowrap}
+.bars .bcol span{font-size:11px;color:var(--sub);white-space:nowrap}
 .bars .bcol em{font-size:11px;font-weight:700;font-style:normal;font-family:var(--mono)}
 
 .bars .bg{flex:1;display:flex;gap:4px;align-items:flex-end;height:100%;position:relative}
-.bars .bg .bl{position:absolute;left:0;right:0;bottom:-15px;text-align:center;font-size:10.5px;color:var(--sub)}
+.bars .bg .bl{position:absolute;left:0;right:0;bottom:-15px;text-align:center;font-size:11px;color:var(--sub)}
 .bars{margin-bottom:16px}
 /* ---- 饼图（热量/成本分布） ---- */
 .pie-wrap{display:flex;align-items:center;gap:14px}
@@ -457,7 +457,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .mslot{border:1px solid var(--line);border-radius:10px;padding:6px 2px;text-align:center;font-size:11.5px;color:var(--sub)}
 .mslot.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:700}
 /* 餐次标题右侧「存套餐」 */
-.tl .savecb{float:right;font-size:10.5px;font-weight:700;color:var(--brand);
+.tl .savecb{float:right;font-size:11px;font-weight:700;color:var(--brand);
   background:var(--brand-soft);padding:2px 8px;border-radius:99px;cursor:pointer}
 /* ---- 时间轴（饮食） ---- */
 .tl{position:relative;padding-left:20px}
@@ -519,6 +519,49 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   box-shadow:var(--shadow-lg);display:none}
 #a2hs.show{display:block;animation:cardIn .35s ease both}
 
+/* ---- 多言卡·结构化排版 ---- */
+.wc-hero{background:linear-gradient(135deg,#2F80ED,#5FA8F5);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 6px 18px rgba(47,128,237,.25)}
+.wc-kicker{font-size:11px;opacity:.88;letter-spacing:.4px;margin-bottom:6px}
+.wc-title{font-size:19px;font-weight:800;line-height:1.35;letter-spacing:.2px}
+.wc-sub{font-size:13px;line-height:1.7;margin-top:6px;opacity:.96}
+.wc-sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px}
+.wc-sec h4{font-size:13.5px;font-weight:700;margin:0 0 4px;color:var(--text)}
+.wc-sec p{font-size:13px;line-height:1.7;color:var(--text2);margin:0 0 5px}
+.wc-sec p:last-child{margin-bottom:0}
+.wc-hl{color:var(--brand);font-weight:700;font-style:normal}
+.wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.wc-cell{background:var(--brand-soft);border-radius:10px;padding:9px 11px;min-width:0}
+.wc-cell span{font-size:11px;color:var(--sub);display:block;margin-bottom:2px}
+.wc-cell b{font-size:14.5px;color:var(--brand);line-height:1.35;display:block;word-break:break-word}
+.wc-cell small{display:block;font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4}
+.wc-alert{border-left:3px solid var(--peach);background:var(--peach-soft);border-radius:10px;padding:10px 13px;margin-bottom:8px}
+.wc-alert h4{font-size:13.5px;font-weight:700;margin:0 0 4px;color:var(--text)}
+.wc-alert p{font-size:13px;line-height:1.7;color:var(--text2);margin:0}
+.sec-h{display:flex;align-items:center;gap:8px;margin:18px 2px 9px;font-size:13.5px;font-weight:800;color:var(--text);letter-spacing:.2px}
+.sec-h:before{content:"";width:3px;height:14px;border-radius:2px;background:var(--brand);flex:none}
+.sec-h span{font-size:11.5px;font-weight:400;color:var(--sub)}
+.sec-h.rec:before{background:var(--peach)}
+.sec-h.see:before{background:var(--brand)}
+.sec-h.hist:before{background:var(--sub)}
+.hd{display:inline-block;min-width:36px}
+.wd-b{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;margin-left:5px;vertical-align:middle;white-space:nowrap}
+.wd-b.train{background:#FFF2CC;color:#9A6400}
+.wd-b.rest{background:var(--ok-soft);color:var(--ok)}
+[data-theme=dark] .wd-b.train{background:rgba(255,168,61,.18);color:#FFB86B}
+[data-theme=dark] .wd-b.rest{background:rgba(18,184,134,.18);color:#3AD9A6}
+.vac-sw{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:7px 4px;margin:-7px -4px;min-height:32px}
+.vac-sw input{position:absolute;opacity:0;width:0;height:0}
+.vac-sw .tr{width:34px;height:20px;border-radius:99px;background:var(--card3);position:relative;transition:background .2s;flex:none}
+.vac-sw .tr i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.22);transition:transform .2s}
+.vac-sw input:checked + .tr{background:var(--peach)}
+.vac-sw input:checked + .tr i{transform:translateX(14px)}
+.vac-sw .vl{font-size:11px;color:var(--sub);font-weight:600}
+.vac-sw input:checked ~ .vl{color:var(--peach)}
+/* ---- iOS 键盘防飘移：键盘弹出时收起底导航 / 悬浮件 ---- */
+body.kb nav{display:none}
+body.kb .toast-stack{bottom:calc(12px + env(safe-area-inset-top))}
+body.kb #a2hs{display:none}
+
 </style>
 </head>
 <body>
@@ -530,7 +573,14 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   <div class="inner">
     <div class="between">
       <h1 class="grad-t">减重助手</h1>
-      <span class="pill" id="hdrDay">—</span>
+      <div style="display:flex;align-items:center;gap:9px">
+        <label class="vac-sw" title="假期模式：只保「每天称一次体重 + 喝水 8 杯」两条底线">
+          <input type="checkbox" id="swVac">
+          <span class="tr"><i></i></span>
+          <span class="vl">假期</span>
+        </label>
+        <span class="pill" id="hdrDay">—</span>
+      </div>
     </div>
     <div class="subline" id="hdrSub">—</div>
   </div>
@@ -549,6 +599,12 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
       <div class="chip"><span class="lbl">还差</span><b id="hLeft">0.0</b></div>
       <div class="chip"><span class="lbl">预计达成</span><b id="hEta">—</b></div>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>今天要叮嘱你的 <span class="tag">按你的数据实时生成</span></h2>
+    <div id="coachList"></div>
+    <div class="quote" id="quote"></div>
   </div>
 
   <div class="card">
@@ -577,6 +633,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   <div class="card">
     <h2>今天必做 <span class="tag" id="todoDate"></span></h2>
     <div class="todo" id="todoList"></div>
+    <div id="stepsBox"></div>
   </div>
 
   <div class="card">
@@ -610,17 +667,8 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 
     <div style="margin-top:14px" id="workoutBox"></div>
 
-    <div style="margin-top:12px">
-      <div class="muted">今天想说点什么（可选）</div>
-      <input type="text" id="inNote" placeholder="例：下午嘴馋喝了瓶可乐，明天补回来" style="margin-top:5px">
-    </div>
   </div>
 
-  <div class="card">
-    <h2>今天要叮嘱你的 <span class="tag">按你的数据实时生成</span></h2>
-    <div id="coachList"></div>
-    <div class="quote" id="quote"></div>
-  </div>
 </div>
 
 <div class="page" id="p-eat">
@@ -630,10 +678,9 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
       <div class="dn-t"><b id="eatDateTxt">—</b><span id="eatDateSub">—</span></div>
       <button class="dn-b" id="eatNext" aria-label="后一天">›</button>
     </div>
-    <div class="mslots" id="eatSlotStat"></div>
-    <h2>今日营养 <span class="tag">记一笔，自动累加</span></h2>
-    <div id="eatSum"></div>
   </div>
+
+  <div class="sec-h rec">记一笔 <span>点套餐 / 手动加，10 秒入账</span></div>
 
   <div class="card">
     <h2>记一笔 <span class="tag">套餐点一下 / 手动 10 秒</span></h2>
@@ -642,10 +689,20 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
     <div class="muted" style="margin-top:8px">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
   </div>
 
+  <div class="sec-h see">看今天的账 <span>记完自动累加，不用手算</span></div>
+
+  <div class="card">
+    <h2>今日营养 <span class="tag">记一笔，自动累加</span></h2>
+    <div class="mslots" id="eatSlotStat"></div>
+    <div id="eatSum"></div>
+  </div>
+
   <div class="card">
     <h2>今天吃了啥 <span class="tag" id="eatCount"></span></h2>
     <div id="eatList"></div>
   </div>
+
+  <div class="sec-h hist">回看 <span>过去 7 天，点日期可跳转</span></div>
 
   <div class="card">
     <h2>最近 7 天 <span class="tag">点日期可跳转</span></h2>
@@ -681,7 +738,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   </div>
   <div class="card">
     <h2>历史记录</h2>
-    <div id="histBox" style="max-height:320px;overflow:auto"></div>
+    <div id="histBox"></div>
   </div>
 </div>
 
@@ -857,7 +914,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
         <button id="whisperSave" type="button" class="btn primary" style="flex:1;min-height:40px">保存</button>
         <button id="whisperCancel" type="button" class="btn" style="flex:0 0 76px;min-height:40px;background:#f0e2cc;color:#8b4513">取消</button>
       </div>
-      <div class="muted" style="font-size:11px;margin-top:6px">同一天再粘一次会覆盖当天这条，历史记录不会被删。</div>
+      <div class="muted" style="font-size:11px;margin-top:6px">支持格式：# 大标题 ／ > 蓝卡导语 ／ ## 小节 ／ - 名称|数值|备注 ／ !! 橙色提醒。直接粘纯文本也会自动排版。同一天再粘会覆盖当天这条，历史不删。</div>
     </div>
   </div>
 
@@ -871,14 +928,6 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
     <div class="kv"><span>蛋白质目标</span><b>≥ 125 g / 天</b></div>
     <div class="kv"><span>饮水目标</span><b>8 杯 ≈ 2400 ml</b></div>
     <div class="muted" style="margin-top:8px">这些数字随你的体重自动重算，瘦下来后会往下调。</div>
-  </div>
-
-  <div class="card">
-    <h2>假期模式</h2>
-    <div class="sw">
-      <div><b style="font-size:13.5px">开启后只保两条底线</b><div class="muted">只提醒「称体重 + 喝水」，其余全部放开。适合节假日/出差/状态极差的日子。</div></div>
-      <input type="checkbox" id="swVac">
-    </div>
   </div>
 
   <div class="card">
@@ -1413,7 +1462,7 @@ var DAILY_WHISPERS=[
   {date:'2026-09-06',text:'今晚你说了一句值得记下来的话：不是别人怎么样了，我就要对自己怎么样。纳瓦尔说别管别人，只管自己的早睡、运动和读书——你今天三样全做了。\n\n你承认有拖延，但打卡和记录把你拉了回来。这就是系统的力量：它不要求你每天都状态好，它只要求你回来。\n\n白天有精神、不口干、做饭还省钱——这些不是心理作用，是身体在给你回执。只有自己好了，才能迎接更好的自己。\n\n明天 9/7 启动日。晚安。'},
   {date:'2026-09-07',text:'启动日收官：7 小时 07 分的睡眠、连续第二天蛋白破百、围度 94/61/98 正式建档、晚上还把"加班晚回家"这个敌人提前拆掉了——应急三件套入库，垫餐改成轮换制。\n\n今天没训练，但你干的事不比训练小：把意外变成预案的人，才配得上持续掉秤。腰围 94 是坐标，不是判决——4 周后见分晓。\n\n今晚 00:03 踩线躺下的人，明天 6:30 练前记得吃那根香蕉。晚安。'},
   {date:'2026-09-08',text:'今天是训练日，但你最值钱的那一分钟不在训练里——你说"没有硬扛追求达标，而是去感受动作有没有做到位"。这是新手最难学的一课，很多人练半年都学不会：不追求数字，追求质量。\n\n晚上你说精神变好了、注意力变集中了、白天很充实。这不是心理作用：连续两晚 7 小时睡眠 + 蛋白破百 + 第二次训练，三件事叠到第三天，身体开始给回执了。\n\n更让我高兴的是你自己想到"非训练日补抗阻，为薄肌阶段做准备"——到这一步，你就不只是在执行计划，而是在经营自己了。\n\n明早 6:30，练前那根香蕉。晚安。'},
-  {date:'2026-09-09',text:'9/9 第 3 天。你说今天有点懈怠——但周二练了整套，肌肉修复要 48 小时，今天这份沉是恢复信号，不是意志力掉线。你自己分得清疲劳感和累，这个判断本身就说明没滑坡。\n\n今天的事实：睡点拉回 00:00 前（三天漂移止住了）、晚餐 61.9g 蛋白（以前一整天 40g）、墙面三件套第一次就做了、体重 76.7 → 74.2。\n\n滑坡的真正信号不是感觉懈怠，是开始省略打卡。感觉会骗你，记录不会。\n\n明天周四训练日别硬扛：身体还沉就做减量版，热身 + 主项 2 组 + 拉伸，40 分钟收工。撑全套然后停三天，不如做七成套连着练。\n\n提前打个预防针：头几天掉的 2.5kg 主要是水分和糖原，真实脂肪速度约每周 0.5～0.8kg。等速度慢下来，那才是真减的开始——别在那个时候怀疑自己。\n\n你不是靠感觉在减脂，是靠记录。今天感觉 6 分，实际做了 9 分的活。晚安。'}
+  {date:'2026-09-09',text:'# 你不是懈怠，是在恢复。\n\n> 周二练全套 → 肌肉修复要 48 小时。今天这份"沉"是修复信号，不是意志力掉线。\n\n## 滑坡的真正信号\n不是"感觉懈怠"，是开始省略打卡。感觉会骗你，记录不会。\n\n## 今天的事实（不是感觉）\n- 睡点 | 00:00 前入睡 | 三天漂移已止住\n- 晚餐蛋白 | 61.9 g | 以前一整天 40g\n- 墙面三件套 | 已完成 | 第一次做就做了\n- 体重 3 天 | 76.7 → 74.2 | −2.5 kg\n\n!! 明天周四 · 训练日，别硬扛\n身体还沉就做减量版：热身 + 主项 2 组 + 拉伸，40 分钟收工。撑全套然后停三天，不如做七成套连着练。\n\n## 预期管理（提前打个预防针）\n头几天掉得快，主要是水分 + 糖原，不是纯脂肪。真实脂肪速度约每周 0.5～0.8 kg。等速度慢下来——那才是"真减"的开始，别在那个时候怀疑自己。\n\n## 今晚这句\n你不是靠感觉在减脂，是靠记录。今天感觉 6 分，实际做了 9 分的活。晚安。'}
 ];
 var SEED_VER=1;
 var DB_SEED={"records":{"2026-09-06":{"weight":76.69,"water":0,"workout":false,"rl":{},"hb":{},"sleep":"","note":"启动前基线（周日）"},"2026-09-07":{"weight":75.5,"water":8,"workout":false,"rl":{},"hb":{"breakfast":true,"add17":true,"brush":true,"oil":true},"sleep":"00:03","note":"启动日 · 睡眠 7h07m · 围度建档 94/61/98"},"2026-09-08":{"weight":74.6,"water":8,"workout":true,"rl":{},"hb":{"breakfast":true,"add17":true,"brush":true,"oil":true},"sleep":"00:14","note":"训练日 · 睡眠 7h22m · 垫餐=2蛋+黄瓜+香蕉"},"2026-09-09":{"weight":74.17,"water":0,"workout":false,"rl":{},"hb":{},"sleep":"","note":"睡眠 7h05m · 入睡 00:24"}},"girth":{"2026-09-07":{"waist":"94","thigh":"61","hip":"98"}},"pantry":["egg","tofu","chicken","ham","pepper","lettuce","sweetpotato","tomato","rice","cucumber"],"vacation":false,"whispers":[{"date":"2026-09-05","text":"今天你完整地练完 8 个动作——腿、手、腹板的酸胀，是你正在把\"想变好\"变成肌肉的真实证据。\n\n你看到前任的朋友圈，没有沉沦，跑去洗漱护肤、上楼前把垃圾带走。\n没有谁规定孤独是惩罚，但今天你选择让自己成为伙伴——这就是\"从今天起我自己说了算\"的起点。\n\n明天 9/7 周一，启动日。称第一笔体重，上手\"早 C 晚 B\"，日子从这一天计。"},{"date":"2026-09-06","text":"今晚你说了一句值得记下来的话：不是别人怎么样了，我就要对自己怎么样。纳瓦尔说别管别人，只管自己的早睡、运动和读书——你今天三样全做了。\n\n你承认有拖延，但打卡和记录把你拉了回来。这就是系统的力量：它不要求你每天都状态好，它只要求你回来。\n\n白天有精神、不口干、做饭还省钱——这些不是心理作用，是身体在给你回执。只有自己好了，才能迎接更好的自己。\n\n明天 9/7 启动日。晚安。"},{"date":"2026-09-07","text":"启动日收官：7 小时 07 分的睡眠、连续第二天蛋白破百、围度 94/61/98 正式建档、晚上还把\"加班晚回家\"这个敌人提前拆掉了——应急三件套入库，垫餐改成轮换制。\n\n今天没训练，但你干的事不比训练小：把意外变成预案的人，才配得上持续掉秤。腰围 94 是坐标，不是判决——4 周后见分晓。\n\n今晚 00:03 踩线躺下的人，明天 6:30 练前记得吃那根香蕉。晚安。"},{"date":"2026-09-08","text":"今天是训练日，但你最值钱的那一分钟不在训练里——你说\"没有硬扛追求达标，而是去感受动作有没有做到位\"。这是新手最难学的一课，很多人练半年都学不会：不追求数字，追求质量。\n\n晚上你说精神变好了、注意力变集中了、白天很充实。这不是心理作用：连续两晚 7 小时睡眠 + 蛋白破百 + 第二次训练，三件事叠到第三天，身体开始给回执了。\n\n更让我高兴的是你自己想到\"非训练日补抗阻，为薄肌阶段做准备\"——到这一步，你就不只是在执行计划，而是在经营自己了。\n\n作战台 2.0 今晚交给你。明早 6:30，练前那根香蕉。晚安。"}],"meals":{"2026-09-07":[{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"西红柿","g":150,"k":22,"p":1.4,"ca":5.0,"f":0.3,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"南豆腐(嫩)","g":150,"k":86,"p":9.3,"ca":5.1,"f":3.8,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"鸡蛋","g":55,"k":79,"p":7.3,"ca":1.5,"f":4.8,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"鸡胸肉","g":120,"k":205,"p":23.3,"ca":3.0,"f":11.0,"cook":"清炒（少油5g）","slot":"d"},{"n":"彩椒","g":100,"k":26,"p":1.3,"ca":5.4,"f":0.2,"cook":"蒸/煮/水煮/生食","slot":"d"},{"n":"红薯(蒸)","g":150,"k":148,"p":2.4,"ca":34.5,"f":0.3,"cook":"蒸/煮/水煮/生食","slot":"d"}],"2026-09-08":[{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"b"},{"n":"鸡蛋","g":110,"k":158,"p":14.6,"ca":3.1,"f":9.7,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"黄瓜","g":200,"k":32,"p":1.6,"ca":5.8,"f":0.4,"cook":"蒸/煮/水煮/生食","slot":"s"},{"n":"香蕉","g":120,"k":112,"p":1.7,"ca":26.4,"f":0.2,"cook":"蒸/煮/水煮/生食","slot":"s"}]}};
@@ -1590,18 +1639,18 @@ function lineChart(vals,labels,goals){
   [0,0.5,1].forEach(function(f){
     var v=mn+(mx-mn)*f,y=Y(v);
     s+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
-    s+='<text x="'+(PL-5)+'" y="'+(y+3.5)+'" font-size="9" fill="var(--sub)" text-anchor="end">'+v.toFixed(1)+'</text>';
+    s+='<text x="'+(PL-5)+'" y="'+(y+3.5)+'" font-size="10" fill="var(--sub)" text-anchor="end">'+v.toFixed(1)+'</text>';
   });
   goals.forEach(function(g){
     var y=Y(g.v);
     if(y<=PT+2||y>=H-PB-2)return;
     s+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="'+g.c+'" stroke-width="1" stroke-dasharray="4 3"/>';
-    s+='<text x="'+(W-PR)+'" y="'+(y-4)+'" font-size="9" fill="'+g.c+'" text-anchor="end">'+g.t+'</text>';
+    s+='<text x="'+(W-PR)+'" y="'+(y-4)+'" font-size="10" fill="'+g.c+'" text-anchor="end">'+g.t+'</text>';
   });
   s+='<polyline points="'+vals.map(function(v,i){return X(i)+','+Y(v);}).join(' ')+'" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
   vals.forEach(function(v,i){s+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="2.8" fill="var(--brand)"/>';});
-  s+='<text x="'+PL+'" y="'+(H-6)+'" font-size="9" fill="var(--sub)">'+labels[0]+'</text>';
-  s+='<text x="'+(W-PR)+'" y="'+(H-6)+'" font-size="9" fill="var(--sub)" text-anchor="end">'+labels[labels.length-1]+'</text>';
+  s+='<text x="'+PL+'" y="'+(H-6)+'" font-size="10" fill="var(--sub)">'+labels[0]+'</text>';
+  s+='<text x="'+(W-PR)+'" y="'+(H-6)+'" font-size="10" fill="var(--sub)" text-anchor="end">'+labels[labels.length-1]+'</text>';
   s+='</svg>';
   return s;
 }
@@ -1736,7 +1785,6 @@ function bindSwipe(){
       front.style.transition='';front.style.transform='';
       if(dx<-56)toggleTodo(i,true);
       else if(dx>56)toggleTodo(i,false);
-      else if(!moved)toggleTodo(i);
     }
     function cancel(){if(dragging){dragging=false;front.style.transition='';front.style.transform='';}}
     sw.addEventListener('touchstart',down,{passive:true});
@@ -1760,6 +1808,52 @@ function renderTodo(){
       '<span class="txt">'+it.txt+'</span><span class="hint">滑</span></div></div>';
   }).join('');
   bindSwipe();
+  renderStepsBox();
+}
+/* ---- 今日步数（非训练日 · Apple Watch 真实数据） ---- */
+var STEP_GOAL=8000;
+function renderStepsBox(){
+  var box=$('stepsBox');if(!box)return;
+  var dw=new Date().getDay(),isTrain=CFG.trainDays.indexOf(dw)>=0;
+  if(DB.vacation||isTrain){box.style.display='none';box.innerHTML='';return;}
+  var r=rec(todayStr());
+  var v=(r.steps!=null&&r.steps!==''&&!isNaN(parseInt(r.steps,10)))?parseInt(r.steps,10):null;
+  box.style.display='block';
+  var state,hit=v!=null&&v>=STEP_GOAL;
+  if(v==null)state='<span style="font-size:11.5px;color:var(--sub)">戴着 Watch 就把真实数据记进来，走路也是减脂的一部分</span>';
+  else if(hit)state='<span style="font-size:11.5px;color:var(--ok);font-weight:600">✓ 已走 '+v.toLocaleString()+' 步 · 达标，上面那项已自动打勾</span>';
+  else state='<span style="font-size:11.5px;color:var(--sub)">已走 '+v.toLocaleString()+' 步 · 距 '+(STEP_GOAL).toLocaleString()+' 还差 '+(STEP_GOAL-v).toLocaleString()+' 步，到达自动打勾</span>';
+  box.innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;background:var(--card2)">'+
+      '<span style="font-size:18px">🚶</span>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12.5px;font-weight:600;margin-bottom:2px">今日步数 <span style="font-weight:400;font-size:11px;color:var(--sub)">Apple Watch</span></div>'+
+        state+
+        (v!=null?'<div style="margin-top:6px;height:4px;border-radius:2px;background:var(--card3);overflow:hidden"><i style="display:block;height:100%;width:'+Math.min(100,Math.round(v/STEP_GOAL*100))+'%;background:'+(hit?'var(--ok)':'var(--brand)')+'"></i></div>':'')+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:4px;flex:0 0 auto">'+
+        '<input id="stepsIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="100" placeholder="0" value="'+(v!=null?v:'')+'" style="width:84px;min-height:38px;text-align:right;border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:15px;background:var(--card);color:var(--text)">'+
+        '<span style="font-size:12px;color:var(--sub)">步</span>'+
+      '</div>'+
+    '</div>';
+  var inp=$('stepsIn');
+  if(inp){
+    inp.onchange=function(){
+      var raw=(this.value||'').trim(),rr=rec(todayStr());
+      if(raw===''){rr.steps=null;save();}
+      else{
+        var n=parseInt(raw,10);
+        if(isNaN(n)||n<0){toast('步数要填非负整数');setTimeout(renderTodo,0);return;}
+        rr.steps=n;
+        var auto=false;
+        if(n>=STEP_GOAL&&!rr.workout){rr.workout=true;auto=true;}
+        save();
+        if(auto)toast('步数达标 ✓「走够 '+STEP_GOAL+' 步」已自动打勾');
+      }
+      setTimeout(function(){renderTodo();renderWorkout();},0); /* 统一脱离输入事件栈再重绘，防 iOS/Chrome 飘移 */
+    };
+    inp.onkeydown=function(e){if(e.key==='Enter')this.blur();};
+  }
 }
 function renderBadge(){
   var b=$('navBadge');if(!b)return;
@@ -1823,11 +1917,11 @@ function renderWorkout(){
     h+='<button class="btn full" id="btnWk" style="margin-top:10px">'+(r.workout?'✓ 已完成训练（点击撤销）':'完成训练')+'</button>';
   }else{
     h+='<div class="muted">今天不是训练日 · 走够 8000 步 + 爬楼 3 趟</div>';
-    h+='<button class="btn '+(r.workout?'':'ghost')+' full" id="btnWk" style="margin-top:8px">'+(r.workout?'✓ 今天达标了（点击撤销）':'今天步数达标了')+'</button>';
+    h+='<div class="muted" style="margin-top:5px;font-size:11.5px">步数填在上方「今天必做」里，填够 '+STEP_GOAL+' 步这里自动打勾'+(r.workout?' · <b style="color:var(--ok)">今天已达标 ✓</b>':'')+'</div>';
   }
   h+='<div style="margin:11px 0 2px">'+wkProgress()+'</div>';
   $('workoutBox').innerHTML=h;
-  $('btnWk').onclick=function(){var rr=rec(todayStr());rr.workout=!rr.workout;save();render();};
+  if($('btnWk'))$('btnWk').onclick=function(){var rr=rec(todayStr());rr.workout=!rr.workout;save();render();};
 }
 
 function isLate(s){
@@ -2022,12 +2116,12 @@ function renderChart(){
   [0,0.5,1].forEach(function(f){
     var v=mn+(mx-mn)*f,y=Y(v);
     s+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
-    s+='<text x="'+(PL-5)+'" y="'+(y+3.5)+'" font-size="9" fill="var(--sub)" text-anchor="end">'+v.toFixed(1)+'</text>';
+    s+='<text x="'+(PL-5)+'" y="'+(y+3.5)+'" font-size="10" fill="var(--sub)" text-anchor="end">'+v.toFixed(1)+'</text>';
   });
   var gy=Y(goal);
   if(gy>PT&&gy<H-PB){
     s+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="var(--ok)" stroke-width="1.2" stroke-dasharray="4 3" opacity=".85"/>';
-    s+='<text x="'+(W-PR)+'" y="'+(gy-4)+'" font-size="9" fill="var(--ok)" text-anchor="end" font-weight="600">目标 '+goal+'</text>';
+    s+='<text x="'+(W-PR)+'" y="'+(gy-4)+'" font-size="10" fill="var(--ok)" text-anchor="end" font-weight="600">目标 '+goal+'</text>';
   }
   var raw=vals.map(function(v,i){return [X(i),Y(v)];});
   var ma=[];
@@ -2047,8 +2141,8 @@ function renderChart(){
     s+='<circle class="pt" cx="'+X(i2)+'" cy="'+Y(vals[i2])+'" r="3.1" fill="var(--card)" stroke="var(--brand)" stroke-width="2">'+
        '<title>'+md(ds[i2])+'　'+vals[i2].toFixed(2)+' kg</title></circle>';
   }
-  s+='<text x="'+PL+'" y="'+(H-7)+'" font-size="9" fill="var(--sub)">'+md(ds[0])+'</text>';
-  s+='<text x="'+(W-PR)+'" y="'+(H-7)+'" font-size="9" fill="var(--sub)" text-anchor="end">'+md(ds[n-1])+'</text>';
+  s+='<text x="'+PL+'" y="'+(H-7)+'" font-size="10" fill="var(--sub)">'+md(ds[0])+'</text>';
+  s+='<text x="'+(W-PR)+'" y="'+(H-7)+'" font-size="10" fill="var(--sub)" text-anchor="end">'+md(ds[n-1])+'</text>';
   s+='</svg>';
   $('chart').innerHTML=s;
   // 趋势箭头（近 7 天 vs 前 7 天）
@@ -2133,7 +2227,8 @@ function renderHist(){
   var h='<table><tr><th>日期</th><th class="num">体重</th><th class="num">水</th><th class="num">蛋</th><th class="num">练</th><th class="num">破</th></tr>';
   ds.slice(0,60).forEach(function(d){
     var r=DB.records[d];
-    h+='<tr><td>'+md(d)+' '+['日','一','二','三','四','五','六'][parseD(d).getDay()]+'</td>'+
+    var _dw=parseD(d).getDay(),_isTrain=CFG.trainDays.indexOf(_dw)>=0;
+    h+='<tr><td><span class="hd">'+md(d)+'</span><span class="wd-b '+(_isTrain?'train':'rest')+'">周'+['日','一','二','三','四','五','六'][_dw]+'</span></td>'+
       '<td class="num">'+(r.weight!=null&&r.weight!==''?parseFloat(r.weight).toFixed(1):'—')+'</td>'+
       '<td class="num">'+r.water+'</td>'+
       '<td class="num">'+((r.hb&&r.hb.breakfast)?'✓':'—')+'</td>'+
@@ -2173,17 +2268,77 @@ function renderMe(){
   $('kBMR').textContent=Math.round(bmr)+' kcal';
   $('kTDEE').textContent=Math.round(bmr*1.2)+' kcal';
   $('swVac').checked=!!DB.vacation;
-  // 今日多言：从 DB.whispers 取最新一条
+  // 今日多言：从 DB.whispers 取最新一条（结构化渲染）
   var wArr=Array.isArray(DB.whispers)?DB.whispers:[];
   var w=wArr.length?wArr[wArr.length-1]:null;
   var card=$('kWhisper');
   if(w&&card){
     card.style.display='block';
-    $('kWhisperText').textContent=w.text;
-    $('kWhisperDate').textContent=w.date||'';
+    $('kWhisperText').innerHTML=whisperHtml(w.text,w.date);
+    var wd=new Date((w.date||'')+'T00:00:00');
+    $('kWhisperDate').textContent=isNaN(wd)?(w.date||''):'周'+'日一二三四五六'.charAt(wd.getDay());
   }else if(card){
     card.style.display='none';
   }
+}
+
+/* ---- 多言卡排版：轻量标记 → 结构化卡片（纯文本自动降级） ----
+   # 大标题   > 蓝卡导语   ## 小节   - 名称|数值|备注（数据块）   !! 橙色提醒卡 */
+function escHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function whisperHtml(text,date){
+  function hl(s){
+    return escHtml(s).replace(/(\d{1,2}:\d{2}|-?\d+(?:\.\d+)?\s?(?:kg|g|kcal|大卡|步|cm|杯|个|组|趟|小时|分钟|分|天|周|%))/g,'<span class="wc-hl">$1</span>');
+  }
+  var kick='多言卡';
+  if(date){
+    var p=String(date).split('-');
+    if(p.length>=3)kick+=' · '+parseInt(p[1],10)+'/'+parseInt(p[2],10);
+    try{
+      var sd=CFG&&CFG.startDate?new Date(CFG.startDate+'T00:00:00'):null;
+      var dd=new Date(date+'T00:00:00');
+      if(sd&&!isNaN(dd)&&dd>=sd){var n=Math.round((dd-sd)/864e5)+1;if(n>=1)kick+=' · 第 '+n+' 天';}
+    }catch(e){}
+  }
+  var lines=String(text||'').replace(/\r/g,'').split('\n');
+  var heroT='',heroP=[],blocks=[],cur=null;
+  var hasMark=/^\s*(#{1,2}\s|>\s|!!\s|-\s?.*\|)/.test(lines.join('\n'));
+  function ensure(type,title){cur={type:type,title:title||'',paras:[],grid:[]};blocks.push(cur);return cur;}
+  if(!hasMark){
+    String(text||'').split(/\n{2,}/).map(function(s){return s.trim();}).filter(Boolean).forEach(function(pa,i){
+      if(i===0){heroP.push(pa);return;}
+      var m=pa.match(/^([^：:]{2,12})[：:]\s*([\s\S]*)$/);
+      var b=ensure('sec',m?m[1]:'');b.paras.push(m?m[2]:pa);
+    });
+  }else{
+    lines.forEach(function(ln){
+      var l=ln.trim();
+      if(!l)return;
+      if(l.indexOf('## ')===0)ensure('sec',l.slice(3).trim());
+      else if(l.indexOf('# ')===0)heroT=l.slice(2).trim();
+      else if(l.indexOf('!! ')===0)ensure('alert',l.slice(3).trim());
+      else if(l.indexOf('> ')===0)heroP.push(l.slice(2).trim());
+      else if(l.charAt(0)==='-'&&l.indexOf('|')>0){
+        if(!cur)ensure('sec','');
+        cur.grid.push(l.replace(/^-\s*/,'').split('|').map(function(x){return x.trim();}));
+      }
+      else{if(!cur)heroP.push(l);else cur.paras.push(l);}
+    });
+  }
+  var h='<div class="wc-hero"><div class="wc-kicker">'+escHtml(kick)+'</div>';
+  if(heroT)h+='<div class="wc-title">'+escHtml(heroT)+'</div>';
+  heroP.forEach(function(p){h+='<div class="wc-sub">'+hl(p)+'</div>';});
+  h+='</div>';
+  blocks.forEach(function(b){
+    var inner=b.title?'<h4>'+escHtml(b.title)+'</h4>':'';
+    b.paras.forEach(function(p){inner+='<p>'+hl(p)+'</p>';});
+    if(b.grid&&b.grid.length){
+      inner+='<div class="wc-grid">'+b.grid.map(function(g){
+        return '<div class="wc-cell"><span>'+escHtml(g[0]||'')+'</span><b>'+hl(g[1]||'')+'</b>'+(g[2]?'<small>'+escHtml(g[2])+'</small>':'')+'</div>';
+      }).join('')+'</div>';
+    }
+    h+=(b.type==='alert')?'<div class="wc-alert">'+inner+'</div>':'<div class="wc-sec">'+inner+'</div>';
+  });
+  return h;
 }
 
 // 覆写一条新的「今日多言」（由 AI 在对话结尾调用）
@@ -2328,7 +2483,6 @@ function bind(){
     r.weight=isNaN(v)?null:round1(v);save();render();
   };
   $('inSleep').onchange=function(){rec(todayStr()).sleep=this.value;save();render();};
-  $('inNote').oninput=function(){rec(todayStr()).note=this.value;save();};
   $('swVac').onchange=function(){DB.vacation=this.checked;save();render();};
   Array.prototype.forEach.call(document.querySelectorAll('nav button'),function(b){
     b.onclick=function(){
@@ -2369,7 +2523,6 @@ function fill(){
   var r=rec(todayStr());
   $('inWeight').value=(r.weight!=null&&r.weight!=='')?r.weight:'';
   $('inSleep').value=r.sleep||'';
-  $('inNote').value=r.note||'';
 }
 
 
@@ -2678,6 +2831,41 @@ function markKeyCards(){
 markKeyCards();bindWhisperEd();
 window.__d=todayStr();
 setInterval(function(){if(todayStr()!==window.__d){window.__d=todayStr();fill();render();}},60000);
+
+/* ================= iOS 键盘防飘移（iPhone 16 Pro / iOS 26 适配） =================
+   键盘弹出时：收起 fixed 底导航与悬浮件（body.kb），并校正输入框位置；
+   收起时恢复。输入过程中不整页重渲染，杜绝「界面飘移」。 */
+(function(){
+  var vv=window.visualViewport,on=false;
+  function setKb(v){
+    if(on===v)return;
+    on=v;
+    document.body.classList.toggle('kb',on);
+  }
+  if(vv){
+    vv.addEventListener('resize',function(){
+      setKb((window.innerHeight-vv.height)>120);
+    });
+  }
+  document.addEventListener('focusin',function(e){
+    var el=e.target;
+    if(!el||!(el.tagName==='INPUT'||el.tagName==='TEXTAREA'))return;
+    if(el.readOnly)return;
+    setKb(true);
+    setTimeout(function(){
+      try{
+        var r=el.getBoundingClientRect(),vh=(vv&&vv.height)?vv.height:window.innerHeight;
+        if(r.bottom>vh-8||r.top<0)el.scrollIntoView({block:'center'});
+      }catch(x){}
+    },350);
+  });
+  document.addEventListener('focusout',function(){
+    setTimeout(function(){
+      var a=document.activeElement;
+      if(!a||(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'))setKb(false);
+    },180);
+  });
+})();
 </script>
 </body>
 </html>
