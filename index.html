@@ -142,7 +142,7 @@ header .inner{max-width:560px;margin:0 auto}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
 
 .why{background:var(--card);border-left:3px solid var(--brand);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:13px}
-.why b{display:block;font-size:12px;color:var(--brand);margin-bottom:4px}
+.why>b:first-child{display:block;font-size:12px;color:var(--brand);margin-bottom:4px}
 
 .todo{display:flex;flex-direction:column;gap:8px}
 .todo .item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--bg);font-size:13.5px}
@@ -171,7 +171,8 @@ input[type=number],input[type=time],input[type=text]{width:100%;font:inherit;fon
 .coach:before{content:"";position:absolute;left:13px;top:16px;width:9px;height:9px;background:var(--warn);border-radius:50%}
 .coach.ok{background:var(--ok-soft)}
 .coach.ok:before{background:var(--ok)}
-.coach b{display:block;font-size:12.5px;margin-bottom:2px;font-weight:700}
+.coach>b:first-child{display:block;font-size:12.5px;margin-bottom:2px;font-weight:700}
+.coach b{font-weight:700}
 .quote{text-align:center;padding:14px 12px;font-size:15px;font-weight:600;color:var(--brand)}
 
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -489,8 +490,8 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .hero .big{font-size:36px;font-weight:800;line-height:1.05;letter-spacing:-1px}
 
 /* ---- 计划页：分段 + 卡片折叠 ---- */
-.plan-seg{margin:0 0 14px;position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:15}
-.plan-seg button{min-height:42px}
+.plan-seg,.eat-seg{margin:0 0 14px;position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:15}
+.plan-seg button,.eat-seg button{min-height:42px}
 .card.foldable>h2{cursor:pointer;user-select:none}
 .card.foldable>h2:after{content:"收起";margin-left:auto;font-size:11px;font-weight:700;
   color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:99px;flex:none}
@@ -521,7 +522,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 
 /* ---- 多言卡·结构化排版 ---- */
 .wc-hero{background:linear-gradient(135deg,#2F80ED,#5FA8F5);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 6px 18px rgba(47,128,237,.25)}
-.wc-kicker{font-size:11px;opacity:.88;letter-spacing:.4px;margin-bottom:6px}
+.wc-kicker{font-size:11px;font-weight:600;color:#fff;opacity:1;letter-spacing:.4px;margin-bottom:9px}
 .wc-title{font-size:19px;font-weight:800;line-height:1.35;letter-spacing:.2px}
 .wc-sub{font-size:13px;line-height:1.7;margin-top:6px;opacity:.96}
 .wc-sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px}
@@ -672,6 +673,11 @@ body.kb #a2hs{display:none}
 </div>
 
 <div class="page" id="p-eat">
+  <div class="segmented eat-seg" id="eatSeg">
+    <button class="on" data-g="rec">记一笔</button>
+    <button data-g="see">今天的账</button>
+    <button data-g="hist">回看</button>
+  </div>
   <div class="card">
     <div class="datenav">
       <button class="dn-b" id="eatPrev" aria-label="前一天">‹</button>
@@ -680,31 +686,25 @@ body.kb #a2hs{display:none}
     </div>
   </div>
 
-  <div class="sec-h rec">记一笔 <span>点套餐 / 手动加，10 秒入账</span></div>
-
-  <div class="card">
+  <div class="card" data-g="rec">
     <h2>记一笔 <span class="tag">套餐点一下 / 手动 10 秒</span></h2>
     <div class="combos" id="comboList"></div>
     <button class="btn full ghost" id="btnEatOpen" style="margin-top:11px">＋ 手动添加食物</button>
     <div class="muted" style="margin-top:8px">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
   </div>
 
-  <div class="sec-h see">看今天的账 <span>记完自动累加，不用手算</span></div>
-
-  <div class="card">
+  <div class="card" data-g="see">
     <h2>今日营养 <span class="tag">记一笔，自动累加</span></h2>
     <div class="mslots" id="eatSlotStat"></div>
     <div id="eatSum"></div>
   </div>
 
-  <div class="card">
+  <div class="card" data-g="see">
     <h2>今天吃了啥 <span class="tag" id="eatCount"></span></h2>
     <div id="eatList"></div>
   </div>
 
-  <div class="sec-h hist">回看 <span>过去 7 天，点日期可跳转</span></div>
-
-  <div class="card">
+  <div class="card" data-g="hist">
     <h2>最近 7 天 <span class="tag">点日期可跳转</span></h2>
     <div class="wk7" id="eatWeek7"></div>
     <div class="muted" style="margin-top:8px" id="eat7Tip"></div>
@@ -2289,14 +2289,14 @@ function whisperHtml(text,date){
   function hl(s){
     return escHtml(s).replace(/(\d{1,2}:\d{2}|-?\d+(?:\.\d+)?\s?(?:kg|g|kcal|大卡|步|cm|杯|个|组|趟|小时|分钟|分|天|周|%))/g,'<span class="wc-hl">$1</span>');
   }
-  var kick='多言卡';
+  var kick='多言卡',kd='',kn='';
   if(date){
     var p=String(date).split('-');
-    if(p.length>=3)kick+=' · '+parseInt(p[1],10)+'/'+parseInt(p[2],10);
+    if(p.length>=3){kd=parseInt(p[1],10)+'/'+parseInt(p[2],10);kick+=' · '+kd;}
     try{
       var sd=CFG&&CFG.startDate?new Date(CFG.startDate+'T00:00:00'):null;
       var dd=new Date(date+'T00:00:00');
-      if(sd&&!isNaN(dd)&&dd>=sd){var n=Math.round((dd-sd)/864e5)+1;if(n>=1)kick+=' · 第 '+n+' 天';}
+      if(sd&&!isNaN(dd)&&dd>=sd){var n=Math.round((dd-sd)/864e5)+1;if(n>=1){kn=String(n);kick+=' · 第 '+n+' 天';}}
     }catch(e){}
   }
   var lines=String(text||'').replace(/\r/g,'').split('\n');
@@ -2323,6 +2323,11 @@ function whisperHtml(text,date){
       }
       else{if(!cur)heroP.push(l);else cur.paras.push(l);}
     });
+  }
+  /* 正文开头若与眉头重复（如「9/9 第 3 天。」）则去掉，避免两行挨着说同一件事 */
+  if(heroP.length&&kd){
+    var re=new RegExp('^\\s*'+kd.replace('/','\\/')+'\\s*第\\s*'+(kn||'\\d+')+'\\s*天\\s*[。，,．.：:]?\\s*');
+    if(re.test(heroP[0]))heroP[0]=heroP[0].replace(re,'');
   }
   var h='<div class="wc-hero"><div class="wc-kicker">'+escHtml(kick)+'</div>';
   if(heroT)h+='<div class="wc-title">'+escHtml(heroT)+'</div>';
@@ -2808,7 +2813,26 @@ function initPlanTabs(){
   apply();
 }
 
-initSplash();initOffline();initA2HS();initPlanTabs();
+initSplash();initOffline();initA2HS();initPlanTabs();initEatTabs();
+
+/* ================= 吃页顶部分段（与计划页同款） ================= */
+var EAT_G='rec';
+function initEatTabs(){
+  var pg=document.getElementById('p-eat');if(!pg)return;
+  var seg=document.getElementById('eatSeg');if(!seg)return;
+  var cards=[].slice.call(pg.querySelectorAll('.card[data-g]'));
+  function apply(){
+    if(!EAT_G)EAT_G='rec';
+    cards.forEach(function(el){el.style.display=(el.getAttribute('data-g')===EAT_G)?'':'none';});
+  }
+  Array.prototype.forEach.call(seg.children,function(b){
+    b.onclick=function(){
+      Array.prototype.forEach.call(seg.children,function(x){x.classList.remove('on');});
+      b.classList.add('on');EAT_G=b.getAttribute('data-g');apply();
+    };
+  });
+  apply();
+}
 
 /* ================= 重点卡片标记 + 卡片 hover 上浮 ================= */
 function cardByTitle(t,pid){
