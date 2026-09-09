@@ -71,17 +71,17 @@ h1{font-size:17px;margin:0}
 .card h2 .tag{font-size:11px;font-weight:400;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:5px}
 .muted{color:var(--sub);font-size:12.5px}
 .between{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;font:inherit;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 input[type=checkbox]{min-height:auto;width:auto}
 input[type=file]{min-height:auto;padding:0}
-.eat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-height:236px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.eat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px;max-height:236px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .eat-opt{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:11px;min-height:62px;display:flex;flex-direction:column;justify-content:center;text-align:left;cursor:pointer}
 .eat-opt.on{border-color:var(--brand);background:var(--brand-soft)}
 .eat-opt b{font-size:13.5px;font-weight:700}
 .eat-opt span{font-size:11.5px;color:var(--sub);margin-top:2px}
-@media(max-width:400px){.eat-grid{grid-template-columns:1fr;max-height:200px}}
+@media(max-width:400px){.eat-grid{max-height:200px}}
 /* toast 轻提示 */
 .toast-stack{position:fixed;left:16px;right:16px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:150;display:grid;gap:8px}
 .toast{background:var(--text);color:var(--card);border-radius:13px;padding:12px 15px;box-shadow:var(--shadow);font-size:13.5px;animation:toast-in .22s ease}
@@ -279,10 +279,23 @@ nav .nb{font-size:10.5px}
 img,svg,video,canvas,input,select,textarea,table{max-width:100%}
 .row12>*,.cols2>*,.g3>*,.grid2>*,.mark,.between{min-width:0}
 body{overflow-x:hidden}
+html{scroll-padding-top:78px} /* 吸顶 header 下锚点不遮内容 */
 body{font-family:var(--font);-webkit-font-smoothing:antialiased;background:
   radial-gradient(1200px 500px at 50% -10%,var(--brand-soft) 0%,transparent 60%),var(--bg);
   background-attachment:fixed;}
 
+/* ---- 渐变文字（克制使用：站名 + hero 大数字） ---- */
+.grad-t{background:linear-gradient(90deg,var(--brand) 0%,var(--ok) 130%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  color:var(--brand)} /* 不支持 background-clip 时的回退 */
+[data-theme=dark] .grad-t{background:linear-gradient(90deg,var(--brand2) 0%,var(--ok2) 130%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero .big{background:linear-gradient(180deg,#fff 30%,rgba(255,255,255,.72) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#fff}
+/* 不支持 background-clip:text 时保证可读 */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .grad-t,.hero .big{-webkit-text-fill-color:currentColor;background:none}
+}
 /* ---- 字号层级 H1–H6 ---- */
 h1{font-size:22px;font-weight:800;letter-spacing:-.4px;line-height:1.25;margin:0}
 h2{font-size:17px;font-weight:700;letter-spacing:-.25px;margin:0}
@@ -296,9 +309,14 @@ h6{font-size:12px;font-weight:600;color:var(--sub);margin:0}
   font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
+/* ---- 左侧色条：标记当日重点 ---- */
+.card.accent{border-left:4px solid var(--brand)}
+.card.accent-o{border-left:4px solid var(--accent)}
+.card.accent-g{border-left:4px solid var(--ok)}
+.card.accent-w{border-left:4px solid var(--warn)}
 /* ---- 卡片：更柔的阴影 + 入场 ---- */
 .card{transition:transform .22s ease,box-shadow .22s ease;border:1px solid var(--line)}
-.card{animation:cardIn .38s cubic-bezier(.22,.9,.3,1) both}
+.card{animation:cardIn .38s cubic-bezier(.22,.9,.3,1) backwards}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(hover:hover){.card.hov:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}}
 
@@ -421,6 +439,25 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .legend i{width:9px;height:9px;border-radius:3px;flex:none}
 .legend b{margin-left:auto;font-family:var(--mono);font-size:12.5px}
 
+/* ---- 常用套餐 ---- */
+.combos{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px}
+.combo{position:relative;border:1px solid var(--line);background:var(--card2);border-radius:14px;
+  padding:11px 26px 11px 12px;text-align:left;min-height:58px;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:center;gap:2px}
+.combo:active{transform:scale(.96)}
+.combo b{font-size:13.5px;font-weight:700;line-height:1.3}
+.combo span{font-size:11px;color:var(--sub);font-family:var(--mono)}
+.combo .del{position:absolute;right:5px;top:5px;width:21px;height:21px;border-radius:50%;
+  background:var(--card3);color:var(--sub);font-size:13px;line-height:21px;text-align:center;font-weight:700}
+.combo.add{border-style:dashed;background:transparent;align-items:center;justify-content:center;padding:11px}
+.combo.add b{color:var(--brand);font-size:13.5px}
+/* ---- 四餐完成度 ---- */
+.mslots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.mslot{border:1px solid var(--line);border-radius:10px;padding:6px 2px;text-align:center;font-size:11.5px;color:var(--sub)}
+.mslot.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:700}
+/* 餐次标题右侧「存套餐」 */
+.tl .savecb{float:right;font-size:10.5px;font-weight:700;color:var(--brand);
+  background:var(--brand-soft);padding:2px 8px;border-radius:99px;cursor:pointer}
 /* ---- 时间轴（饮食） ---- */
 .tl{position:relative;padding-left:20px}
 .tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;
@@ -491,7 +528,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 <header>
   <div class="inner">
     <div class="between">
-      <h1>减脂作战台</h1>
+      <h1 class="grad-t">减脂作战台</h1>
       <span class="pill" id="hdrDay">—</span>
     </div>
     <div class="subline" id="hdrSub">—</div>
@@ -592,14 +629,16 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
       <div class="dn-t"><b id="eatDateTxt">—</b><span id="eatDateSub">—</span></div>
       <button class="dn-b" id="eatNext" aria-label="后一天">›</button>
     </div>
+    <div class="mslots" id="eatSlotStat"></div>
     <h2>今日营养 <span class="tag">记一笔，自动累加</span></h2>
     <div id="eatSum"></div>
   </div>
 
   <div class="card">
-    <h2>记一笔 <span class="tag">10 秒记完</span></h2>
-    <button class="btn full" id="btnEatOpen">＋ 打开记账</button>
-    <div class="muted" style="margin-top:8px">搜食物 → 分量 → 做法，从底部弹出，添完自动收起。</div>
+    <h2>记一笔 <span class="tag">套餐点一下 / 手动 10 秒</span></h2>
+    <div class="combos" id="comboList"></div>
+    <button class="btn full ghost" id="btnEatOpen" style="margin-top:11px">＋ 手动添加食物</button>
+    <div class="muted" style="margin-top:8px">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
   </div>
 
   <div class="card">
@@ -1311,7 +1350,8 @@ function renderMeals(){
     var list=arr.map(function(m,i){return {m:m,i:i};}).filter(function(o){return o.m.slot===s.k;});
     if(!list.length)return;
     var cls=s.k==='b'?'':(s.k==='d'?'g':'o');
-    html+='<div class="ti '+cls+'"><div class="tt">'+s.t+'　'+slotTime(s.k)+'</div>';
+    html+='<div class="ti '+cls+'"><div class="tt">'+s.t+'　'+slotTime(s.k)+
+      '<span class="savecb" data-slot="'+s.k+'">存套餐</span></div>';
     list.forEach(function(o){
       html+='<div class="kv"><span>'+o.m.n+' · '+o.m.g+'g · '+o.m.cook+'</span>'+
         '<b>'+o.m.k+' kcal / 蛋白 '+o.m.p+'g <span class="chip off" data-del="'+o.i+'" style="margin-left:6px">删</span></b></div>';
@@ -1319,6 +1359,9 @@ function renderMeals(){
     html+='</div>';
   });
   $('eatList').innerHTML=(html?'<div class="tl">'+html+'</div>':'<div class="muted">'+(d===todayStr()?'今天':'这天')+'还没记。</div>');
+  Array.prototype.forEach.call($('eatList').querySelectorAll('.savecb'),function(el){
+    el.onclick=function(){saveCombo(el.dataset.slot);};
+  });
   // 日期栏
   var diff=diffDays(d,todayStr());
   $('eatDateTxt').textContent=md(d)+' '+WK[parseD(d).getDay()];
@@ -1345,6 +1388,7 @@ function renderEat7(){
   Array.prototype.forEach.call($('eatWeek7').children,function(el){
     el.onclick=function(){EAT_D=el.dataset.d;renderMeals();};
   });
+  renderCombos();renderSlotStat();
   if(!$('eatPrev').onclick)$('eatPrev').onclick=function(){EAT_D=addDays(EAT_D,-1);renderMeals();};
   if(!$('eatNext').onclick)$('eatNext').onclick=function(){if(diffDays(EAT_D,todayStr())>0){EAT_D=addDays(EAT_D,1);renderMeals();}};
 }
@@ -2293,6 +2337,15 @@ function fill(){
 /* ================= v3 新增：可视化组件 + PWA ================= */
 
 /* 三大营养素供能占比饼图 */
+var COMBOS_DEFAULT=[
+  {id:'c1',name:'早餐 · 2 水煮蛋',slot:'b',items:[{n:'鸡蛋',g:110,cook:'蒸/煮/水煮/生食'}]},
+  {id:'c2',name:'午餐 · 蛋+玉米',slot:'l',items:[{n:'鸡蛋',g:110,cook:'蒸/煮/水煮/生食'},{n:'玉米(鲜)',g:200,cook:'蒸/煮/水煮/生食'}]},
+  {id:'c3',name:'17点 · 2蛋+西红柿',slot:'s',items:[{n:'鸡蛋',g:110,cook:'蒸/煮/水煮/生食'},{n:'西红柿',g:150,cook:'蒸/煮/水煮/生食'}]},
+  {id:'c4',name:'练前 · 一根香蕉',slot:'s',items:[{n:'香蕉',g:120,cook:'蒸/煮/水煮/生食'}]},
+  {id:'c5',name:'晚餐 · 豆腐蛋羹',slot:'d',items:[{n:'南豆腐(嫩)',g:150,cook:'蒸/煮/水煮/生食'},{n:'鸡蛋',g:55,cook:'蒸/煮/水煮/生食'}]},
+  {id:'c6',name:'晚班 · 应急三件',slot:'d',items:[{n:'即食鸡胸肉',g:50,cook:'蒸/煮/水煮/生食'},{n:'红薯干',g:30,cook:'蒸/煮/水煮/生食'}]}
+];
+
 function eatPie(T){
   var pk=T.p*4, ck=T.ca*4, fk=T.f*9, tot=pk+ck+fk;
   if(tot<=0)return '';
@@ -2401,6 +2454,99 @@ function initTheme(){
 
 initTheme();
 load();bind();fill();render();
+
+/* ================= 常用套餐 ================= */
+function findFood(n){
+  for(var i=0;i<FOODS.length;i++){if(FOODS[i].n===n)return FOODS[i];}
+  return null;
+}
+function calcItem(it){
+  var f=findFood(it.n);
+  if(!f)return null;
+  var ck=COOKS[0];
+  for(var i=0;i<COOKS.length;i++){if(COOKS[i].k===it.cook)ck=COOKS[i];}
+  return {n:f.n,g:Math.round(it.g),
+    k:Math.round(f.k*it.g/100+ck.oil*9+ck.sugar*4),
+    p:round1(f.p*it.g/100),
+    ca:round1(f.ca*it.g/100+ck.sugar*1),
+    f:round1(f.f*it.g/100+ck.oil*1),
+    cook:ck.k,slot:null};
+}
+function comboTotal(cb){
+  var k=0,p=0,ok=false;
+  cb.items.forEach(function(it){var r=calcItem(it);if(r){k+=r.k;p+=r.p;ok=true;}});
+  return {k:k,p:p,ok:ok};
+}
+function addCombo(idx){
+  var cb=(DB.combos||[])[idx];
+  if(!cb)return;
+  var d=EAT_D;
+  if(!DB.meals)DB.meals={};
+  if(!DB.meals[d])DB.meals[d]=[];
+  var added=0,k=0,pp=0;
+  cb.items.forEach(function(it){
+    var r=calcItem(it);
+    if(r){r.slot=cb.slot;DB.meals[d].push(r);added++;k+=r.k;pp+=r.p;}
+  });
+  if(!added){toast('这个套餐里的食物不在库里了');return;}
+  save();renderMeals();
+  toast('已记「'+cb.name+'」· '+k+' kcal / 蛋白 '+Math.round(pp)+'g');
+}
+function saveCombo(slotKey){
+  var arr=(DB.meals||{})[EAT_D]||[];
+  var list=arr.filter(function(m){return m.slot===slotKey;});
+  if(!list.length){toast('这一餐还没有记录');return;}
+  var slotName='加餐';
+  for(var i=0;i<SLOTS.length;i++){if(SLOTS[i].k===slotKey)slotName=SLOTS[i].t;}
+  var nm=prompt('给这餐存个套餐名：',slotName+' · '+list[0].n+(list.length>1?' 等'+list.length+'项':''));
+  if(!nm)return;
+  if(!DB.combos)DB.combos=[];
+  DB.combos.push({id:'c'+Date.now(),name:nm,slot:slotKey,
+    items:list.map(function(m){return {n:m.n,g:m.g,cook:m.cook};})});
+  save();renderCombos();
+  toast('已存为套餐：'+nm);
+}
+function renderCombos(){
+  var box=$('comboList');
+  if(!box)return;
+  if(!DB.combos||!DB.combos.length)DB.combos=COMBOS_DEFAULT.slice();
+  var h='';
+  DB.combos.forEach(function(cb,i){
+    var t=comboTotal(cb);
+    h+='<div class="combo" data-i="'+i+'"><span class="del" data-del="'+i+'">×</span>'+
+       '<b>'+cb.name+'</b><span>'+Math.round(t.k)+' kcal · 蛋白 '+Math.round(t.p)+'g</span></div>';
+  });
+  h+='<div class="combo add" id="comboHint"><b>＋ 怎么存？</b><span>见下方任一餐标题</span></div>';
+  box.innerHTML=h;
+  Array.prototype.forEach.call(box.children,function(el){
+    if(el.id==='comboHint'){
+      el.onclick=function(){toast('在今天任意一餐的标题右边点「存套餐」');};
+      return;
+    }
+    el.onclick=function(e){
+      if(e.target&&e.target.dataset&&e.target.dataset.del!==undefined){
+        var i=parseInt(e.target.dataset.del,10);
+        if(confirm('删除套餐「'+DB.combos[i].name+'」？')){
+          DB.combos.splice(i,1);save();renderCombos();
+        }
+        return;
+      }
+      addCombo(parseInt(el.dataset.i,10));
+    };
+  });
+}
+/* 四餐完成度 */
+function renderSlotStat(){
+  var box=$('eatSlotStat');
+  if(!box)return;
+  var arr=(DB.meals||{})[EAT_D]||[],h='';
+  SLOTS.forEach(function(s){
+    var n=0;arr.forEach(function(m){if(m.slot===s.k)n++;});
+    h+='<div class="mslot'+(n?' on':'')+'">'+s.t+(n?' '+n:' —')+'</div>';
+  });
+  box.innerHTML=h;
+}
+
 /* 计划页：三段分组 + 卡片折叠 */
 var PLAN_G='eat';
 function initPlanTabs(){
@@ -2471,6 +2617,26 @@ function initPlanTabs(){
 }
 
 initSplash();initOffline();initA2HS();initPlanTabs();
+
+/* ================= 重点卡片标记 + 卡片 hover 上浮 ================= */
+function cardByTitle(t,pid){
+  var p=document.getElementById(pid); if(!p)return null;
+  var cs=p.querySelectorAll('.card');
+  for(var i=0;i<cs.length;i++){
+    var h=cs[i].querySelector('h2');
+    if(h&&h.textContent.replace(/\s+/g,'').indexOf(t)===0)return cs[i];
+  }
+  return null;
+}
+function markKeyCards(){
+  var isTrain=CFG.trainDays&&CFG.trainDays.indexOf(new Date().getDay())>=0;
+  var a=cardByTitle('今天必做','p-today');   if(a)a.classList.add(isTrain?'accent-o':'accent');
+  var b=cardByTitle('记一笔','p-eat');       if(b)b.classList.add('accent-o');
+  var c=cardByTitle('本周综合分','p-trend'); if(c)c.classList.add('accent-g');
+  var cs=document.querySelectorAll('.card');
+  for(var i=0;i<cs.length;i++)cs[i].classList.add('hov');
+}
+markKeyCards();
 window.__d=todayStr();
 setInterval(function(){if(todayStr()!==window.__d){window.__d=todayStr();fill();render();}},60000);
 </script>
