@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-title" content="减重助手">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>减脂作战台</title>
+<title>减重助手</title>
 <style>
 :root{
   /* ---- 基础 ---- */
@@ -521,14 +522,14 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 </style>
 </head>
 <body>
-<div id="splash"><div class="logo">💪</div><div class="st">减脂作战台</div><div class="ss">正在准备你的数据…</div></div>
+<div id="splash"><div class="logo">💪</div><div class="st">减重助手</div><div class="ss">正在准备你的数据…</div></div>
 <div id="offbar"></div>
 <div id="a2hs"></div>
 
 <header>
   <div class="inner">
     <div class="between">
-      <h1 class="grad-t">减脂作战台</h1>
+      <h1 class="grad-t">减重助手</h1>
       <span class="pill" id="hdrDay">—</span>
     </div>
     <div class="subline" id="hdrSub">—</div>
@@ -557,7 +558,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   </div>
 
   <div class="card">
-    <h2>牛仔裤进度 <span class="tag">你最在意的那条裤子</span></h2>
+    <h2>舒适腰围 <span class="tag">91.5cm 舒适 · 90cm 健康线</span></h2>
     <div id="pantsBox"></div>
   </div>
 
@@ -666,7 +667,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   </div>
 
   <div class="card">
-    <h2>围度曲线 <span class="tag">决定裤子能不能穿的是这个</span></h2>
+    <h2>围度曲线 <span class="tag">决定穿着体感的是这个</span></h2>
     <div id="gchart"></div>
     <div id="gtext"></div>
   </div>
@@ -741,7 +742,7 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
       <tr><td><b>三 · 增肌出线条</b></td><td>65kg 之后</td><td>体脂降到 <b>15~17%</b></td><td>热量回调，<b>真正开始长肌肉</b></td></tr>
     </table>
     <div class="coach" style="margin-top:10px"><b>为什么不能一步到位</b>减脂期有热量缺口，人体很难同时长肌肉。现在这 4 个月，力量训练的作用是<b>「别掉肌肉」</b>——这是薄肌的地基，不是薄肌本身。</div>
-    <div class="coach"><b>如果蛋白质没吃够会怎样</b>你会变成「瘦胖子」：体重掉了，肚子还在，裤子照样紧。<b>蛋白质 125g + 力量训练，就是防这件事的两道保险。</b></div>
+    <div class="coach"><b>如果蛋白质没吃够会怎样</b>你会变成「瘦胖子」：体重掉了，肚子还在，腰围照样大。<b>蛋白质 125g + 力量训练，就是防这件事的两道保险。</b></div>
     <div class="coach ok"><b>一个让你安心的现象</b>新手头几个月有「新手红利」，你可能边减脂边长一点肌肉。所以如果<b>体重掉得慢、但镜子里变化明显</b>——那是最好的情况，别慌，也别去加有氧。</div>
   </div>
 
@@ -1533,15 +1534,15 @@ function renderPants(){
   var pct=Math.max(0,Math.min(100,(G.waistStart-w)/(G.waistStart-G.pantsFit)*100));
   var weeks=left>0?Math.ceil(left/0.85):0;
   var h='<div class="between"><div><b style="font-size:22px">'+w.toFixed(1)+'</b> <span class="muted">cm 当前腰围</span></div>'+
-    '<div style="text-align:right">'+(left>0?('<b style="font-size:22px;color:var(--brand)">'+left.toFixed(1)+'</b> <span class="muted">cm 后能扣上</span>')
-      :'<b style="font-size:17px;color:var(--ok)">已经能穿了</b>')+'</div></div>';
+    '<div style="text-align:right">'+(left>0?('<b style="font-size:22px;color:var(--brand)">'+left.toFixed(1)+'</b> <span class="muted">cm 后进舒适区</span>')
+      :'<b style="font-size:17px;color:var(--ok)">已进舒适区</b>')+'</div></div>';
   h+='<div class="bar2"><i style="width:'+pct.toFixed(1)+'%"></i></div>';
-  h+='<div class="mark"><span>起点 '+G.waistStart+'</span><span>扣得上 '+G.pantsFit+'</span><span>舒服+健康线 '+G.waistGoal+'</span></div>';
+  h+='<div class="mark"><span>起点 '+G.waistStart+'</span><span>舒适线 '+G.pantsFit+'</span><span>舒服+健康线 '+G.waistGoal+'</span></div>';
   var pw=prevGirth('waist'),line='';
   if(pw!=null){var d=round1(w-pw);line='<br>上次 '+pw.toFixed(1)+'cm，这次 '+w.toFixed(1)+'cm（'+(d>0?'+':'')+d.toFixed(1)+'）。';}
   h+='<div class="coach'+(left<=0?' ok':'')+'" style="margin-top:10px"><b>进度判读</b>'+
-    (left<=0?('腰围已到 '+w.toFixed(1)+'cm，裤子能扣上了。继续往 '+G.waistGoal+'cm 走——那是腹型肥胖的分界线，跨过去健康收益最大。')
-     :('还差 '+left.toFixed(1)+'cm 能扣上，按当前节奏约 <b>'+weeks+' 周</b>。腰围减到 <b>'+G.waistGoal+'cm</b> 时你会一次拿到两样东西：穿着舒服 + 脱离腹型肥胖。'))+line+'</div>';
+    (left<=0?('腰围已到 '+w.toFixed(1)+'cm，已进舒适区了。继续往 '+G.waistGoal+'cm 走——那是腹型肥胖的分界线，跨过去健康收益最大。')
+     :('还差 '+left.toFixed(1)+'cm 进舒适区，按当前节奏约 <b>'+weeks+' 周</b>。腰围减到 <b>'+G.waistGoal+'cm</b> 时你会一次拿到两样东西：穿着舒服 + 脱离腹型肥胖。'))+line+'</div>';
   $('pantsBox').innerHTML=h;
 }
 function renderGirth(){
@@ -1601,7 +1602,7 @@ function renderGChart(){
   var wv=ks.map(function(k){return parseFloat(DB.girth[k].waist);});
   var tv=ks.map(function(k){var v=parseFloat(DB.girth[k].thigh);return isNaN(v)?null:v;}).filter(function(v){return v!=null;});
   var h='<div class="muted" style="margin-bottom:4px">腰围（cm）</div>'+
-    lineChart(wv,labs,[{v:CFG.girth.pantsFit,t:'扣得上 '+CFG.girth.pantsFit,c:'var(--warn)'},{v:CFG.girth.waistGoal,t:'健康线 '+CFG.girth.waistGoal,c:'var(--ok)'}]);
+    lineChart(wv,labs,[{v:CFG.girth.pantsFit,t:'舒适线 '+CFG.girth.pantsFit,c:'var(--warn)'},{v:CFG.girth.waistGoal,t:'健康线 '+CFG.girth.waistGoal,c:'var(--ok)'}]);
   if(tv.length>=2){
     h+='<div class="muted" style="margin:12px 0 4px">右大腿围（cm）</div>'+lineChart(tv,labs,[]);
   }
@@ -1958,7 +1959,7 @@ function renderCoach(){
   if(dw===1){
     var ws2=weekStart(t);
     if(!DB.girth[ws2]||!DB.girth[ws2].waist)
-      out.push(['📏 今天是周一，量一下围度','腰围、右大腿围、臀围，30 秒搞定。决定裤子能不能穿的是腰围，不是体重——别只盯着秤。']);
+      out.push(['📏 今天是周一，量一下围度','腰围、右大腿围、臀围，30 秒搞定。决定穿着体感的是腰围，不是体重——别只盯着秤。']);
   }
 
   if(isWkend){
@@ -2306,7 +2307,7 @@ function bind(){
   $('btnExport').onclick=function(){
     var a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));
-    a.download='减脂工作台备份_'+todayStr()+'.json';a.click();
+    a.download='减重助手备份_'+todayStr()+'.json';a.click();
   };
   $('btnImport').onclick=function(){$('fileIn').click();};
   $('fileIn').onchange=function(){
