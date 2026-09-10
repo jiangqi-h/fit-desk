@@ -341,6 +341,9 @@ header .inner{max-width:560px;margin:0 auto}
 .cup::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:var(--hit);height:var(--hit);min-width:100%;min-height:100%}
 .cup.on{background:var(--brand);border-color:var(--brand);color:var(--on-brand);font-weight:700}
+/* v13c：已喝杯内的水滴改用内联 SVG —— 原来用 💧，无 emoji 字体的设备会渲染成方框 */
+.cup svg{width:55%;height:55%;max-width:22px;max-height:22px;fill:none;
+  stroke:var(--on-brand);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 /* v12：原 `@media(max-width:359px)` 在 iPhone 16 Pro（393pt）上永不触发，属死代码，已删。
    但它想解决的窄屏水杯挤压是真问题：393pt 下可用宽约 337pt，8 列每格仅约 38pt，
    低于 --hit 定义的 44pt 触摸下限，相邻 .cup::before 命中区会重叠（点一个误触另一个）。
@@ -349,17 +352,23 @@ header .inner{max-width:560px;margin:0 auto}
 
 /* v11 三态 chip：未记录（中性）/ 守住（绿）/ 破戒（红）
    解决原设计「默认全守住 = 虚假正面反馈」+「状态语义颠倒」两个问题 */
-.chip3{position:relative;display:inline-flex;align-items:center;gap:7px;
+/* v13c：chip3 原来靠内容撑宽（inline-flex），6 个名字长短不齐 → 排乱
+   改为容器 grid 两列等宽，chip 自身占满格子、内部左对齐 → 整齐 */
+.chips.tri{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2)}
+.chip3{position:relative;display:flex;align-items:center;gap:7px;
+  width:100%;box-sizing:border-box;text-align:left;
   padding:9px 14px 9px 11px;border-radius:var(--r-full);cursor:pointer;
   font-size:var(--fs-md);font-weight:600;font-family:inherit;
   background:var(--card2);color:var(--text2);border:1px solid var(--line);
   min-height:38px;transition:all var(--dur-fast) var(--ease);user-select:none}
+/* 文字过长时省略，避免把格子顶开 */
+.chip3>span:not(.ic){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .chip3:active{transform:scale(.96)}
 .chip3:focus-visible{outline:none;box-shadow:var(--ring)}
 .chip3 .ic{width:18px;height:18px;border-radius:50%;flex:none;
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
   border:1.5px solid var(--sub);color:transparent;transition:all var(--dur-fast)}
-.chip3 small{font-size:var(--fs-sm);font-weight:400;opacity:.7}
+.chip3 small{font-size:var(--fs-sm);font-weight:400;opacity:.7;margin-left:auto;flex:none}
 .chip3.keep{background:var(--ok-soft);border-color:rgba(63,214,140,.35);color:var(--text)}
 .chip3.keep .ic{background:var(--ok);border-color:var(--ok);color:var(--on-ok)}
 .chip3.keep small{color:var(--ok-text);opacity:1;font-weight:600}
@@ -393,6 +402,60 @@ header .inner{max-width:560px;margin:0 auto}
 #eatCats .chip{flex:none;min-height:42px;padding:9px 14px}
 .chip.off{background:var(--bg);color:var(--sub);border-color:var(--line);border-style:dashed;opacity:.85}
 .chip small{opacity:.75;font-size:var(--fs-sm);margin-left:3px}
+/* v13c 左滑删除（吃的账）
+   类名必须用 dsw- 前缀：.swipe/.sw-bg 已被「今日必做」侧滑完成组件占用（见后文），
+   同名会被后者覆盖（它定义更靠后、特异性更高）。独立前缀，两个滑动组件互不干扰。 */
+.dswipe{position:relative;overflow:hidden;border-radius:var(--r-xs);background:var(--danger)}
+.dsw-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:18px;background:var(--danger);
+  color:#fff;font-size:var(--fs-sm);font-weight:800;letter-spacing:.5px}
+.dsw-fg{position:relative;background:var(--card);margin:0;
+  transition:transform var(--dur) var(--ease);touch-action:pan-y;will-change:transform}
+.dsw-fg.sw-open{transform:translateX(-76px)}
+.dsw-fg.sw-snap{transition:transform var(--dur-fast) var(--ease)}
+/* v13c 来源标记：只标「外采」（家中是默认，不重复刷屏） */
+.srctag{display:inline-block;font-size:var(--fs-xs);font-weight:700;
+  padding:1px 6px;border-radius:var(--r-full);margin-right:5px;vertical-align:1px}
+.srctag.out{background:var(--card3);color:var(--warn-text)}
+/* v13c 清理按钮（撤销条） */
+.undobar{display:flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-2);
+  padding:9px 12px;border-radius:var(--r-xs);background:var(--card2);
+  font-size:var(--fs-sm);color:var(--text2)}
+.undobar b{color:var(--text)}
+.undobar button{margin-left:auto;background:none;border:none;color:var(--brand-text);
+  font:inherit;font-size:var(--fs-sm);font-weight:700;cursor:pointer;padding:4px 6px}
+/* v13c 自动配餐（按库存） */
+.ap-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--sp-2);
+  margin:var(--sp-3) 0 var(--sp-2);font-size:var(--fs-md)}
+.ap-head>.muted{margin-left:auto;font-size:var(--fs-sm)}
+tr.ap-miss td{opacity:.72}
+/* v13c 记账：食物来源切换（家中扣库存 / 外采不扣） */
+.srcrow{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:10px}
+.srcbtn{flex:1;min-height:40px;border-radius:var(--r-sm);cursor:pointer;
+  font:inherit;font-size:var(--fs-md);font-weight:600;
+  background:var(--bg);color:var(--sub);border:1px solid var(--line);
+  transition:all var(--dur-fast) var(--ease)}
+.srcbtn:active{transform:scale(.97)}
+.srcbtn.on{background:var(--brand-dim);color:var(--brand-dim-fg);
+  border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+.srchint{flex:none;font-size:var(--fs-xs)}
+/* v13c 食材库存：可点数量胶囊 */.pchip{display:inline-flex;align-items:center;gap:var(--sp-2);
+  padding:7px 8px 7px 13px;border-radius:var(--r-full);
+  background:var(--bg);color:var(--sub);border:1px dashed var(--line);
+  font-size:var(--fs-md);font-weight:600;cursor:pointer;user-select:none;
+  min-height:38px;transition:all var(--dur-fast) var(--ease)}
+.pchip.on{background:var(--card2);color:var(--text);border:1px solid var(--line);border-style:solid}
+.pchip:active{transform:scale(.96)}
+.pchip:focus-visible{outline:none;box-shadow:var(--ring)}
+.pchip>.pq{flex:none;font-family:var(--num-font);font-size:var(--fs-xs);font-weight:700;
+  padding:3px 8px;border-radius:var(--r-full);background:var(--card3);color:var(--sub);
+  min-width:24px;text-align:center;border:1px solid transparent}
+.pchip.on>.pq{background:var(--brand-dim);color:var(--brand-dim-fg)}
+@supports(background:color-mix(in srgb,red 10%,transparent)){
+  .pchip.on{background:color-mix(in srgb,var(--brand) 12%,var(--card2));border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+  .pchip.on>.pq{background:color-mix(in srgb,var(--brand) 60%,var(--card3));
+    color:var(--bg);border-color:color-mix(in srgb,var(--brand) 70%,transparent)}
+}
 
 input[type=number],input[type=time],input[type=text]{width:100%;font:inherit;font-size:var(--fs-lg);color:var(--text);
   background:var(--bg);border:1px solid var(--line);border-radius:var(--r-xs);padding:9px 11px}
@@ -661,6 +724,36 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 /* 尺寸档位：一套类，两个尺寸 */
 .ring2.sm2{--sz:76px;--th:8px}
 .ring2.sm2 b{font-size:var(--fs-xl)}
+
+/* ============================================================
+   v13c · 迷你完成度圆环 .ring3（卡片头部右侧的「N/M」指示器）
+   conic-gradient 实现，无 SVG、无依赖；--v 取 0~100
+   ============================================================ */
+.ring3{--v:0;--sz:34px;--th:3.5px;--rc:var(--brand);
+  width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
+  display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--rc) calc(var(--v)*1%),var(--card3) 0);
+  transition:--v var(--dur) var(--ease)}
+.ring3:after{content:"";position:absolute;inset:var(--th);border-radius:50%;background:var(--card)}
+.ring3>span{position:relative;z-index:1;font-family:var(--num-font);
+  font-size:var(--fs-xs);font-weight:700;line-height:1;letter-spacing:-.3px;
+  color:var(--text2);font-variant-numeric:tabular-nums}
+.ring3.full>span{color:var(--brand-text)}
+.ring3.done{--rc:var(--ok)}
+.ring3.done>span{color:var(--ok-text)}
+/* 大一号：用在需要强调的位置 */
+.ring3.lg{--sz:44px;--th:4.5px}
+.ring3.lg>span{font-size:var(--fs-sm)}
+/* 卡片头部右侧的统一容器 */
+.hring{display:inline-flex;align-items:center;gap:var(--sp-2);margin-left:auto}
+.hring .onekey{height:var(--h-sm)}
+/* 本周训练进度：圆环 + 文字 */
+.wk-prog{display:flex;align-items:center;gap:var(--sp-3)}
+.wk-prog .wk-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.wk-prog .wk-txt b{font-size:var(--fs-md);font-weight:700;color:var(--text)}
+.wk-prog .wk-txt span{font-size:var(--fs-sm)}
+/* 习惯/红线卡片头部：h2 里既有标题又有右侧圆环，需要 flex 对齐 */
+h2:has(.hring){display:flex;align-items:center;gap:var(--sp-2)}
 
 /* ---- 仪表盘（综合分）：半环 —— 同一套画法的半圆裁切版本 ---- */
 .gauge{position:relative;width:150px;height:84px;margin:2px auto 0;overflow:hidden}
@@ -1114,18 +1207,18 @@ body.kb #a2hs{display:none}
     </div>
 
     <div class="between" data-page-node-id="HjTC4i2E7T5mt7xBr8KRby">
-      <div class="muted" data-page-node-id="CtFc8DKP9jcnDqiGiKpQyv">喝水 <span id="waterTxt" data-page-node-id="vosAUJz8F445vTjT41DARQ">0 / 8 杯</span></div>
-      <span class="muted" data-page-node-id="xfKJOPDLchPkuE3kr5ZIvH">约 <b id="waterMl" data-page-node-id="pJJQyfndYLV5yHJWzLh2fI">0</b> ml</span>
+      <div class="muted" data-page-node-id="CtFc8DKP9jcnDqiGiKpQyv">喝水<span class="muted" data-page-node-id="xfKJOPDLchPkuE3kr5ZIvH"> · 约 <b id="waterMl" data-page-node-id="pJJQyfndYLV5yHJWzLh2fI">0</b> ml</span></div>
+      <span class="hring" id="waterHead"></span>
     </div>
     <div class="cups" id="cups" data-page-node-id="QIPyKqvgkpr1eEtBVLyaCV"></div>
 
     <div class="sec" data-page-node-id="aQM4idZ10HjNzLLTLfUZ0k">
       <div class="muted" style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-1)" data-page-node-id="C41XuL7bRwvpsyneBKlEFc">
-        红线 <span style="opacity:.72" data-page-node-id="j7BAfkG5qETwSDy5EJQT0C">点一下切换：守住 → 破戒 → 未记录</span>
+        红线
         <span id="rlHead" style="margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2)"></span>
       </div>
       <div class="tri-bar" id="rlBar"></div>
-      <div class="chips" id="redlines" data-page-node-id="rASzHDxbRKz6mxVflwN5KK"></div>
+      <div class="chips tri" id="redlines" data-page-node-id="rASzHDxbRKz6mxVflwN5KK"></div>
     </div>
 
     <div class="sec" id="workoutBox" data-page-node-id="pO6Ecd3bqKCfkeAWMU46KJ"></div>
@@ -1133,9 +1226,9 @@ body.kb #a2hs{display:none}
   </div>
 
   <div class="card" data-page-node-id="3MAFlNSxB7Y3beRPXNRdYx">
-    <h2 data-page-node-id="yC2By5lCZ7BqkJYdmkJB7E">今日习惯打卡 <span class="tag" data-page-node-id="wf244HezELyfIQ4HnmwmaH">点一下切换状态</span><span id="hbHead" class="tri-meta-wrap" style="margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2)"></span></h2>
+    <h2 data-page-node-id="yC2By5lCZ7BqkJYdmkJB7E">今日习惯打卡<span id="hbHead" class="tri-meta-wrap" style="margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2)"></span></h2>
     <div class="tri-bar" id="hbBar" style="margin-top:0"></div>
-    <div class="chips" id="habits" data-page-node-id="OoUxffZOLdjWmvpKukHPV1"></div>
+    <div class="chips tri" id="habits" data-page-node-id="OoUxffZOLdjWmvpKukHPV1"></div>
   </div>
 
   <div class="card" data-page-node-id="Tlcu3dEBm9BfxG6XDhWynp">
@@ -1178,10 +1271,10 @@ body.kb #a2hs{display:none}
   </div>
 
   <div class="card" data-g="rec" data-page-node-id="5GZVPlu8nCld4PJdvY9gix">
-    <h2 data-page-node-id="PmUfC3lnCzDOKddqO98ctr">记一笔 <span class="tag" data-page-node-id="rPz8OAVb1N4NF7STdGEeXq">套餐点一下 / 手动 10 秒</span></h2>
+    <h2 data-page-node-id="PmUfC3lnCzDOKddqO98ctr">记一笔</h2>
     <div class="combos" id="comboList" data-page-node-id="GspsKaaexr805Hi6l8oV9f"></div>
     <button class="btn full ghost sec-sm" id="btnEatOpen" data-page-node-id="PFmq93bIrtTtR1kUHvBapr">＋ 手动添加食物</button>
-    <div class="muted" style="margin-top:8px" data-page-node-id="6RDuzbrR2V2mDBss3znbSy">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
+    
   </div>
 
   <div class="card" data-g="see" data-page-node-id="Myc0MaY8hGGOd8cGdDUr3J">
@@ -1234,9 +1327,15 @@ body.kb #a2hs{display:none}
 </div>
 
 <div class="page" id="p-plan" data-page-node-id="nDAsaGIzNZB4dFP3kz79dx">
+  <!-- v13c：按库存自动排这一天的吃法（库存为空时给补货引导） -->
+  <div class="card" data-page-node-id="v13cAutoCard">
+    <h2 data-page-node-id="v13cAutoH">今天怎么吃 <span class="tag" data-page-node-id="v13cAutoTag">按库存自动排</span></h2>
+    <div id="autoPlan" data-page-node-id="v13cAutoPlan"></div>
+  </div>
+
   <div class="card peek-lead" data-page-node-id="eDNHb2epF68xlsZk3MIyZ5">
-    <h2 data-page-node-id="KLolMpg7RKqCoMHkcTO0hv">吃 · 双模式（按你作息排的，不是通用模板）</h2>
-    <div class="coach peek-lead" data-page-node-id="uSA0dzBwpC5yRrWjVFmM2q"><b data-page-node-id="BRkAFOKmEk6Ij2LeVQrcrL">工作日 · 在公司</b>外食为主，控量靠"换和加"</div>
+    <h2 data-page-node-id="KLolMpg7RKqCoMHkcTO0hv">吃 · 双模式</h2>
+    <div class="coach peek-lead" data-page-node-id="uSA0dzBwpC5yRrWjVFmM2q"><b data-page-node-id="BRkAFOKmEk6Ij2LeVQrcrL">工作日 · 在公司</b></div>
     <table data-page-node-id="nsQiD0zQeQUmCx991jC31T">
       <tr data-page-node-id="o4h0xME150qV6mWHJGmbUN"><th data-page-node-id="2DPyI0jOEjesZnla5bJNtj">时间</th><th data-page-node-id="fL8viqL0bjJGsqVB5DVysH">吃什么</th><th class="num" data-page-node-id="aNJiTH9wFpXYRb2HqHwnfN">成本</th></tr>
       <tr data-page-node-id="akInct7zHn4Ljhk1yBDS3T"><td data-page-node-id="FNBfccABCWmC98ufFvwhEm">8:40<br data-page-node-id="vBklAfdfs3RyWBqmshFa0V"><span class="muted" data-page-node-id="3zbUuKfkm2msanTHOsB2Io">起床</span></td><td data-page-node-id="H53Gdmb44ExDNzcDmYXVl1"><b data-page-node-id="T1ppCG7SPKlLUqJtuCMS7N">2 个水煮蛋</b> + 一杯水<br data-page-node-id="DEFvDxPmRCHpP0PmYuiltZ"><span class="muted" data-page-node-id="RG1NqxGpwoFE8ixkSHEcXM">打破 16 小时空腹</span></td><td class="num" data-page-node-id="E81lBVzBnJHbZV1XwJxFJB">1.4 元</td></tr>
@@ -1247,7 +1346,7 @@ body.kb #a2hs{display:none}
       <tr data-page-node-id="s1fvrlWTvbJbpU7HsnkREe"><td data-page-node-id="n68qwrMsaLusOXu7TkqxHK">21:10<br data-page-node-id="0AZmdcTMTZlergfCcwTjs9"><span class="muted" data-page-node-id="qjq00lu18vMZ1HXqRYEKp1">运动后</span></td><td data-page-node-id="xKTcVcwhB9W8nOFcl6GLJb"><b data-page-node-id="3nVfigCQyMuI4skAK6IpxI">正餐</b>：红薯/半碗饭 + 蛋白质（<b data-page-node-id="TkNCYrRPsFeM3PdNEkkhZP">豆腐 / 鸡胸 / 蛋白</b>）+ 大量蔬菜<br data-page-node-id="VWRxJhUXWRx8eAfggRfADL"><span class="muted" data-page-node-id="ssPIbRMUdqBskHCE9MMQNn">煮面时加 <b data-page-node-id="bULbsqAgpIZc4pmmULGDcl">2 个蛋白</b> + 一把青菜（不再叠全蛋）</span></td><td class="num" data-page-node-id="e183nV3TqNCOk3Xhk8jHWW">3 元</td></tr>
       <tr data-page-node-id="cBuUJey9DeH46blBoGNJqq"><td data-page-node-id="M8RwBhEDT0VgJd4NLlkBFN">21:00 后</td><td data-page-node-id="oDWEk0HPHFIY17CFqXusgB"><b data-page-node-id="yvaxAtgiP8pCkIAzlq1uxt">刷牙</b>，之后不再进食</td><td class="num" data-page-node-id="B5eejFOSuGGmxrykqLjrWv">0</td></tr>
     </table>
-    <div class="coach sec-sm" data-page-node-id="TUE2TG5XJABV3A1hep7dpH"><b data-page-node-id="my7q1tYrH3syiFK51sLGEr">居家日 · 周末/假日</b>自炊为主，三餐提前+规律</div>
+    <div class="coach sec-sm" data-page-node-id="TUE2TG5XJABV3A1hep7dpH"><b data-page-node-id="my7q1tYrH3syiFK51sLGEr">居家日 · 周末/假日</b></div>
     <table data-page-node-id="4ASgAFpFDzmd1M8c1YQmnZ">
       <tr data-page-node-id="kI8Kguix0TJVBOpFmRjXMR"><th data-page-node-id="vyOVFmAFOOMVzPRoStBzyz">时间</th><th data-page-node-id="hzso7zyMxOosoOGcAhkcUv">吃什么</th><th class="num" data-page-node-id="rslvKlVFzweXJOavyMYzEO">成本</th></tr>
       <tr data-page-node-id="Aa61jZP1c8mOh8cKCGCFeU"><td data-page-node-id="mIaFb6sayUJbJO0ItRdqT4">起床后 30 分钟内<br data-page-node-id="XOEWMIRpeQ8zoFG0ejl5dQ"><span class="muted" data-page-node-id="gQfH8Fe3zpxc8snpu12mmS">周末红线 9:30 前</span></td><td data-page-node-id="q94eWp2MOds7u2Xerar4YA">温水 250ml → <b data-page-node-id="vmwCyrBmvq7a86PMGpIH8D">2~3 个水煮蛋 + 西红柿/生菜</b><br data-page-node-id="eow3BdhtsTGY2tIkSNwADP"><span class="muted" data-page-node-id="bcXCZWKcvW2XktF2s55BLw">冰美式可选，先喝温水再喝</span></td><td class="num" data-page-node-id="Dj8v3BjLcDhJ3Fxg35mveh">~2 元</td></tr>
@@ -1267,7 +1366,7 @@ body.kb #a2hs{display:none}
        注意：所有挂载点 ID 保持不变，下游 renderPantry 无需改动渲染逻辑。 -->
   <div class="card" data-page-node-id="bflZ608tk8DNONfShk8poq">
     <h2 data-page-node-id="hjAutXEBPTTpl0C7dcRJ4L">我的食材 <span class="tag" id="canCount" data-page-node-id="jFGeNmGBXxwVT9B6PJJXIc"></span></h2>
-    <div class="muted" data-page-node-id="BqGvqevQbrvmSAgjp1pnQO">点亮的 = 冰箱里有。勾完自动算「能做什么」</div>
+    <div class="muted" data-page-node-id="BqGvqevQbrvmSAgjp1pnQO">点一下 +1，长按（或右键）−1。数量 = 冰箱现有</div>
     <div class="sub-h" data-page-node-id="BX6kHkTAeaZNY3k6KhHAL5">蛋白质类</div>
     <div class="chips" id="pantryP" data-page-node-id="PhHhw3fTGjRMoB9EvArVJg"></div>
     <div class="sub-h" data-page-node-id="jwX3Gk39Ph2pSK9wZO3wnJ">主食类</div>
@@ -1492,6 +1591,12 @@ body.kb #a2hs{display:none}
         <div data-page-node-id="5EYxmEg4YxCEP5DhahQf26"><div class="muted" data-page-node-id="pdXf6NqiXe5EG89Ld2qTLL">单位</div><select id="eatUnit" data-page-node-id="FMeJ0SndMU9OcKOkWxqjsx"></select></div>
       </div>
       <div style="margin-bottom:10px;display:flex;align-items:center;gap:var(--sp-2)" data-page-node-id="xwyEbhByZIOy0ERk7auvNZ"><span class="muted" style="flex:none" data-page-node-id="vF4GfFdbMF28BvwbXOKgcW">做法</span><select id="eatCook" style="flex:1;margin:0" data-page-node-id="KEUw09mclPbDAoWkHCsa11"></select></div>
+      <!-- v13c：食物来源 —— 家中=扣库存，外采=不扣 -->
+      <div class="srcrow" id="eatSrcRow" data-page-node-id="v13cSrcRow">
+        <button type="button" class="srcbtn on" data-src="home">家中</button>
+        <button type="button" class="srcbtn" data-src="out">外采</button>
+        <span class="srchint muted" id="eatSrcHint">扣库存</span>
+      </div>
       <button class="btn full" id="eatAdd" data-page-node-id="bhGn6WRpnotyzFGnMnUIRH">＋ 添加</button>
     </div>
   </div>
@@ -1503,6 +1608,11 @@ body.kb #a2hs{display:none}
     <span class="nb" data-page-node-id="gV2rvHSeiJiYrBczSJEEMj">今日</span>
     <em class="dot-badge" id="navBadge" hidden data-page-node-id="hsAPElPtPHOPvOFdnwhxHa">0</em>
   </button>
+  <!-- v13c：导航顺序改为 今日-计划-吃-趋势-我的（按用户实际使用频率） -->
+  <button data-p="p-plan" data-page-node-id="yteGWMdIkyfkIxFCxoJ4dc">
+    <span class="ico" data-page-node-id="AL8EGQKn6X7gS3J0Jmk3BD"><svg viewBox="0 0 24 24" data-page-node-id="ziqYiSrb301ozAaGiObMfE"><rect x="4" y="3.5" width="16" height="17" rx="2.5" data-page-node-id="mzQN15zoK2JsyYxWWBvQ7h"/><path d="M8 9h8M8 13h8M8 17h5" data-page-node-id="1BSQjzRSLktGe88uEA8xLc"/></svg></span>
+    <span class="nb" data-page-node-id="rOyOgG6YoAJjf0vpBdJ8t5">计划</span>
+  </button>
   <button data-p="p-eat" data-page-node-id="eIoXLB2sasWgHFh86BahII">
     <span class="ico" data-page-node-id="rqB3IEYWcRdBiMJD6cVA1x"><svg viewBox="0 0 24 24" data-page-node-id="aDC787ogOEP3baidHDXx3Y"><path d="M6 3v8a2 2 0 0 0 4 0V3M8 11v10" data-page-node-id="6Ze7FT0dtLxqz76M6eA7Rs"/><path d="M16 3c2.2 0 3.5 1.6 3.5 3.6S18.2 10 16 10v11" data-page-node-id="76ZUeVCP7i50MvCnxi1iBG"/></svg></span>
     <span class="nb" data-page-node-id="tYR6k4Y3iTUArBha7AjMtJ">吃</span>
@@ -1510,10 +1620,6 @@ body.kb #a2hs{display:none}
   <button data-p="p-trend" data-page-node-id="4YHdeIoH5tq5JjyxHYT4EL">
     <span class="ico" data-page-node-id="hDbhxwFGNiJ47zWrVT3OeP"><svg viewBox="0 0 24 24" data-page-node-id="Y3IBU9MfF6ZCpWAkKUDS9d"><path d="M3 17l5.5-6 3.5 3.5L21 6" data-page-node-id="o5hjFmIStGJOxcqF6qj3Gp"/><path d="M15 6h6v6" data-page-node-id="kSHoEHmRMq1bsTgcoqgUh3"/></svg></span>
     <span class="nb" data-page-node-id="jqb9QsNnoyIoP3bgylLOF0">趋势</span>
-  </button>
-  <button data-p="p-plan" data-page-node-id="yteGWMdIkyfkIxFCxoJ4dc">
-    <span class="ico" data-page-node-id="AL8EGQKn6X7gS3J0Jmk3BD"><svg viewBox="0 0 24 24" data-page-node-id="ziqYiSrb301ozAaGiObMfE"><rect x="4" y="3.5" width="16" height="17" rx="2.5" data-page-node-id="mzQN15zoK2JsyYxWWBvQ7h"/><path d="M8 9h8M8 13h8M8 17h5" data-page-node-id="1BSQjzRSLktGe88uEA8xLc"/></svg></span>
-    <span class="nb" data-page-node-id="rOyOgG6YoAJjf0vpBdJ8t5">计划</span>
   </button>
   <button data-p="p-me" data-page-node-id="KAQz7RyEG4FpYQrYhcHcA3">
     <span class="ico" data-page-node-id="tirMT5ghXFwffrDTylPkxa"><svg viewBox="0 0 24 24" data-page-node-id="EDzogNJlFpIUEuQgFyA0iQ"><circle cx="12" cy="8" r="3.6" data-page-node-id="gBpOhuMVboScKno13UM2If"/><path d="M4.5 20c1.4-3.6 4.1-5.4 7.5-5.4s6.1 1.8 7.5 5.4" data-page-node-id="B6srhfl9XoFiT8uMBdg94S"/></svg></span>
@@ -1535,8 +1641,9 @@ var CFG={
     {k:'milk',t:'奶茶甜饮'},{k:'night',t:'夜宵'},{k:'snack',t:'零食'},
     {k:'carb',t:'主食过量'},{k:'fast',t:'吃太快'},{k:'soda',t:'碳酸饮料'}
   ],
+  /* v13c：add17 保留（这是习惯项），只是不再写死「蛋 + 西红柿」的具体吃法 */
   habits:[
-    {k:'breakfast',t:'早餐 2 个蛋'},
+    {k:'breakfast',t:'早餐 2 个鸡蛋'},
     {k:'add17',t:'17 点垫一口'},
     {k:'oil',t:'炒菜少油'},
     {k:'brush',t:'刷牙'}
@@ -1938,6 +2045,7 @@ function renderMyFoodChip(){
   if(hasData&&!has)box.insertAdjacentHTML('beforeend','<span class="chip" data-cat="我的">我的</span>');
 }
 var EAT_SEL=0;var EAT_SLOT=3;
+var EAT_SRC='home';var EAT_QTY=1;   /* v13c：食物来源 + 当前录入数量（用于扣库存） */
 
 /* ---- v9 C2：触感 + 音效反馈层 ----
    haptic：三类震动，iOS 不支持时静默降级（不报错、不占位）
@@ -2037,8 +2145,11 @@ function renderMeals(){
     html+='<div class="ti '+cls+'"><div class="tt">'+s.t+'　'+slotTime(s.k)+
       '<span class="savecb" data-slot="'+s.k+'">存套餐</span></div>';
     list.forEach(function(o){
-      html+='<div class="kv"><span>'+o.m.n+' · '+o.m.g+'g · '+o.m.cook+'</span>'+
-        '<b>'+o.m.k+' kcal / 蛋白 '+o.m.p+'g <span class="chip off" data-del="'+o.i+'" style="margin-left:6px">删</span></b></div>';
+      var srcTag=o.m.src==='out'?'<span class="srctag out">外采</span>':'';
+      html+='<div class="dswipe" data-del="'+o.i+'">'+
+        '<div class="dsw-bg"><span>删除</span></div>'+
+        '<div class="kv dsw-fg"><span>'+srcTag+o.m.n+' · '+o.m.g+'g · '+o.m.cook+'</span>'+
+        '<b>'+o.m.k+' kcal / 蛋白 '+o.m.p+'g</b></div></div>';
     });
     html+='</div>';
   });
@@ -2078,7 +2189,27 @@ function renderEat7(){
 }
 
 /* ================= 存储 ================= */
+/* v13c：库存单位表 —— 跟随食物库的真实计量单位，缺省「份」 */
+var PANTRY_UNIT={egg:'个',ham:'根',pepper:'个',lettuce:'棵',sweetpotato:'个',
+  tomato:'个',rice:'碗',tofu:'块',chicken:'袋',milk:'盒',soy:'袋',
+  noodle:'袋',bread:'袋',potato:'个',cucumber:'根',cabbage:'棵',broccoli:'颗'};
 var PANTRY_DEFAULT=['egg','ham','pepper','lettuce','sweetpotato','tomato','rice'];
+/* v13c 数据迁移：旧 schema 是「数组=已点亮」，新 schema 是「对象={k:数量}」。
+   迁移规则（保守）：数组里的键 → 数量给 1（表示"家里有"，不猜具体数）；
+   没在数组里的 → 不建键（视为没有）。数量可后续手动加减。 */
+var PANTRY_MIGRATE=1;
+function migratePantry(){
+  if(DB.pantryVer>=PANTRY_MIGRATE)return;
+  var old=DB.pantry;
+  if(Array.isArray(old)){
+    var o={};
+    old.forEach(function(k){if(k)o[k]=1;});
+    DB.pantry=o;
+  }else if(!old||typeof old!=='object'){
+    DB.pantry={};
+  }
+  DB.pantryVer=PANTRY_MIGRATE;
+}
 var DAILY_WHISPERS=[
   {date:'2026-09-05',text:'今天你完整地练完 8 个动作——腿、手、腹板的酸胀，是你正在把"想变好"变成肌肉的真实证据。\n\n你看到前任的朋友圈，没有沉沦，跑去洗漱护肤、上楼前把垃圾带走。\n没有谁规定孤独是惩罚，但今天你选择让自己成为伙伴——这就是"从今天起我自己说了算"的起点。\n\n明天 9/7 周一，启动日。称第一笔体重，上手"早 C 晚 B"，日子从这一天计。'},
   {date:'2026-09-06',text:'今晚你说了一句值得记下来的话：不是别人怎么样了，我就要对自己怎么样。纳瓦尔说别管别人，只管自己的早睡、运动和读书——你今天三样全做了。\n\n你承认有拖延，但打卡和记录把你拉了回来。这就是系统的力量：它不要求你每天都状态好，它只要求你回来。\n\n白天有精神、不口干、做饭还省钱——这些不是心理作用，是身体在给你回执。只有自己好了，才能迎接更好的自己。\n\n明天 9/7 启动日。晚安。'},
@@ -2093,7 +2224,8 @@ function load(){
   try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.records)DB=o;}}catch(e){}
   if(!DB.records)DB.records={};
   if(!DB.girth)DB.girth={};
-  if(!DB.pantry)DB.pantry=PANTRY_DEFAULT.slice();
+  if(!DB.pantry)DB.pantry={};          /* v13c：改为对象 {k:数量} */
+  migratePantry();                     /* v13c：旧数组 → 对象，只跑一次 */
   if(DB.vacation==null)DB.vacation=false;
   if(!DB.meals)DB.meals={};
   if(DB.whispers===undefined)DB.whispers=[];
@@ -2154,8 +2286,8 @@ function applySeed(){
   var seen={};
   DB.whispers.forEach(function(x){if(x&&x.date)seen[x.date]=1;});
   (DB_SEED.whispers||[]).forEach(function(x){if(!seen[x.date])DB.whispers.push({date:x.date,text:x.text});});
-  var isDef=!DB.pantry||(DB.pantry.join(',')===PANTRY_DEFAULT.join(','));
-  if(isDef&&DB_SEED.pantry)DB.pantry=DB_SEED.pantry.slice();
+  var isDef=!DB.pantry||(Array.isArray(DB.pantry)&&DB.pantry.join(',')===PANTRY_DEFAULT.join(','));
+  if(isDef&&DB_SEED.pantry){var _p={};DB_SEED.pantry.forEach(function(k){_p[k]=1;});DB.pantry=_p;}
   DB.seedVer=SEED_VER;
 }
   applySeed();
@@ -2192,7 +2324,7 @@ function startWeight(){var ds=wDates();return ds.length?parseFloat(DB.records[ds
 /* ================= 渲染 ================= */
 function render(){
   renderHeader();renderHero();renderStaleTip();renderTopOne();renderNight();renderPants();renderGirth();renderTodo();renderHabits();renderCups();renderRedlines();renderWorkout();
-  renderCoach();renderChart();renderGChart();renderWeek();renderRL();renderHist();renderMoves();renderPantry();renderMe();renderMeals();renderWeekStrip();renderScore();renderBadge();
+  renderCoach();renderChart();renderGChart();renderWeek();renderRL();renderHist();renderMoves();renderPantry();renderAutoPlan();renderMe();renderMeals();renderWeekStrip();renderScore();renderBadge();
   renderBackupTip();
   updQuickBar();
 }
@@ -2380,11 +2512,66 @@ function initNight(){
 }
 
 /* ---- 食材与搭配 ---- */
+/* v13c：食材改为「可点数量」库存，单位走 PANTRY_UNIT */
+function pq(k){var v=DB.pantry&&DB.pantry[k];return (typeof v==='number'&&v>0)?v:0;}
+function pqUnit(k){return PANTRY_UNIT[k]||'份';}
+function pqBump(k,d){
+  var cur=pq(k)+d;
+  if(cur<=0)delete DB.pantry[k];else DB.pantry[k]=cur;
+  save();render();
+}
+/* v13c：食材名 → 库存 key（用于记账「家中」时自动扣库存） */
+var FOOD2KEY=[
+  [/鸡蛋|蛋清|蛋白|水煮蛋|煎蛋|蛋羹|茶叶蛋|蛋液/,'egg'],
+  [/豆腐/,'tofu'],
+  [/鸡胸|鸡胸肉/,'chicken'],
+  [/火腿/,'ham'],
+  [/牛奶/,'milk'],
+  [/豆浆/,'soy'],
+  [/米饭|米饭|半碗饭|饭\b/,'rice'],
+  [/红薯/,'sweetpotato'],
+  [/面条|面\b/,'noodle'],
+  [/全麦面包|面包/,'bread'],
+  [/土豆/,'potato'],
+  [/生菜/,'lettuce'],
+  [/西红柿|番茄/,'tomato'],
+  [/辣椒|彩椒/,'pepper'],
+  [/黄瓜/,'cucumber'],
+  [/白菜/,'cabbage'],
+  [/西兰花/,'broccoli']
+];
+function foodKey(name){
+  if(!name)return null;
+  for(var i=0;i<FOOD2KEY.length;i++)if(FOOD2KEY[i][0].test(name))return FOOD2KEY[i][1];
+  return null;
+}
+/* 扣库存：{k:数量} 原子扣减，不足则记 0（不阻断记账） */
+function pantryDeduct(items){
+  if(!items||!items.length)return [];
+  var agg={},out=[];
+  items.forEach(function(it){
+    var k=foodKey(it.n);if(!k)return;
+    var q=it.q||0;if(q<=0)return;
+    agg[k]=(agg[k]||0)+q;
+  });
+  Object.keys(agg).forEach(function(k){
+    var have=pq(k),take=Math.min(have,agg[k]);
+    if(take<=0){out.push({k:k,need:agg[k],took:0});return;}
+    var left=have-take;
+    if(left<=0)delete DB.pantry[k];else DB.pantry[k]=left;
+    out.push({k:k,need:agg[k],took:take});
+  });
+  save();render();
+  return out;
+}
 function renderPantry(){
   function chips(list){
     return list.map(function(p){
-      var on=DB.pantry.indexOf(p.k)>=0;
-      return '<span class="chip'+(on?'':' off')+'" data-p="'+p.k+'">'+(on?'✓ ':'○ ')+p.t+'</span>';
+      var n=pq(p.k);
+      return '<span class="pchip'+(n>0?' on':'')+'" data-p="'+p.k+'" role="button" tabindex="0"'+
+        ' aria-label="'+p.t+'，现有 '+n+' '+pqUnit(p.k)+'">'+
+        '<span class="pn">'+p.t+'</span>'+
+        '<span class="pq">'+(n>0?n+'&nbsp;'+pqUnit(p.k):'0')+'</span></span>';
     }).join('');
   }
   $('pantryP').innerHTML=chips(PROTEIN);
@@ -2392,16 +2579,28 @@ function renderPantry(){
   $('pantryV').innerHTML=chips(VEG);
   ['pantryP','pantryC','pantryV'].forEach(function(id){
     Array.prototype.forEach.call($(id).children,function(el){
+      var k=el.dataset.p,lp=null,fired=false;
       el.onclick=function(){
-        var k=el.dataset.p,i=DB.pantry.indexOf(k);
-        if(i>=0)DB.pantry.splice(i,1);else DB.pantry.push(k);
-        save();render();
+        if(fired){fired=false;return;}   /* 长按已处理，吞掉这次 click */
+        pqBump(k,1);
       };
+      el.onkeydown=function(e){
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();pqBump(k,1);}
+        else if(e.key==='ArrowDown'||e.key==='Delete'||e.key==='Backspace'){e.preventDefault();pqBump(k,-1);}
+      };
+      /* 长按 / 右键 = 减 1 */
+      el.addEventListener('touchstart',function(){
+        lp=setTimeout(function(){lp=null;fired=true;pqBump(k,-1);},520);
+      },{passive:true});
+      ['touchend','touchmove','touchcancel'].forEach(function(ev){
+        el.addEventListener(ev,function(){if(lp){clearTimeout(lp);lp=null;}},{passive:true});
+      });
+      el.oncontextmenu=function(e){e.preventDefault();pqBump(k,-1);};
     });
   });
   var canDo=[],almost=[];
   MEALS.forEach(function(m){
-    var miss=m.need.filter(function(n){return DB.pantry.indexOf(n)<0;});
+    var miss=m.need.filter(function(n){return pq(n)<=0;});
     if(miss.length===0)canDo.push(m);
     else if(miss.length===1)almost.push({m:m,miss:miss[0]});
   });
@@ -2424,8 +2623,83 @@ function renderPantry(){
   }).join(''):'<div class="muted">你现有的食材已经能覆盖上面所有搭配，或者差的太多。先补基础食材。</div>';
 }
 
-/* ---- 围度 ---- */
-function gKeys(){return Object.keys(DB.girth||{}).sort();}
+/* v13c：按现有库存自动排「今天怎么吃」
+   目标定序：早餐 20g → 午餐 30g → 加餐 20g → 晚餐正餐 35g → 晚加餐补足到 125g
+   每格只从「库存吃得起」的搭配里挑，挑不到的格子写补货指引。 */
+var SLOT_TARGET=[
+  {t:'早餐',  tm:'8:40',  pr:20},
+  {t:'午餐',  tm:'12:30', pr:30},
+  {t:'加餐',  tm:'17:00', pr:20},
+  {t:'晚餐',  tm:'21:10', pr:35},
+  {t:'睡前',  tm:'可选',  pr:20}
+];
+function renderAutoPlan(){
+  var box=$('autoPlan');if(!box)return;
+  var have=PANTRY_DEFAULT.filter(function(k){return pq(k)>0;});
+  if(!have.length){
+    box.innerHTML='<div class="coach" data-page-node-id="v13cAutoEmpty">'+
+      '<b>先记一下冰箱里有什么</b>下面「我的食材」点一下就能加数量。库里有货，这里会自动按库存排今天的吃法。'+
+      '</div>';
+    return;
+  }
+  /* 按蛋白目标贪心挑，同一样菜不重复 */
+  var used={},rows=[],cum=0;
+  SLOT_TARGET.forEach(function(s){
+    var pool=MEALS.filter(function(m){
+      return !used[m.n]&&m.need.every(function(n){return pq(n)>0;});
+    });
+    var pick=null,gap=s.pr-cum;
+    if(gap<=0){        /* 已超额：挑热量最低的一顿顶上，别再加蛋白 */
+      pool.sort(function(a,b){return a.kc-b.kc;});
+      pick=pool[0]||null;
+    }else{
+      /* 优先选「能补上缺口 + 不超太多」的 */
+      pool.sort(function(a,b){
+        return Math.abs(a.pr-gap)-Math.abs(b.pr-gap);
+      });
+      pick=pool[0]||null;
+    }
+    if(pick){
+      used[pick.n]=1;cum+=pick.pr;
+      rows.push({slot:s,pick:pick,ok:true});
+    }else{
+      var near=MEALS.map(function(m){
+        var miss=m.need.filter(function(n){return pq(n)<=0;});
+        return {m:m,miss:miss};
+      }).filter(function(o){return o.miss.length===1;})
+        .sort(function(a,b){return b.m.pr-a.m.pr;})[0];
+      rows.push({slot:s,pick:near?near.m:null,ok:false,miss:near?near.miss[0]:null});
+    }
+  });
+  var done=rows.filter(function(r){return r.ok;});
+  var short=rows.filter(function(r){return !r.ok;});
+  var h='<div class="ap-head"><b>按你冰箱里的 '+have.length+' 样排的</b>'+
+    '<span class="muted">鸡蛋存量 '+pq('egg')+' 个 · 覆盖 '+done.length+'/'+rows.length+' 餐</span></div>';
+  h+='<table><tr><th>时间</th><th>吃什么</th><th class="num">蛋白</th></tr>';
+  rows.forEach(function(r){
+    var s=r.slot;
+    if(r.ok){
+      h+='<tr><td>'+s.tm+'<br><span class="muted">'+s.t+'</span></td>'+
+        '<td><b>'+r.pick.n+'</b><br><span class="muted">'+r.pick.need.map(foodName).join(' + ')+
+        '　·　'+r.pick.kc+' kcal</span></td>'+
+        '<td class="num">'+r.pick.pr+'g</td></tr>';
+    }else{
+      h+='<tr class="ap-miss"><td>'+s.tm+'<br><span class="muted">'+s.t+'</span></td>'+
+        '<td><span class="muted">库存不够 —— 补「'+foodName(r.miss)+'」即可解锁</span></td>'+
+        '<td class="num muted">—</td></tr>';
+    }
+  });
+  h+='</table>';
+  if(short.length){
+    var ks={};short.forEach(function(r){if(r.miss)ks[r.miss]=1;});
+    h+='<div class="coach sec-sm"><b>补这几样就齐了</b>'+
+      Object.keys(ks).map(function(k){return foodName(k)+'（'+pqUnit(k)+'）';}).join('、')+
+      '　—— 采购建议在下面那张卡里。</div>';
+  }
+  box.innerHTML=h;
+}
+
+/* ---- 围度 ---- */function gKeys(){return Object.keys(DB.girth||{}).sort();}
 function gValid(){return gKeys().filter(function(k){var v=DB.girth[k].waist;return v!=null&&v!=='';});}
 function lastGirth(k){
   var ks=gKeys();
@@ -2587,7 +2861,19 @@ function renderHeader(){
   $('hdrDay').textContent=days>0?('第 '+days+' 天'):('还有 '+(-days+1)+' 天启动');
   $('hdrDay').className='pill'+(days>0?' hot':'');
   var wd=['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
-  $('hdrSub').textContent=md(t)+' '+wd+' · 训练日 周二/周四/周六'+(DB.vacation?' · 假期模式已开，连胜已护住':'');
+  /* v13c 修复：原来无条件拼「训练日」，周五/周日也显示训练日 → 文案自相矛盾。
+     改为按 CFG.trainDays 判定，是训练日才写「训练日」，否则写「休息日」。 */
+  var isTrain=CFG.trainDays.indexOf(d.getDay())>=0;
+  var sched=isTrain?'训练日':('休息日 · 下一练 '+(function(){
+    for(var i=1;i<=7;i++){
+      var nd=new Date(d.getTime()+i*86400000);
+      if(CFG.trainDays.indexOf(nd.getDay())>=0){
+        return ['周日','周一','周二','周三','周四','周五','周六'][nd.getDay()];
+      }
+    }
+    return '待定';
+  })());
+  $('hdrSub').textContent=md(t)+' '+wd+' · '+sched+(DB.vacation?' · 假期模式已开，连胜已护住':'');
   $('todoDate').textContent=md(t)+' '+wd;
   $('vacLbl').textContent=DB.vacation?'护符中':'假期';
   renderStreak();
@@ -2691,7 +2977,7 @@ function todoItems(){
       {txt:'晨起空腹称重',done:r.weight!=null&&r.weight!=='',act:function(rr,on){if(on)focusWeight();else rr.weight=null;}},
       /* v11：习惯类条目带 hbKey，勾选写 1 / 取消删键；done 判 triIsKeep，绝不判真值 */
       {txt:'早餐 2 个水煮蛋',hbKey:'breakfast',done:triIsKeep(r.hb,'breakfast'),act:function(rr,on){if(on)rr.hb.breakfast=1;else delete rr.hb.breakfast;}},
-      {txt:'17:00 垫一口（蛋 + 西红柿）',hbKey:'add17',done:triIsKeep(r.hb,'add17'),act:function(rr,on){if(on)rr.hb.add17=1;else delete rr.hb.add17;}},
+      {txt:'17:00 垫一口',hbKey:'add17',done:triIsKeep(r.hb,'add17'),act:function(rr,on){if(on)rr.hb.add17=1;else delete rr.hb.add17;}},
       {txt:'喝水 8 杯（约 2400ml）',done:r.water>=CFG.waterGoal,act:function(rr,on){rr.water=on?CFG.waterGoal:0;}},
       {txt:isTrain?'完成今日训练（30 分钟）':'走够 8000 步 + 爬楼 3 趟',done:!!r.workout,act:function(rr,on){rr.workout=!!on;}},
       {txt:'21:00 刷牙 + 0:30 前睡',hbKey:'brush',done:triIsKeep(r.hb,'brush')&&!!r.sleep,act:function(rr,on){if(on)rr.hb.brush=1;else delete rr.hb.brush;if(on&&!rr.sleep)toast('刷牙打勾了，睡前记得填入睡时间');}}
@@ -2821,9 +3107,13 @@ function renderBadge(){
 
 function renderCups(){
   var r=rec(todayStr()),h='';
-  for(var i=1;i<=CFG.waterGoal;i++)h+='<div class="cup'+(r.water>=i?' on':'')+'" data-c="'+i+'">'+(r.water>=i?'💧':i)+'</div>';
+  /* v13c：已喝满的杯子显示 SVG 水滴（原来用 💧，缺 emoji 字体时会变方框） */
+  var DROP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c3.4 3.9 6 7.1 6 10.2a6 6 0 0 1-12 0c0-3.1 2.6-6.3 6-10.2z"/></svg>';
+  for(var i=1;i<=CFG.waterGoal;i++)h+='<div class="cup'+(r.water>=i?' on':'')+'" data-c="'+i+'">'+(r.water>=i?DROP:i)+'</div>';
   $('cups').innerHTML=h;
-  $('waterTxt').textContent=r.water+' / '+CFG.waterGoal+' 杯';
+  /* v13c：右侧改圆环显示 杯数/目标 */
+  var wh=$('waterHead');
+  if(wh)wh.innerHTML=ring3(r.water,CFG.waterGoal,{done:r.water>=CFG.waterGoal,lg:true});
   $('waterMl').textContent=r.water*CFG.cupMl;
   Array.prototype.forEach.call($('cups').children,function(el){
     el.onclick=function(){
@@ -2841,6 +3131,21 @@ function renderCups(){
    ============================================================ */
 function triGet(obj,k){var v=obj[k];return (v===1||v===2)?v:0;}
 function triCycle(obj,k){var v=triGet(obj,k);obj[k]=(v===0?1:(v===1?2:0));if(obj[k]===0)delete obj[k];}
+/* ============================================================
+   v13c · 迷你圆环生成器（全局复用）
+   ring3(已达成, 总数, {done:全部达成时转绿? , lg:大一号? , text:自定义中心文字})
+   返回 HTML 字符串，直接塞进卡片头部右侧的 .hring 容器
+   ============================================================ */
+function ring3(cur,total,opt){
+  opt=opt||{};
+  var t=total||1;
+  var p=Math.max(0,Math.min(100,t?cur/t*100:0));
+  var cls='ring3'+(opt.lg?' lg':'')+(opt.done?' done':'')+(cur>=total&&total>0?' full':'');
+  var txt=opt.text!=null?opt.text:(cur+'/'+total);
+  return '<span class="'+cls+'" style="--v:'+p.toFixed(1)+'" role="img" aria-label="'+cur+' / '+total+'">'+
+    '<span>'+txt+'</span></span>';
+}
+
 function triRender(list,state,goodText,badText){
   var keep=0,broke=0,un=0;
   var html=list.map(function(x){
@@ -2868,13 +3173,12 @@ function triRender(list,state,goodText,badText){
 function renderRedlines(){
   var r=rec(todayStr());
   var o=triRender(CFG.redlines,r.rl,'守住','破戒');
-  /* 卡片头：右侧显示「守住 N/6」+ 一键全守住 */
+  /* v13c：卡片头右侧改「圆环 + 一键全守住」，圆环显示 守住数/总数 */
   var hd=$('rlHead');
   if(hd){
-    hd.innerHTML='<span class="tri-meta'+(o.broke?' has-bad':'')+'">'+
-      '<b>'+o.keep+'</b> / '+CFG.redlines.length+
-      (o.broke?'　<span class="bad-n">破 '+o.broke+'</span>':'')+'</span>'+
-      (o.un>0?'<button type="button" class="btn sm onekey" id="rlAll">今天全守住</button>':'');
+    hd.className='hring';
+    hd.innerHTML=ring3(o.keep,CFG.redlines.length,{done:o.broke===0&&o.keep>0,lg:true})+
+      (o.un>0?'<button type="button" class="btn sm onekey" id="rlAll">全守住</button>':'');
   }
   $('rlBar').innerHTML=o.bar.replace('<div class="tri-bar">','').replace(/<\/div>$/,'');
   $('redlines').innerHTML=o.html;
@@ -2899,9 +3203,8 @@ function renderHabits(){
   var o=triRender(CFG.habits,r.hb,'做到','没做到');
   var hd=$('hbHead');
   if(hd){
-    hd.innerHTML='<span class="tri-meta'+(o.broke?' has-bad':'')+'">'+
-      '<b>'+o.keep+'</b> / '+CFG.habits.length+
-      (o.broke?'　<span class="bad-n">缺 '+o.broke+'</span>':'')+'</span>'+
+    hd.className='hring';
+    hd.innerHTML=ring3(o.keep,CFG.habits.length,{done:o.broke===0&&o.keep>0,lg:true})+
       (o.un>0?'<button type="button" class="btn sm onekey" id="hbAll">全部做到</button>':'');
   }
   $('hbBar').innerHTML=o.bar.replace('<div class="tri-bar">','').replace(/<\/div>$/,'');
@@ -3513,6 +3816,7 @@ function bind(){
       var f=FOODS[EAT_SEL],r=eatCalc();
       var q=$('eatQty')?(parseFloat($('eatQty').value)||1):1;
       var unit=($('eatUnit')&&$('eatUnit').value==='g')?'g':f.u;
+      EAT_QTY=(unit==='g')?round1(q):round1(q);   /* v13c：扣库存用 */
       el.innerHTML='已选：<b style="color:var(--brand-text)">'+f.n+'</b> '+round1(q)+unit+
         ' → <b style="color:var(--brand-text)">'+r.k+' kcal</b> · 蛋白 '+r.p+'g · 碳水 '+r.ca+'g · 脂肪 '+r.f+'g';
     }
@@ -3562,22 +3866,109 @@ function bind(){
     $('eatAdd').onclick=function(){
       var r=eatCalc();
       if(!r.g||r.g<=0){toast('数量要大于 0');return;}
+      r.src=EAT_SRC;                       /* v13c：食物来源 */
       var d=EAT_D;
       if(!DB.meals)DB.meals={};
       if(!DB.meals[d])DB.meals[d]=[];
-      DB.meals[d].push(r);save();renderMeals();
-      closeSheet();
-      toast('已添加：'+r.n+' '+r.g+'g（'+r.k+' kcal / 蛋白 '+r.p+'g）');
-    };
-    $('eatList').addEventListener('click',function(e){
-      var t=e.target;
-      if(t&&t.dataset&&t.dataset.del!==undefined){
-        var d=EAT_D;
-        var i=parseInt(t.dataset.del,10);
-        if(DB.meals&&DB.meals[d]){DB.meals[d].splice(i,1);save();renderMeals();}
+      DB.meals[d].push(r);save();
+      /* v13c：家中 → 扣库存；外采 → 不动库存 */
+      if(EAT_SRC==='home'){
+        var out=pantryDeduct([{n:r.n,q:EAT_QTY}]);
+        var hit=out.filter(function(o){return o.took>0;});
+        var short=out.filter(function(o){return o.need>o.took;});
+        if(hit.length){
+          toast('已添加 · 扣库存 '+hit.map(function(o){return foodName(o.k)+' −'+o.took+pqUnit(o.k);}).join('、'));
+        }else if(out.length&&short.length){
+          toast('库存里没有 '+foodName(short[0].k)+'，已按 0 记录（记得补货）');
+        }else{
+          toast('已添加：'+r.n+' '+r.g+'g');
+        }
+      }else{
+        toast('已添加：'+r.n+' '+r.g+'g（外采，不动库存）');
       }
-    });
+      renderMeals();
+      closeSheet();
+    };
+    /* v13c：左滑删除 + 撤销（替代原来的小「删」按钮） */
+    function undoDelete(d,i,item){
+      if(!DB.meals||!DB.meals[d])return;
+      DB.meals[d].splice(i,0,item);save();renderMeals();
+      toast('已恢复：'+item.n);
+    }
+    function doDelete(d,i){
+      if(!DB.meals||!DB.meals[d]||!DB.meals[d][i])return;
+      var item=DB.meals[d].splice(i,1)[0];save();renderMeals();
+      haptic('warn');
+      /* 撤销条挂在 eatList 外层（renderMeals 会重写 eatList.innerHTML） */
+      var host=$('eatList');
+      var wrapEl=host?host.parentNode:null;
+      if(!wrapEl)return;
+      var old=wrapEl.querySelector('.undobar');if(old)old.remove();
+      var bar=document.createElement('div');
+      bar.className='undobar';
+      bar.innerHTML='<span>已删除 <b>'+item.n+'</b></span><button type="button">撤销</button>';
+      bar.querySelector('button').onclick=function(){bar.remove();undoDelete(d,i,item);};
+      wrapEl.insertBefore(bar,host);
+      setTimeout(function(){if(bar.parentNode)bar.remove();},6000);
+    }
+    (function bindSwipe(){
+      var host=$('eatList');if(!host||host._dswipe)return;host._dswipe=1;
+      var row=null,x0=0,dx=0,moved=false,started=false;
+      function closeAll(except){
+        Array.prototype.forEach.call(host.querySelectorAll('.dsw-fg.sw-open'),function(f){
+          if(f!==except){f.classList.remove('sw-open');f.classList.add('sw-snap');
+            setTimeout(function(){f.classList.remove('sw-snap');},200);}
+        });
+      }
+      host.addEventListener('touchstart',function(e){
+        var fg=e.target.closest?e.target.closest('.dsw-fg'):null;
+        if(!fg)return;
+        row=fg;x0=e.touches[0].clientX;dx=0;moved=false;started=true;
+        fg.classList.remove('sw-snap');
+      },{passive:true});
+      host.addEventListener('touchmove',function(e){
+        if(!started||!row)return;
+        dx=e.touches[0].clientX-x0;
+        if(Math.abs(dx)<6)return;
+        moved=true;
+        var base=row.classList.contains('sw-open')?-76:0;
+        var off=Math.max(-96,Math.min(0,base+dx));
+        row.style.transform='translateX('+off+'px)';
+      },{passive:true});
+      host.addEventListener('touchend',function(){
+        if(!started||!row)return;
+        started=false;
+        row.style.transform='';
+        var open=row.classList.contains('sw-open');
+        if(dx<-36&&!open){closeAll(row);row.classList.add('sw-open');}
+        else if(dx>26&&open){row.classList.remove('sw-open');}
+        /* 手势刚结束的短时间内吞掉合成 click，避免误删 */
+        if(moved)host._swT=Date.now();
+        row=null;
+      },{passive:true});
+      /* 已划开时点右侧 = 删除；点其它地方 = 收回去 */
+      host.addEventListener('click',function(e){
+        if(Date.now()-(host._swT||0)<320)return;
+        var fg=e.target.closest?e.target.closest('.dsw-fg'):null;
+        if(!fg)return;
+        if(fg.classList.contains('sw-open')){
+          doDelete(EAT_D,parseInt(fg.parentNode.dataset.del,10));
+        }
+      });
+    })();
     renderFoods();fillUnit();syncPick();
+    /* v13c：食物来源切换 */
+    var srcRow=$('eatSrcRow');
+    if(srcRow){
+      Array.prototype.forEach.call(srcRow.querySelectorAll('.srcbtn'),function(b){
+        b.onclick=function(){
+          EAT_SRC=b.dataset.src;
+          Array.prototype.forEach.call(srcRow.querySelectorAll('.srcbtn'),function(x){x.classList.toggle('on',x===b);});
+          $('eatSrcHint').textContent=EAT_SRC==='home'?'扣库存':'不动库存';
+          haptic('select');
+        };
+      });
+    }
   })();
   $('btnExpand').onclick=function(){
     MOVES_OPEN=MOVES_OPEN==='ALL'?null:'ALL';renderMoves();
@@ -3656,14 +4047,14 @@ function bind(){
     fr.onload=function(){
       try{
         var o=JSON.parse(fr.result);
-        if(o&&o.records){DB=o;if(DB.vacation==null)DB.vacation=false;if(!DB.girth)DB.girth={};if(!DB.pantry)DB.pantry=PANTRY_DEFAULT.slice();if(!Array.isArray(DB.whispers))DB.whispers=[];if(!DB.meals)DB.meals={};save();render();toast('导入成功');}
+        if(o&&o.records){DB=o;if(DB.vacation==null)DB.vacation=false;if(!DB.girth)DB.girth={};if(!DB.pantry)DB.pantry={};migratePantry();if(!Array.isArray(DB.whispers))DB.whispers=[];if(!DB.meals)DB.meals={};save();render();toast('导入成功');}
         else toast('文件格式不对，需要导出的 JSON 备份');
       }catch(e){toast('导入失败：'+e.message);}
     };
     fr.readAsText(f);
   };
   $('btnClear').onclick=function(){
-    if(confirm('确定清空所有记录？此操作不可恢复，建议先导出备份。')){DB={records:{},girth:{},pantry:PANTRY_DEFAULT.slice(),vacation:false,whispers:[],meals:{},myFoods:[]};save();render();}
+    if(confirm('确定清空所有记录？此操作不可恢复，建议先导出备份。')){DB={records:{},girth:{},pantry:{},vacation:false,whispers:[],meals:{},myFoods:[]};save();render();}
   };
   renderBackupTip();
 }
@@ -3751,8 +4142,12 @@ function wkProgress(){
     }
   }
   var pct=tot?Math.round(ok/tot*100):0;
-  return '<div class="pbar '+(pct>=80?'ok':(pct>=50?'':'warn'))+'"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="mark"><span>本周训练 '+ok+' / '+tot+' 次</span><span>'+pct+'%</span></div>';
+  /* v13c：改「圆环 + 文字」布局，圆环显示 完成次数/本周目标次数 */
+  return '<div class="wk-prog">'+
+      ring3(ok,tot,{done:ok>=tot,lg:true})+
+      '<div class="wk-txt"><b>本周训练 '+ok+' / '+tot+' 次</b>'+
+        '<span class="muted">完成度 '+pct+'%</span></div>'+
+    '</div>';
 }
 
 /* ---------- PWA ---------- */
@@ -3912,6 +4307,7 @@ function initPlanTabs(){
   if(!pg)return;
   // [标题匹配, 分组, 是否默认收起]
   var DEF=[
+    [/今天怎么吃/,'eat',0],       // v13c：按库存自动排（默认展开，位置最前）
     [/吃 · 双模式/,'eat',1],      // v12：改默认收起（路径② 长文折叠）
     [/我的食材/,'eat',0],         // v12：三卡合并后统一叫「我的食材」
     [/采购建议/,'eat',0],
