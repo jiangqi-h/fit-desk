@@ -117,6 +117,15 @@
   --peach:#FFB020; --peach-soft:rgba(255,176,32,.13);
   --accent:#FFB020; --accent2:#FFC451; --accent-soft:rgba(255,176,32,.13);
   --accent-grad:#FFB020;
+  /* v13f 三大营养素专属色板（修 v13e 撞色 bug）
+     原状：碳水用 --brand #FFB020、脂肪用 --accent #FFB020 —— 两色完全相同，
+     导致热量饼图/营养环里碳水和脂肪分不出来。
+     现改为「琥珀 / 紫 / 青」三色拉开色相：琥珀=碳水（主色系，与品牌一致）、
+     紫=脂肪（冷底，和琥珀互为补色）、青=蛋白（延续原 --ok 的绿系认知）。
+     三色在深色底上两两色相差 ≥60°，灰度下明度也不同，色弱也能区分。 */
+  --n-carb:#FFB020; --n-fat:#B98BFF; --n-pro:#3FD68C;
+  /* v13f 餐次专属色：小环按餐次上色，早/午/加/晚一眼分得开（原来全是一个橙） */
+  --m-b:#FFC451; --m-l:#8FD662; --m-s:#6FD3D3; --m-d:#FF8FA3;
   /* ---- 形状：圆角收一档（20→16 / 14→12）；v11 起别名到 token ---- */
   --radius:var(--r-md); --radius-sm:var(--r-sm); --radius-xs:var(--r-xs);
   --shadow:none;                                  /* 深色下阴影无效，层级改由明度差承担 */
@@ -156,6 +165,9 @@
   --peach:#A85E00; --peach-soft:#FDF2E0;
   --accent:#A85E00; --accent2:#C47411; --accent-soft:#FDF2E0;
   --accent-grad:#A85E00;
+  /* v13f 浅色下同样压深，保证白底对比度 */
+  --n-carb:#B36A00; --n-fat:#6B3FC4; --n-pro:#0A7A4E;
+  --m-b:#A8700A; --m-l:#2F7A1E; --m-s:#0F6B6B; --m-d:#A83048;
   --shadow:0 1px 2px rgba(48,35,16,.04),0 6px 20px rgba(48,35,16,.06);
   --shadow-lg:0 2px 6px rgba(48,35,16,.05),0 16px 44px rgba(48,35,16,.10);
   --shadow-brand:0 6px 20px rgba(168,94,0,.24);
@@ -237,8 +249,10 @@ input[type=file]{min-height:auto;padding:0}
 .pg.ok>i{background:var(--ok)} .pg.warn>i{background:var(--warn)} .pg.danger>i{background:var(--danger)}
 @media(prefers-reduced-motion:reduce){.pg>i{transition:none}}
 /* 三大营养素行 */
-.macro-row{display:grid;grid-template-columns:38px 1fr auto;gap:var(--sp-2);align-items:center;margin:9px 0}
-.macro-row .mLbl{font-size:var(--fs-md);color:var(--sub);font-weight:600}
+.macro-row{display:grid;grid-template-columns:52px 1fr auto;gap:var(--sp-2);align-items:center;margin:9px 0}
+.macro-row .mLbl{font-size:var(--fs-md);color:var(--sub);font-weight:600;display:flex;align-items:center;gap:5px}
+/* v13f 营养素色标：标签前的小圆点，和圆环/图例同色，扫一眼就能对上 */
+.macro-row .mdot{width:8px;height:8px;border-radius:50%;flex:none}
 .macro-row .progress{height:var(--pg-sm);background:var(--card2);border-radius:var(--r-full);overflow:hidden}
 .macro-row .progress>i{display:block;height:100%;border-radius:var(--r-full);background:var(--brand);
   transition:width var(--dur) var(--ease)}
@@ -431,10 +445,12 @@ header .inner{max-width:560px;margin:0 auto}
 .mrow{display:flex;align-items:center;gap:var(--sp-3);padding:8px 2px;
   border-bottom:1px solid var(--line);font-size:var(--fs-md);background:var(--card)}
 .mrow:last-child{border-bottom:none}
-.mring{--p:0;--sz:36px;--th:4px;
+/* v13f：--rc 由 JS 按餐次注入（早/午/加/晚四色），默认回退品牌色。
+   原状写死 var(--brand)，导致「今天吃了啥」所有小环全是同一个橙，看不出区别。 */
+.mring{--p:0;--sz:36px;--th:4px;--rc:var(--brand);
   width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
   display:grid;place-items:center;position:relative;
-  background:conic-gradient(var(--brand) calc(var(--p)*1%),var(--card3) 0)}
+  background:conic-gradient(var(--rc) calc(var(--p)*1%),var(--card3) 0)}
 .mring:after{content:"";position:absolute;inset:var(--th);border-radius:50%;background:var(--card)}
 /* 数字用 11px（全站规范：正文/数字不得小于 11px，10px 会被小字检测判违规） */
 .mring>span{position:relative;z-index:1;font-family:var(--num-font);
@@ -484,6 +500,61 @@ tr.ap-miss td{opacity:.72}
 .pchip.on{background:var(--card2);color:var(--text);border:1px solid var(--line);border-style:solid}
 .pchip:active{transform:scale(.96)}
 .pchip:focus-visible{outline:none;box-shadow:var(--ring)}
+/* v13f 自动配餐里的 CPB 提示条 */
+.cpb-hint{margin:8px 0 4px;padding:8px 11px;border-radius:var(--r-xs);
+  background:color-mix(in srgb,var(--n-pro) 12%,var(--card2));
+  border:1px solid color-mix(in srgb,var(--n-pro) 38%,var(--line));
+  font-size:var(--fs-sm);color:var(--text2);line-height:1.6}
+.cpb-hint b{color:var(--text)}
+.cpb-hint.warn{background:color-mix(in srgb,var(--warn) 12%,var(--card2));
+  border-color:color-mix(in srgb,var(--warn) 38%,var(--line))}
+/* v13f CPB 止损卡 */
+.cpb{padding:var(--sp-3);border-radius:var(--r-sm);background:var(--card2);border:1px solid var(--line)}
+.cpb.on{background:color-mix(in srgb,var(--n-pro) 10%,var(--card2));border-color:color-mix(in srgb,var(--n-pro) 42%,var(--line))}
+.cpb.warn{background:color-mix(in srgb,var(--warn) 11%,var(--card2));border-color:color-mix(in srgb,var(--warn) 42%,var(--line))}
+.cpb.ok{background:color-mix(in srgb,var(--ok) 9%,var(--card2));border-color:color-mix(in srgb,var(--ok) 36%,var(--line))}
+.cpb-h{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:8px;font-size:var(--fs-md)}
+.cpb-tag{display:inline-block;padding:2px 9px;border-radius:var(--r-full);
+  font-size:var(--fs-xs);font-weight:800;letter-spacing:.3px;
+  background:var(--n-pro);color:#0A2418}
+.cpb-tag.warn{background:var(--warn);color:#2A1400}
+.cpb-tag.ok{background:var(--ok);color:#0A2418}
+.cpb-b{font-size:var(--fs-md);color:var(--text2);line-height:1.65}
+.cpb-b b{color:var(--text)}
+.cpb-n{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);
+  font-size:var(--fs-sm);color:var(--sub);line-height:1.6}
+.cpb-n b{color:var(--warn-text)}
+.cpb-shop{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-2);margin-top:10px}
+.cpb-shop .it{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:var(--r-xs);
+  background:var(--card);border:1px solid var(--line);font-size:var(--fs-sm);min-width:0}
+.cpb-shop .it.miss{border-style:dashed;color:var(--warn-text)}
+.cpb-shop .it b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cpb-shop .it i{font-style:normal;flex:none;font-size:var(--fs-md)}
+
+/* v13f 自定义食材：胶囊上的「我的」角标 + 添加面板 */
+.pchip.my:after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;
+  border-radius:50%;background:var(--n-fat)}   /* 自定义食材右上一颗紫点，和内置区分 */
+.pchip{position:relative}
+.addp{margin-top:var(--sp-3);padding:var(--sp-3);border-radius:var(--r-sm);
+  background:var(--card2);border:1px solid var(--line)}
+.addp[hidden]{display:none}
+.addp-row{display:grid;grid-template-columns:104px 1fr;gap:var(--sp-3);align-items:center;margin-bottom:9px}
+.addp-row>label{font-size:var(--fs-md);color:var(--sub);font-weight:600;line-height:1.25}
+.addp-row input,.addp-row select{min-width:0;width:100%}
+.addp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-bottom:9px}
+.addp-grid label{display:flex;flex-direction:column;gap:5px;min-width:0}
+.addp-grid span{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
+.addp-grid input{min-width:0;width:100%}
+.addp-btns{display:flex;gap:var(--sp-2);margin-top:var(--sp-2)}
+.addp-btns .btn{flex:1}
+#msList{margin-top:var(--sp-3)}
+.msrow{display:flex;align-items:center;gap:var(--sp-2);padding:8px 2px;
+  border-top:1px solid var(--line);font-size:var(--fs-md)}
+.msrow>b{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msrow .mssub{font-size:var(--fs-sm);color:var(--sub);white-space:nowrap}
+.msrow .msdel{flex:none;width:30px;height:30px;border-radius:var(--r-xs);border:1px solid var(--line);
+  background:var(--card);color:var(--danger-text);font-size:var(--fs-lg);line-height:1;
+  display:grid;place-items:center;cursor:pointer;font-family:inherit}
 .pchip>.pq{flex:none;font-family:var(--num-font);font-size:var(--fs-xs);font-weight:700;
   padding:3px 8px;border-radius:var(--r-full);background:var(--card3);color:var(--sub);
   min-width:24px;text-align:center;border:1px solid transparent}
@@ -746,7 +817,8 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
   transition:width var(--dur) var(--ease)}
 .pbar.ok>i{background:var(--ok-grad)}.pbar.warn>i{background:var(--warn-grad)}
 .pbar.danger>i{background:var(--danger-grad)}.pbar.accent>i{background:var(--accent-grad)}
-.macro-row .progress>i{background:var(--brand-grad)}
+/* v13f：删掉 .macro-row .progress>i{background:var(--brand-grad)}。
+   它会把行内设的营养素颜色覆盖回单一品牌色（就是撞色 bug 的另一半原因）。 */
 .bar2>i{background:var(--brand-grad)}
 
 /* ---- 环形进度（v11 统一：整环与半环共用 conic-gradient 画法，靠修饰符区分） ---- */
@@ -826,8 +898,9 @@ h2:has(.hring){display:flex;align-items:center;gap:var(--sp-2)}
 .bars{margin-bottom:16px}
 /* ---- 饼图（热量/成本分布） ---- */
 .pie-wrap{display:flex;align-items:center;gap:var(--sp-4)}
+/* v13f 三段配色改为碳水/脂肪/蛋白专属色（原来 carbon 与 fat 同为 #FFB020 分不出） */
 .pie{--a:0;--b:0;width:88px;height:88px;border-radius:50%;flex:none;
-  background:conic-gradient(var(--brand) 0 calc(var(--a)*1%),var(--accent) 0 calc(var(--b)*1%),var(--ok) 0);
+  background:conic-gradient(var(--n-carb) 0 calc(var(--a)*1%),var(--n-fat) 0 calc(var(--b)*1%),var(--n-pro) 0);
   display:grid;place-items:center;position:relative}
 .pie:after{content:"";position:absolute;inset:19px;border-radius:50%;background:var(--card);
   box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
@@ -1389,6 +1462,12 @@ body.kb #a2hs{display:none}
     <div id="autoPlan" data-page-node-id="v13cAutoPlan"></div>
   </div>
 
+  <!-- v13f CPB 止损：周三/破功后把节奏拉回来，最多 3 天 -->
+  <div class="card" data-page-node-id="v13fCpbCard">
+    <h2 data-page-node-id="v13fCpbH">止损模式 <span class="tag" data-page-node-id="v13fCpbTag">破功了就按一下</span></h2>
+    <div id="cpbBox" data-page-node-id="v13fCpbBox"></div>
+  </div>
+
   <div class="card peek-lead" data-page-node-id="eDNHb2epF68xlsZk3MIyZ5">
     <h2 data-page-node-id="KLolMpg7RKqCoMHkcTO0hv">吃 · 双模式</h2>
     <div class="coach peek-lead" data-page-node-id="uSA0dzBwpC5yRrWjVFmM2q"><b data-page-node-id="BRkAFOKmEk6Ij2LeVQrcrL">工作日 · 在公司</b></div>
@@ -1421,8 +1500,48 @@ body.kb #a2hs{display:none}
        从「勾食材」走到「能做什么」。现在勾选 → 结果 → 差一样，一次读完。
        注意：所有挂载点 ID 保持不变，下游 renderPantry 无需改动渲染逻辑。 -->
   <div class="card" data-page-node-id="bflZ608tk8DNONfShk8poq">
-    <h2 data-page-node-id="hjAutXEBPTTpl0C7dcRJ4L">我的食材 <span class="tag" id="canCount" data-page-node-id="jFGeNmGBXxwVT9B6PJJXIc"></span></h2>
+    <h2 data-page-node-id="hjAutXEBPTTpl0C7dcRJ4L">我的食材 <span class="tag" id="canCount" data-page-node-id="jFGeNmGBXxwVT9B6PJJXIc"></span>
+      <button type="button" class="btn" id="btnAddStock" style="margin-left:auto;flex:0 0 auto;width:auto;min-height:34px;padding:4px 12px;font-size:var(--fs-sm)">＋ 添加食材</button>    </h2>
     <div class="muted" data-page-node-id="BqGvqevQbrvmSAgjp1pnQO">点一下 +1，长按（或右键）−1。数量 = 冰箱现有</div>
+
+    <!-- v13f 添加食材面板（默认收起） -->
+    <div id="addStockPanel" class="addp" hidden>
+      <div class="addp-row">
+        <label for="msName">名称</label>
+        <input id="msName" type="text" placeholder="例：无糖酸奶" maxlength="12">
+      </div>
+      <div class="addp-row">
+        <label for="msUnit">单位</label>
+        <input id="msUnit" type="text" placeholder="份 / 盒 / 杯 / 个" value="份" maxlength="4">
+      </div>
+      <div class="addp-row">
+        <label for="msCat">分类</label>
+        <select id="msCat">
+          <option value="p">蛋白质类</option>
+          <option value="c">主食类</option>
+          <option value="v" selected>蔬菜类</option>
+        </select>
+      </div>
+      <div class="addp-row">
+        <label for="msKc">每 100g<br><span class="muted">热量 kcal</span></label>
+        <input id="msKc" type="number" inputmode="decimal" placeholder="例 72" min="0">
+      </div>
+      <div class="addp-grid">
+        <label><span>蛋白 g</span><input id="msP" type="number" inputmode="decimal" min="0" placeholder="留空自动"></label>
+        <label><span>碳水 g</span><input id="msCa" type="number" inputmode="decimal" min="0" placeholder="留空自动"></label>
+        <label><span>脂肪 g</span><input id="msF" type="number" inputmode="decimal" min="0" placeholder="留空自动"></label>
+      </div>
+      <div class="addp-row">
+        <label for="msStock">现有</label>
+        <input id="msStock" type="number" inputmode="numeric" placeholder="0" min="0" value="0">
+      </div>
+      <div class="muted" id="msTip">只知道名字也行：热量和营养素留空，我按食材名自动估算。</div>
+      <div class="addp-btns">
+        <button type="button" class="btn primary" id="msSave">存进食材库</button>
+        <button type="button" class="btn" id="msCancel">关闭</button>
+      </div>
+      <div id="msList"></div>
+    </div>
     <div class="sub-h" data-page-node-id="BX6kHkTAeaZNY3k6KhHAL5">蛋白质类</div>
     <div class="chips" id="pantryP" data-page-node-id="PhHhw3fTGjRMoB9EvArVJg"></div>
     <div class="sub-h" data-page-node-id="jwX3Gk39Ph2pSK9wZO3wnJ">主食类</div>
@@ -1785,7 +1904,109 @@ var MEALS=[
 {n:'火腿 + 牛奶',need:['ham','milk'],kc:230,pr:16,fire:0,
  how:'火腿 1 根 + 牛奶 250ml。<b>应急用</b>，钠偏高，别当主力。'}
 ];
+/* ================= v13f 自定义食材（库存用） =================
+   注意：DB.myFoods 已被「记账 · 自定义食物」占用（结构 {n,u,g,k,p,ca,f,c:'我的'}）。
+   两套东西用途不同（一个进库存/配餐，一个进食物检索），**不能共用同一个数组**，
+   所以这里另开字段 DB.myStock，结构与 myFoods 不兼容、互不污染。
+   {k:'ms_xxx', t:'名称', u:'单位', c:'p'|'c'|'v', kc:每100g热量, p:蛋白, ca:碳水, f:脂肪}
+   k 带 ms_ 前缀，与内置 key、与记账那边的索引都天然不冲突。 */
+var MYSTOCK_SEQ=0;
+function myStock(){if(!DB.myStock)DB.myStock=[];return DB.myStock;}
+function myStockById(k){
+  var a=myStock();
+  for(var i=0;i<a.length;i++)if(a[i].k===k)return a[i];
+  return null;
+}
+function addMyStock(o){
+  var a=myStock();
+  MYSTOCK_SEQ++;
+  var k='ms_'+Date.now().toString(36)+'_'+MYSTOCK_SEQ;
+  var it={k:k,t:o.t,u:o.u,c:o.c,kc:o.kc,p:o.p,ca:o.ca,f:o.f};
+  a.push(it);
+  PANTRY_UNIT[k]=o.u;              /* 单位注册进去，胶囊/配餐都能显示 */
+  if(o.stock>0)DB.pantry[k]=o.stock;
+  DB.autoPlanDirty=1;              /* 食材变了 → 自动配餐下次重排 */
+  save();
+  return it;
+}
+function delMyStock(k){
+  var a=myStock();
+  for(var i=0;i<a.length;i++)if(a[i].k===k){a.splice(i,1);break;}
+  delete DB.pantry[k];
+  DB.autoPlanDirty=1;
+  save();
+}
+/* 把自定义食材按分类转成 chips() 能吃的 {k,t} 形状 */
+function myStockByCat(c){
+  return myStock().filter(function(x){return x.c===c;}).map(function(x){return {k:x.k,t:x.t,my:1};});
+}
+/* ---- v13f 营养自动估算 ----
+   用户说「三大营养素你来判断」：只填名字也能存。
+   策略：① 先在 FOODS 里按名字模糊匹配（命中就直接抄它的每 100g 数据，最准）；
+        ② 匹配不到 → 按「分类」给一个保守的默认值（宁可高估蛋白、低估热量）；
+        ③ 给了热量但没给营养素 → 按该分类的常见供能比反推。 */
+function estNutrition(name,cat,given){
+  var out={kc:given.kc,p:given.p,ca:given.ca,f:given.f};
+  /* ① 食物库模糊匹配 */
+  if(given.kc==null||given.kc===''){
+    var hit=null;
+    var nm=String(name||'').replace(/\s/g,'');
+    for(var i=0;i<FOODS.length;i++){
+      var fn=FOODS[i].n;
+      if(nm&&(nm.indexOf(fn)>=0||fn.indexOf(nm)>=0)){hit=FOODS[i];break;}
+    }
+    if(hit){
+      out.kc=hit.k;
+      if(out.p==null||out.p==='')out.p=hit.p;
+      if(out.ca==null||out.ca==='')out.ca=hit.ca;
+      if(out.f==null||out.f==='')out.f=hit.f;
+      out.src='库';
+    }else{
+      /* ② 分类默认值（每 100g） */
+      var DEF={p:{kc:120,p:18,ca:3,f:4},c:{kc:130,p:3,ca:27,f:1},v:{kc:35,p:2,ca:6,f:.4}};
+      var d=DEF[cat]||DEF.v;
+      out.kc=d.kc;
+      if(out.p==null||out.p==='')out.p=d.p;
+      if(out.ca==null||out.ca==='')out.ca=d.ca;
+      if(out.f==null||out.f==='')out.f=d.f;
+      out.src='估';
+    }
+  }else{
+    /* ③ 有热量、缺营养素 → 按分类供能比推算 */
+    var R={p:{pp:.55,cc:.15,ff:.30},c:{pp:.12,cc:.75,ff:.13},v:{pp:.22,cc:.55,ff:.23}};
+    var r=R[cat]||R.v,kc=given.kc;
+    if(out.p==null||out.p==='')out.p=round1(kc*r.pp/4);
+    if(out.ca==null||out.ca==='')out.ca=round1(kc*r.cc/4);
+    if(out.f==null||out.f==='')out.f=round1(kc*r.ff/9);
+    out.src='算';
+  }
+  out.kc=Math.round(out.kc||0);
+  out.p=round1(out.p||0);out.ca=round1(out.ca||0);out.f=round1(out.f||0);
+  return out;
+}
+function renderMsList(){
+  var box=$('msList');if(!box)return;
+  var a=myStock();
+  if(!a.length){box.innerHTML='<div class="muted" style="font-size:var(--fs-sm)">还没加过自定义食材。</div>';return;}
+  box.innerHTML='<div class="sub-h">我加的（'+a.length+'）</div>'+a.map(function(x){
+    return '<div class="msrow"><b>'+escHtml(x.t)+'</b>'+
+      '<span class="mssub">每100g '+x.kc+'kcal · 蛋'+x.p+'/碳'+x.ca+'/脂'+x.f+'</span>'+
+      '<button type="button" class="msdel" data-mk="'+x.k+'" aria-label="删除 '+escHtml(x.t)+'">×</button></div>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.msdel'),function(b){
+    b.onclick=function(){
+      var it=myStockById(b.dataset.mk);
+      if(!it)return;
+      if(!confirm('删除自定义食材「'+it.t+'」？库存和配餐里的这条也会一并清掉。'))return;
+      delMyStock(b.dataset.mk);
+      renderMsList();renderPantry();renderAutoPlan();
+      toast('已移除：'+it.t);
+    };
+  });
+}
 function foodName(k){
+  var mf=myStockById(k);
+  if(mf)return mf.t;
   var all=PROTEIN.concat(CARB,VEG);
   for(var i=0;i<all.length;i++)if(all[i].k===k)return all[i].t;
   return k;
@@ -2050,6 +2271,113 @@ var EAT_TG=(function(){
 var EAT_D=todayStr();
 var WK=['周日','周一','周二','周三','周四','周五','周六'];
 
+/* ================= v13f CPB 止损模式 =================
+   背景：用户自述「破功多了会偷懒 → 体重涨 → 失去信心 → 不再坚持」。
+   要的不是长期极端饮食（CPB 那套只吃鸡胸+土豆+西兰花，营养学上明确有害：
+   缺必需脂肪酸/钙铁锌/维D，蛋白过量伤肾，且压抑久了必然报复性暴食 → 溜溜球反弹），
+   而是**短期止损**：破功后把人拉回轨道，别让一天变成一周。
+   所以这里只取 CPB 的 3 个内核 —— 高蛋白保肌肉 / 低 GI 土豆扛饿 / 高纤蔬菜压热量，
+   **连续用不超过 3 天**，到点强制退出。触发口径按用户拍板：
+   「只看周均，不调单日」「热量超目标 20%」。 */
+var CPB={MAX_DAYS:3};
+/* 周均口径：近 7 天里「有进食记录」的那几天，日均热量 > 目标 × 1.2 即触发 */
+function weekAvg(){
+  var days=[],dt=new Date();
+  for(var i=6;i>=0;i--){var d2=new Date();d2.setDate(dt.getDate()-i);days.push(fmt(d2));}
+  var sum=0,n=0;
+  days.forEach(function(d){
+    var a=(DB.meals&&DB.meals[d])||[];
+    if(!a.length)return;
+    var k=0;a.forEach(function(m){k+=m.k||0;});
+    sum+=k;n++;
+  });
+  return {avg:n?Math.round(sum/n):0,n:n,days:days.length};
+}
+/* 到点强制退出。必须是独立函数：早期版本把这段写在 cpbState() 里，
+   结果只有渲染 CPB 卡时才会触发，而 renderAutoPlan() 直接读 DB.cpbOn 原始值，
+   导致「已经超 3 天了，配餐还在按 CPB 排」—— 状态和展示不一致。
+   现在由 render() 每轮统一先跑一次，所有读 DB.cpbOn 的地方看到的都是最新状态。 */
+function cpbExpireIfNeeded(){
+  if(!DB.cpbOn||!DB.cpbStart)return false;
+  if(diffDays(DB.cpbStart,todayStr())+1>CPB.MAX_DAYS){
+    DB.cpbOn=false;DB.cpbStart=null;save();
+    return true;
+  }
+  return false;
+}
+function cpbState(){
+  var w=weekAvg();
+  var line=Math.round(EAT_TG.k*1.2);
+  var hit=w.n>0&&w.avg>line;
+  var on=!!DB.cpbOn;
+  var start=DB.cpbStart||null;
+  var used=0;
+  if(on&&start)used=Math.max(1,diffDays(start,todayStr())+1);
+  return {avg:w.avg,days:w.n,line:line,hit:hit,on:on,used:used,left:Math.max(0,CPB.MAX_DAYS-used)};
+}
+function cpbToggle(on){
+  DB.cpbOn=!!on;
+  DB.cpbStart=on?todayStr():null;
+  save();
+  haptic(on?'success':'warn');
+  renderCpb();
+  toast(on?'🥗 已进 CPB 止损：高蛋白 + 土豆 + 蔬菜，最多 3 天，到点自动退出'
+          :'已退出止损模式，回到常规目标');
+}
+function renderCpb(){
+  var box=$('cpbBox');if(!box)return;
+  var s=cpbState();
+  if(s.on){
+    box.innerHTML='<div class="cpb on">'+
+      '<div class="cpb-h"><span class="cpb-tag">CPB 止损中</span>'+
+      '<span class="muted">第 '+s.used+'/'+CPB.MAX_DAYS+' 天</span>'+
+      '<button type="button" class="btn" id="cpbOff" style="margin-left:auto;min-height:32px;padding:3px 10px;font-size:var(--fs-sm)">退出</button></div>'+
+      '<div class="cpb-b">今天是<b>鸡胸 + 土豆 + 西兰花（可换同色等价的）</b>。做法只用蒸/煮/少油煎，油每餐一小勺，调料只放盐和黑胡椒，饮料只喝白水/黑咖啡/无糖茶。</div>'+
+      '<div class="cpb-n">还剩 <b>'+s.left+'</b> 天。这套是<b>短期刹车</b>，不是长期方案 —— 连着吃到第 3 天必须退出，否则会掉肌肉、掉代谢、然后报复性暴食。</div>'+
+      cpbShoppingHtml()+
+      '</div>';
+    if($('cpbOff'))$('cpbOff').onclick=function(){cpbToggle(false);};
+    return;
+  }
+  if(!s.hit){
+    box.innerHTML='<div class="cpb ok"><div class="cpb-h"><span class="cpb-tag ok">周均在轨</span></div>'+
+      '<div class="cpb-b">近 7 天记录了 '+s.days+' 天，日均 <b>'+s.avg+' kcal</b>，止损线 '+s.line+' kcal。'+
+      (s.days<3?'<span class="muted">（记录天数还少，先记满 3 天再看）</span>':'没超，保持。')+'</div></div>';
+    return;
+  }
+  /* 触发：超标了 */
+  box.innerHTML='<div class="cpb warn"><div class="cpb-h"><span class="cpb-tag warn">周均超线</span></div>'+
+    '<div class="cpb-b">近 7 天日均 <b>'+s.avg+' kcal</b>，超过止损线 '+s.line+'（目标 '+EAT_TG.k+' × 1.2）。'+
+    '<b>别慌，也别自责</b> —— 破功之后最危险的动作不是「吃了」，是「反正都这样了」。</div>'+
+    '<div class="cpb-n">按一下启动 <b>CPB 止损</b>：用 2~3 天高蛋白 + 土豆 + 蔬菜把节奏拉回来。'+
+    '只止 3 天，不是让你长期这么吃。</div>'+
+    cpbShoppingHtml()+
+    '<button type="button" class="btn primary" id="cpbOnBtn" style="width:100%;margin-top:10px;min-height:44px">启动 CPB 止损（最多 3 天）</button>'+
+    '</div>';
+  if($('cpbOnBtn'))$('cpbOnBtn').onclick=function(){cpbToggle(true);};
+}
+function cpbShoppingHtml(){
+  var list=cpbShoppingList(),miss=list.filter(function(x){return !x.ok;});
+  var h='<div class="cpb-n" style="border-top:none;padding-top:2px"><b>该买的</b>'+
+    (miss.length?'（还差 '+miss.length+' 样，点下面的「我的食材」加进去）':'（都齐了，直接开做）')+'</div>';
+  h+='<div class="cpb-shop">'+list.map(function(x){
+    return '<div class="it'+(x.ok?'':' miss')+'"><i>'+(x.ok?'✓':'＋')+'</i>'+
+      '<b>'+x.n+'</b><span class="muted" style="flex:none">'+x.u+'</span></div>';
+  }).join('')+'</div>';
+  return h;
+}
+/* CPB 采购清单：进止损模式时告诉用户该买什么（用户明确要求） */
+function cpbShoppingList(){
+  var base=[{n:'鸡胸肉',u:'袋',why:'高蛋白主力，保肌肉'},{n:'土豆',u:'个',why:'主食替代，扛饿'},
+    {n:'西兰花',u:'颗',why:'高纤维，热量极低'},{n:'胡萝卜',u:'根',why:'补维A，配色'}];
+  var have={};myStock().forEach(function(x){if(pq(x.k)>0)have[x.t]=1;});
+  ['chicken','potato','broccoli'].forEach(function(k){if(pq(k)>0)have[foodName(k)]=1;});
+  return base.map(function(b){
+    var ok=have[b.n];
+    return {n:b.n,u:b.u,why:b.why,ok:!!ok};
+  });
+}
+
 function eatFoodsOf(cat){
   return FOODS.map(function(f,i){return {f:f,i:i};}).filter(function(o){return o.f.c===cat;});
 }
@@ -2195,15 +2523,22 @@ function renderMeals(){
   arr.forEach(function(m){T.k+=m.k;T.p+=m.p;T.ca+=m.ca;T.f+=m.f;});
   var kpct=Math.min(100,Math.round(T.k/EAT_TG.k*100));
   var kcol=kpct>=100?'var(--danger)':(kpct>=85?'var(--brand)':'var(--warn)');
-  function macroRow(label,v,tg){
+  function macroRow(label,v,tg,col){
     var pct=tg>0?Math.min(100,Math.round(v/tg*100)):0;
-    return '<div class="macro-row"><span class="mLbl">'+label+'</span>'+
-      '<div class="progress"><i style="width:'+pct+'%"></i></div>'+
+    /* v13f：进度条 + 左侧小色标都用营养素专属色，跟圆环/图例一一对应 */
+    return '<div class="macro-row"><span class="mLbl"><i class="mdot" style="background:'+col+'"></i>'+label+'</span>'+
+      '<div class="progress"><i style="width:'+pct+'%;background:'+col+'"></i></div>'+
       '<strong>'+Math.round(v)+' / '+tg+'g</strong></div>';
   }
+  /* v13f：大环从「单色进度」改为「三大营养素占比」三段环，与下方热量饼图同语义同配色，
+     热量数字仍留在环心。这样顶部一看就是「吃的构成」，不用再对两个不同含义的环。 */
+  var mkT=T.p*4+T.ca*4+T.f*9;
+  var ca1=mkT>0?Math.round(T.ca*4/mkT*100):0;
+  var ca2=mkT>0?Math.round((T.ca*4+T.f*9)/mkT*100):0;
   $('eatSum').innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:var(--sp-4);align-items:center;margin-bottom:4px">'+
-    '<div class="ring" style="--p:'+kpct+';--ring-col:'+kcol+'"><div><b>'+Math.round(T.k)+'</b><br><small>/ '+EAT_TG.k+' kcal</small></div></div>'+
-    '<div>'+macroRow('蛋白',T.p,EAT_TG.p)+macroRow('碳水',T.ca,EAT_TG.ca)+macroRow('脂肪',T.f,EAT_TG.f)+'</div></div>'+
+    '<div class="ring" style="--p:'+kpct+';--seg1:'+ca1+';--seg2:'+ca2+';background:conic-gradient(var(--n-carb) 0 calc(var(--seg1)*1%),var(--n-fat) 0 calc(var(--seg2)*1%),var(--n-pro) 0)">'+
+      '<div><b>'+Math.round(T.k)+'</b><br><small>/ '+EAT_TG.k+' kcal</small></div></div>'+
+    '<div>'+macroRow('蛋白',T.p,EAT_TG.p,'var(--n-pro)')+macroRow('碳水',T.ca,EAT_TG.ca,'var(--n-carb)')+macroRow('脂肪',T.f,EAT_TG.f,'var(--n-fat)')+'</div></div>'+
     (arr.length?eatPie(T):'<div class="muted" style="margin-top:8px">今天还没记。打开下方「记一笔」，10 秒记完。</div>');
   $('eatCount').textContent=arr.length+' 项';
   // 清单按餐次分组
@@ -2212,6 +2547,7 @@ function renderMeals(){
     var list=arr.map(function(m,i){return {m:m,i:i};}).filter(function(o){return o.m.slot===s.k;});
     if(!list.length)return;
     var cls=s.k==='b'?'':(s.k==='d'?'g':'o');
+    var ringCol='var(--m-'+s.k+')';   /* v13f 该餐次专属色 */
     html+='<div class="ti '+cls+'"><div class="tt">'+s.t+'　'+slotTime(s.k)+
       '<span class="savecb" data-slot="'+s.k+'">存套餐</span></div>';
     list.forEach(function(o){
@@ -2221,7 +2557,7 @@ function renderMeals(){
       html+='<div class="dswipe" data-del="'+o.i+'">'+
         '<div class="dsw-bg"><span>删除</span></div>'+
         '<div class="mrow dsw-fg" title="'+escHtml(o.m.cook)+'" aria-label="'+escHtml(o.m.n)+'，'+o.m.g+'克，'+escHtml(o.m.cook)+'，'+o.m.k+'千卡，蛋白'+o.m.p+'克">'+
-          '<span class="mring" style="--p:'+Math.min(100,Math.round(o.m.k/EAT_TG.k*100*3))+'" role="img" aria-label="'+o.m.k+' 千卡"><span>'+o.m.k+'</span></span>'+
+          '<span class="mring" style="--rc:'+ringCol+';--p:'+Math.min(100,Math.round(o.m.k/EAT_TG.k*100*3))+'" role="img" aria-label="'+o.m.k+' 千卡"><span>'+o.m.k+'</span></span>'+
           '<span class="mmain"><span class="mline">'+srcTag+'<b>'+escHtml(o.m.n)+'</b></span>'+
             '<span class="msub">'+o.m.g+'g · 蛋白 '+o.m.p+'g</span></span>'+
         '</div></div>';
@@ -2302,6 +2638,9 @@ function load(){
   if(!DB.pantry)DB.pantry={};          /* v13c：改为对象 {k:数量} */  migratePantry();                     /* v13c：旧数组 → 对象，只跑一次 */
   if(DB.vacation==null)DB.vacation=false;
   if(DB.canCook==null)DB.canCook=false;   /* v13e：能不能开火做饭（默认否，在公司） */
+  if(!DB.myStock)DB.myStock=[];           /* v13f：自定义食材（库存用，与 DB.myFoods 隔离） */
+  if(DB.cpbOn==null)DB.cpbOn=false;       /* v13f：CPB 止损模式开关 */
+  if(DB.cpbStart===undefined)DB.cpbStart=null;
   if(!DB.meals)DB.meals={};
   if(DB.whispers===undefined)DB.whispers=[];
   if(!DB.myFoods)DB.myFoods=[];   /* v9 A12：自定义食物 */
@@ -2398,10 +2737,62 @@ function startWeight(){var ds=wDates();return ds.length?parseFloat(DB.records[ds
 
 /* ================= 渲染 ================= */
 function render(){
+  cpbExpireIfNeeded();   /* v13f：先统一处理止损到期，再渲染，避免各模块状态不一致 */
   renderHeader();renderHero();renderStaleTip();renderTopOne();renderNight();renderPants();renderGirth();renderTodo();renderHabits();renderCups();renderRedlines();renderWorkout();
   renderCoach();renderChart();renderGChart();renderWeek();renderRL();renderHist();renderMoves();renderPantry();renderAutoPlan();renderMe();renderMeals();renderWeekStrip();renderScore();renderBadge();
   renderBackupTip();
   updQuickBar();
+  renderMsList();
+  renderCpb();
+}
+/* ---- v13f 添加食材面板：展开/收起 + 保存 ---- */
+function bindAddStock(){
+  var panel=$('addStockPanel'),openBtn=$('btnAddStock');
+  if(!panel||!openBtn)return;
+  /* v13f 关键：这两个按钮在 <h2> 里面，而 h2.onclick 是手风琴的折叠开关。
+     不阻止冒泡的话，点「添加食材」会先把卡片收起 → 面板被 .fold 的
+     `> *:not(h2){display:none}` 连坐隐藏，看起来就是「点了没反应」。
+     所以面板内的所有点击都要 stopPropagation。 */
+  function stop(e){e.stopPropagation();}
+  panel.addEventListener('click',stop);
+  panel.addEventListener('touchstart',stop,{passive:true});
+  openBtn.addEventListener('click',stop);
+  openBtn.onclick=function(e){
+    if(e&&e.stopPropagation)e.stopPropagation();
+    var willOpen=panel.hasAttribute('hidden');
+    if(willOpen){panel.removeAttribute('hidden');renderMsList();
+      if($('msName'))$('msName').focus();}
+    else panel.setAttribute('hidden','');
+    /* 文案不能叫「收起」—— h2 右侧手风琴按钮已经叫「收起」，两个并排会看错 */
+    openBtn.textContent=willOpen?'完成添加':'＋ 添加食材';
+    haptic('light');
+  };
+  if($('msCancel'))$('msCancel').onclick=function(e){
+    if(e&&e.stopPropagation)e.stopPropagation();
+    panel.setAttribute('hidden','');openBtn.textContent='＋ 添加食材';
+  };
+  if($('msSave'))$('msSave').onclick=function(e){
+    if(e&&e.stopPropagation)e.stopPropagation();
+    var t=($('msName').value||'').trim();
+    if(!t){toast('先给它起个名字');$('msName').focus();return;}
+    var u=($('msUnit').value||'').trim()||'份';
+    var c=$('msCat').value||'v';
+    var kcRaw=($('msKc').value||'').trim();
+    var est=estNutrition(t,c,{
+      kc:kcRaw===''?null:parseFloat(kcRaw),
+      p:($('msP').value||'').trim()===''?null:parseFloat($('msP').value),
+      ca:($('msCa').value||'').trim()===''?null:parseFloat($('msCa').value),
+      f:($('msF').value||'').trim()===''?null:parseFloat($('msF').value)
+    });
+    var stock=parseInt($('msStock').value,10);if(isNaN(stock)||stock<0)stock=0;
+    var it=addMyStock({t:t,u:u,c:c,kc:est.kc,p:est.p,ca:est.ca,f:est.f,stock:stock});
+    ['msName','msKc','msP','msCa','msF'].forEach(function(id){if($(id))$(id).value='';});
+    if($('msStock'))$('msStock').value='0';
+    renderMsList();renderPantry();renderAutoPlan();
+    haptic('success');
+    toast('已加进食材库：'+it.t+'（营养按'+(est.src==='库'?'食物库匹配':(est.src==='算'?'热量推算':'分类估算'))+'）');
+    if($('msName'))$('msName').focus();
+  };
 }
 
 /* ---- hero 常驻快捷条：水 / 体重 / 记一笔 ---- */
@@ -2643,15 +3034,17 @@ function renderPantry(){
   function chips(list){
     return list.map(function(p){
       var n=pq(p.k);
-      return '<span class="pchip'+(n>0?' on':'')+'" data-p="'+p.k+'" role="button" tabindex="0"'+
-        ' aria-label="'+p.t+'，现有 '+n+' '+pqUnit(p.k)+'">'+
+      var m=myStockById(p.k);   /* 自定义食材加角标 + 长按可删 */
+      return '<span class="pchip'+(n>0?' on':'')+(m?' my':'')+'" data-p="'+p.k+'" role="button" tabindex="0"'+
+        ' aria-label="'+p.t+'，现有 '+n+' '+pqUnit(p.k)+(m?'，自定义':'')+'">'+
         '<span class="pn">'+p.t+'</span>'+
         '<span class="pq">'+(n>0?n+'&nbsp;'+pqUnit(p.k):'0')+'</span></span>';
     }).join('');
   }
-  $('pantryP').innerHTML=chips(PROTEIN);
-  $('pantryC').innerHTML=chips(CARB);
-  $('pantryV').innerHTML=chips(VEG);
+  /* v13f：内置 + 自定义，自定义排在后面（用户自己加的，好找） */
+  $('pantryP').innerHTML=chips(PROTEIN.concat(myStockByCat("p")));
+  $('pantryC').innerHTML=chips(CARB.concat(myStockByCat("c")));
+  $('pantryV').innerHTML=chips(VEG.concat(myStockByCat("v")));
   ['pantryP','pantryC','pantryV'].forEach(function(id){
     Array.prototype.forEach.call($(id).children,function(el){
       var k=el.dataset.p,lp=null,fired=false;
@@ -2710,7 +3103,10 @@ var SLOT_TARGET=[
 ];
 function renderAutoPlan(){
   var box=$('autoPlan');if(!box)return;
-  var have=PANTRY_DEFAULT.filter(function(k){return pq(k)>0;});
+  /* v13f：候选池 = 内置默认 + 用户自定义（自定义的只要库存 >0 就算有货） */
+  var myAvail=myStock().filter(function(x){return pq(x.k)>0;});
+  var have=PANTRY_DEFAULT.concat(myAvail.map(function(x){return x.k;}))
+    .filter(function(k){return pq(k)>0;});
   if(!have.length){
     box.innerHTML='<div class="coach" data-page-node-id="v13cAutoEmpty">'+
       '<b>先记一下冰箱里有什么</b>下面「我的食材」点一下就能加数量。库里有货，这里会自动按库存排今天的吃法。'+
@@ -2721,8 +3117,24 @@ function renderAutoPlan(){
      v13e：能不能开火决定候选池 —— 关（默认，在公司）只挑 fire=0 的免烹饪；
      开（在家/能做饭）才把炒菜汤羹放进来。 */
   var canCook=!!DB.canCook;
-  var pool0=MEALS.filter(function(m){return canCook||!m.fire;});
-  var used={},rows=[],cum=0;
+  /* v13f：自定义食材各生成一条「单样成餐」条目（免开火，直接吃），
+     让它们也能参与配餐；否则用户加了新东西却永远排不进去。 */
+  var myMeals=myAvail.map(function(x){
+    return {n:x.t,need:[x.k],kc:x.kc,pr:x.p,fire:0,my:1,
+      how:'自定义食材 · 可直接吃，或和别的菜搭着来。'};
+  });
+  var pool0=MEALS.concat(myMeals).filter(function(m){return canCook||!m.fire;});
+  /* v13f：CPB 止损开启时，优先只从 CPB 三件套里排（库存不够才回退到常规池）。
+     不这么做的话，「开启止损」就只是一张提示卡，没有真的改变吃什么。 */
+  var cpbActive=false;
+  if(DB.cpbOn){
+    var CPB_KEYS={chicken:1,potato:1,broccoli:1};
+    var cpbPool=pool0.filter(function(m){
+      return m.need.every(function(n){return CPB_KEYS[n]&&pq(n)>0;});
+    });
+    if(cpbPool.length){pool0=cpbPool;cpbActive=true;}
+  }
+  var used={},rows=[],cum=0,_cpbNoNear=false;
   SLOT_TARGET.forEach(function(s){
     var pool=pool0.filter(function(m){
       return !used[m.n]&&m.need.every(function(n){return pq(n)>0;});
@@ -2742,20 +3154,31 @@ function renderAutoPlan(){
       used[pick.n]=1;cum+=pick.pr;
       rows.push({slot:s,pick:pick,ok:true});
     }else{
-      /* 找「差一样就解锁」的，同样只在当前候选池里找 */
+      /* 找「差一样就解锁」的，同样只在当前候选池里找。
+         v13f：CPB 池很窄时可能一个都找不到（near=undefined），
+         老代码仍读 near.miss[0] → 渲染出「补『null』即可解锁」。加兜底。 */
       var near=pool0.map(function(m){
         var miss=m.need.filter(function(n){return pq(n)<=0;});
         return {m:m,miss:miss};
       }).filter(function(o){return o.miss.length===1;})
         .sort(function(a,b){return b.m.pr-a.m.pr;})[0];
       rows.push({slot:s,pick:near?near.m:null,ok:false,miss:near?near.miss[0]:null});
+      _cpbNoNear=_cpbNoNear||!near;
     }
   });
   var done=rows.filter(function(r){return r.ok;});
   var short=rows.filter(function(r){return !r.ok;});
-  var h='<div class="ap-head"><b>按你冰箱里的 '+have.length+' 样排的</b>'+
+  var h='<div class="ap-head"><b>'+(cpbActive?'CPB 止损排餐':'按你冰箱里的 '+have.length+' 样排的')+'</b>'+
     '<span class="muted">'+(canCook?'能开火 · 含炒煮蒸':'免开火 · 在公司也能吃')+
+    (cpbActive?' · 已限定鸡胸/土豆/西兰花':'')+
     ' · 覆盖 '+done.length+'/'+rows.length+' 餐</span></div>';
+  if(cpbActive){
+    h+='<div class="cpb-hint">🥗 止损中：只排了 <b>鸡胸 + 土豆 + 西兰花</b> 的组合。'+
+      '别超过 3 天 —— 这是刹车，不是长期吃法。</div>';
+  }else if(DB.cpbOn){
+    h+='<div class="cpb-hint warn">⚠️ 止损已开启，但冰箱里没有鸡胸/土豆/西兰花，'+
+      '先按现有食材排。去「我的食材」补货后这里会自动切到 CPB 组合。</div>';
+  }
   h+='<table><tr><th>时间</th><th>吃什么</th><th class="num">蛋白</th></tr>';
   rows.forEach(function(r){
     var s=r.slot;
@@ -2765,8 +3188,13 @@ function renderAutoPlan(){
         '　·　'+r.pick.kc+' kcal</span></td>'+
         '<td class="num">'+r.pick.pr+'g</td></tr>';
     }else{
+      /* v13f：候选池被 CPB 收窄后可能连「差一样」的都找不到（r.miss=null），
+         老代码会印成「补『null』即可解锁」。没有备选时改说人话。 */
+      var missTxt=r.miss?('库存不够 —— 补「'+foodName(r.miss)+'」即可解锁')
+        :(cpbActive?'这一顿先空着 —— 止损期只吃鸡胸/土豆/西兰花，够不上就不硬凑'
+                   :'库存不够 —— 去「我的食材」补几样就能排出来');
       h+='<tr class="ap-miss"><td>'+s.tm+'<br><span class="muted">'+s.t+'</span></td>'+
-        '<td><span class="muted">库存不够 —— 补「'+foodName(r.miss)+'」即可解锁</span></td>'+
+        '<td><span class="muted">'+missTxt+'</span></td>'+
         '<td class="num muted">—</td></tr>';
     }
   });
@@ -4197,9 +4625,9 @@ function eatPie(T){
   return '<div class="pie-wrap hr-sec">'+
     '<div class="pie" style="--a:'+a+';--b:'+b+'"><span>'+Math.round(T.k)+'<br>kcal</span></div>'+
     '<div class="legend">'+
-      '<div><i style="background:var(--brand)"></i>碳水 <b>'+Math.round(T.ca)+'g · '+cp+'%</b></div>'+
-      '<div><i style="background:var(--accent)"></i>脂肪 <b>'+Math.round(T.f)+'g · '+fp+'%</b></div>'+
-      '<div><i style="background:var(--ok)"></i>蛋白 <b>'+Math.round(T.p)+'g · '+pp+'%</b></div>'+
+      '<div><i style="background:var(--n-carb)"></i>碳水 <b>'+Math.round(T.ca)+'g · '+cp+'%</b></div>'+
+      '<div><i style="background:var(--n-fat)"></i>脂肪 <b>'+Math.round(T.f)+'g · '+fp+'%</b></div>'+
+      '<div><i style="background:var(--n-pro)"></i>蛋白 <b>'+Math.round(T.p)+'g · '+pp+'%</b></div>'+
     '</div></div>';
 }
 function slotTime(k){
@@ -4303,7 +4731,7 @@ function initTheme(){
 }
 
 initTheme();
-load();bind();fill();render();
+load();bind();fill();render();bindAddStock();
 
 /* ================= 常用套餐 ================= */
 function findFood(n){
@@ -4406,6 +4834,7 @@ function initPlanTabs(){
   // [标题匹配, 分组, 是否默认收起]
   var DEF=[
     [/今天怎么吃/,'eat',0],       // v13c：按库存自动排（默认展开，位置最前）
+    [/止损模式/,'eat',0],         // v13f：CPB 止损（默认展开 —— 破功时得第一眼看到）
     [/吃 · 双模式/,'eat',1],      // v12：改默认收起（路径② 长文折叠）
     [/我的食材/,'eat',0],         // v12：三卡合并后统一叫「我的食材」
     [/采购建议/,'eat',0],
