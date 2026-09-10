@@ -1,0 +1,50 @@
+{
+  "name": "减重助手",
+  "short_name": "减重助手",
+  "description": "个人减重执行工作台：记录体重与围度、追踪红线与习惯、按冰箱食材算能做什么。数据仅存本机，不上传。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/fit-desk/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#15120E",
+  "background_color": "#15120E",
+  "categories": ["health", "lifestyle", "fitness"],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "记一笔",
+      "short_name": "记一笔",
+      "description": "快速记录今天吃了什么",
+      "url": "./index.html#eat",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
