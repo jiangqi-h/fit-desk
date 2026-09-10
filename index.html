@@ -1,17 +1,84 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-title" content="减重助手">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<html lang="zh-CN" data-page-node-id="FleHHWNVTA5GOrs3vvf53T">
+<head data-page-node-id="Pw7SI1pinaIekPs2C8mBeN">
+<meta charset="UTF-8" data-page-node-id="NFaVSYdd8KtkdgBs58tMu9">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="8KaSOY8hPlmMFRvFiMC4nj">
+<meta name="apple-mobile-web-app-title" content="减重助手" data-page-node-id="B3yYoQbZSdaYy3BgObcg1R">
+<meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="RB0ODMbjcfQyGQeh1zHV2S">
+<meta name="apple-mobile-web-app-status-bar-style" content="default" data-page-node-id="2bSVO8mfVAAQL8BHXpjSnP">
+<!-- ============================================================
+     v12 PWA 三件套
+     ============================================================ -->
+<!-- ① favicon：内联 SVG data-URI（矢量，任意缩放不糊，且不占额外文件），
+     视觉沿用启动画面：琥珀底 + 哑铃符号。
+     配色经实算：深棕 #2B1D00 on 琥珀 #FFB020 = 8.98:1（白字仅 1.83:1，不可用），
+     与应用内 --on-brand（深色主题值）保持一致。
+     注意区分：favicon 用 SVG 是安全的（浏览器原生支持），
+     但 manifest 图标不能用 SVG —— iOS Safari / 部分安卓启动器不认，见下方 ③。 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FFB020'/%3E%3Cg fill='%232B1D00'%3E%3Crect x='18' y='42' width='9' height='16' rx='3'/%3E%3Crect x='73' y='42' width='9' height='16' rx='3'/%3E%3Crect x='30' y='44' width='12' height='12' rx='3'/%3E%3Crect x='58' y='44' width='12' height='12' rx='3'/%3E%3Crect x='41' y='47' width='18' height='6' rx='3'/%3E%3C/g%3E%3C/svg%3E">
+<!-- apple-touch-icon 必须用位图：iOS 添加主屏时只读这一条、且不解析 SVG。
+     180x180 是 iOS 推荐尺寸，由 gen_icons.py 生成。 -->
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<!-- ② theme-color：按主题给两套，iOS Safari 会跟随所选主题着色状态栏 -->
+<meta name="theme-color" content="#15120E" media="(prefers-color-scheme:dark)">
+<meta name="theme-color" content="#FAF6F0" media="(prefers-color-scheme:light)">
+<!-- 站点默认深色，不跟随系统时兜底 -->
+<meta name="theme-color" content="#15120E">
+<!-- ③ manifest：图标已统一改为 PNG（见 manifest.webmanifest）。
+     不用 SVG 的原因：iOS Safari 与部分安卓启动器不解析 SVG manifest 图标，
+     会导致装到主屏后是白图标/默认图标。maskable 单独出一张、图案缩进 80% 安全区，
+     不能与 any 合并成 "any maskable"（Chrome 会告警且图标被显示得过小）。 -->
+<link rel="manifest" href="manifest.webmanifest">
 <title>减重助手</title>
 <style>
 /* ============================================================
    v9 配色体系：深色默认（墨蓝黑）+ 单一强调色（青柠薄荷）
    执行原则：全站只允许 1 个强调色 + 3 个语义色，装饰性渐变全部删除
    ============================================================ */
+/* ============================================================
+   v11 设计 Token 层
+   作用：把「尺寸/间距/字号/圆角/动效」从散落取值收成有限档位。
+   规则：新组件只允许引用 token，不再写裸数值。
+   ============================================================ */
+:root{
+  /* ---- 圆角：4 档（原 13 种） ---- */
+  --r-xs:8px;    /* 小控件：chip / 标签 / 输入框 */
+  --r-sm:12px;   /* 中组件：内嵌块 / 提示卡 */
+  --r-md:16px;   /* 大组件：卡片 */
+  --r-full:99px; /* 全圆：进度条 / 药丸按钮 */
+
+  /* ---- 间距：5 档（原 12 种）—— 4 的倍数 ---- */
+  --sp-1:4px;  --sp-2:8px;  --sp-3:12px;  --sp-4:16px;  --sp-5:24px;
+
+  /* ---- 字号：8 档（原 17 种） ---- */
+  --fs-xs:11.5px;  /* 极小标注 */
+  --fs-sm:12.5px;  /* 卡片副标 / 说明（原出现 56 次，最常用） */
+  --fs-md:13.5px;  /* 正文 */
+  --fs-lg:15px;    /* 重点正文 */
+  --fs-xl:17px;    /* 卡片标题 */
+  --fs-2xl:22px;   /* 区块数字 */
+  --fs-3xl:34px;   /* hero 大数字 */
+  --fs-4xl:46px;   /* 极少数强调 */
+
+  /* ---- 组件尺寸 ---- */
+  --h-lg:48px;   /* 主操作按钮 */
+  --h-md:42px;   /* 卡片内按钮 / 分段控件 */
+  --h-sm:33px;   /* 标签类按钮（触摸目标下限） */
+  --hit:44px;    /* 最小可点区域（iOS HIG） */
+
+  /* ---- 进度条高度：4 档（原 4 套实现各写各的） ---- */
+  --pg-xs:5px;  --pg-sm:8px;  --pg-md:11px;  --pg-lg:14px;
+
+  /* ---- 动效 ---- */
+  --ease:cubic-bezier(.4,0,.2,1);      /* 标准缓动 */
+  --ease-out:cubic-bezier(.2,1,.4,1);  /* 入场（带一点过冲感） */
+  --dur-fast:.15s;   /* hover / active */
+  --dur:.3s;         /* 常规状态变化 */
+  --dur-slow:.45s;   /* 数值滚动 / 转场 */
+
+  /* ---- 字体 ---- */
+  --num-font:ui-monospace,"SF Mono","Roboto Mono",Consolas,monospace;
+}
 :root{
   /* ---- 海拔层：靠明度差产生层级，不靠阴影 ---- */
   /* v10：暖夜 + 琥珀（UI 专家提案 C 案：#15120E 底 + #FFB020 强调） */
@@ -23,7 +90,14 @@
   --brand:#FFB020; --brand2:#FFC451; --brand3:#D98F14;
   --brand-soft:rgba(255,176,32,.13); --brand-soft2:rgba(255,176,32,.24);
   --brand-dim:#8A5A0E;
+  /* v11：hero 专用配色对 —— 背景与文字必须成对定义，
+     不能再让 .wc-hero 靠 var(--text) 猜背景明度（浅色下就会深底深字） */
+  --brand-dim-fg:#FFF3DC;
   --brand-grad:#FFB020;
+  /* v11：「实心语义色底上的文字色」独立成变量 ——
+     深色下语义色是亮的(#FFB020)，深棕字(8.98:1)好看；
+     浅色下语义色被压深(#A85E00)，再用深棕字只剩 3.34:1 → 必须翻成白色 */
+  --on-brand:#2B1D00; --on-ok:#0d2419; --on-danger:#2b0b09;
   /* ---- 语义色（只用于数据，不用于装饰） ---- */
   --ok:#3FD68C; --ok2:#63E3A6; --ok-soft:rgba(63,214,140,.13);
   --ok-grad:#3FD68C;
@@ -39,8 +113,8 @@
   --peach:#FFB020; --peach-soft:rgba(255,176,32,.13);
   --accent:#FFB020; --accent2:#FFC451; --accent-soft:rgba(255,176,32,.13);
   --accent-grad:#FFB020;
-  /* ---- 形状：圆角收一档（20→16 / 14→12） ---- */
-  --radius:16px; --radius-sm:12px; --radius-xs:8px;
+  /* ---- 形状：圆角收一档（20→16 / 14→12）；v11 起别名到 token ---- */
+  --radius:var(--r-md); --radius-sm:var(--r-sm); --radius-xs:var(--r-xs);
   --shadow:none;                                  /* 深色下阴影无效，层级改由明度差承担 */
   --shadow-lg:0 8px 32px rgba(0,0,0,.45);
   --shadow-brand:none;
@@ -59,8 +133,14 @@
   /* v10：浅底上琥珀不可读，强调色改用深棕橙（4.5:1+） */
   --brand:#A85E00; --brand2:#C47411; --brand3:#8A5A0E;
   --brand-soft:#FDF2E0; --brand-soft2:#F8E2BE;
-  --brand-dim:#8A5A0E;
+  /* v11 修复：原来这里照搬了深色的 #8A5A0E（深棕金），而 .wc-hero 的文字用 var(--text)=近黑
+     → 深底配深字，多言卡正文完全糊在一起。
+     改为「浅米金底 + 深棕字」，与整站浅色基调一致，白天看也不刺眼。 */
+  --brand-dim:#FBEED6;
+  --brand-dim-fg:#5C3A05;
   --brand-grad:#A85E00;
+  /* v11：浅色下语义色被压深，底上的字必须翻成白色，否则只剩 3.3~3.6:1 */
+  --on-brand:#FFFFFF; --on-ok:#FFFFFF; --on-danger:#FFFFFF;
   --ok:#0A7A4E; --ok2:#12A268; --ok-soft:#E4F7EE;
   --ok-grad:#0A7A4E;
   --warn:#B0521A; --warn2:#D9722E; --warn-soft:#FDF0E7;
@@ -80,57 +160,88 @@
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+/* v11：全局数字等宽 —— 让上下行数字纵向对齐，是投入最小、观感提升最直接的调整 */
+body{font-variant-numeric:tabular-nums;-webkit-font-variant-numeric:tabular-nums}
+/* v11：主题切换过渡 —— 深浅色切换不再硬闪 */
 body{margin:0;background:var(--bg);color:var(--text);
   font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+  padding-bottom:calc(64px + env(safe-area-inset-bottom));
+  transition:background-color .25s ease,color .25s ease}
+@media(prefers-reduced-motion:reduce){body{transition:none}}
 .wrap{max-width:560px;margin:0 auto;padding:12px 12px 20px}
-h1{font-size:17px;margin:0}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid var(--line);box-shadow:var(--hl)}
-.card h2{font-size:14px;margin:0 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.card h2 .tag{font-size:12.5px;font-weight:400;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:5px}
-.muted{color:var(--sub);font-size:13px}
-.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;font:inherit;width:100%}
+h1{font-size:var(--fs-xl);margin:0}
+.card{background:var(--card);border-radius:var(--radius);padding:var(--sp-4);margin-bottom:14px;border:1px solid var(--line);box-shadow:var(--hl)}
+/* v11 卡片头部：标题与标签拉开层级 —— 标题是唯一重色，标签降到「可有可无」档 */
+.card h2{font-size:var(--fs-md);font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;line-height:1.4;color:var(--text)}
+.card h2 .tag{font-size:var(--fs-xs);font-weight:400;color:var(--sub);background:transparent;
+  padding:0;opacity:.62;letter-spacing:.2px}
+/* v11 标题右侧结论位：放关键数字（琥珀），成为扫读落点 */
+.card h2 .hval{margin-left:auto;font-size:var(--fs-lg);font-weight:800;color:var(--brand-text);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.card h2 .hval.good{color:var(--ok-text)}
+.card h2 .hval.bad{color:var(--danger-text)}
+/* v11 卡片内区间分隔：把散落的 margin-top:10/11/12/14px 收成一个语义类
+   原来同一种「与上方拉开」用了 4 个不同数值，这里统一到 --sp-4(16px) 的 0.875 倍视觉等价 */
+.sec{margin-top:14px}
+.sec-sm{margin-top:var(--sp-3)}
+/* v11 带分隔线的区段：上方一条 1px 线 + 上下留白，用于「设置区 / 图表区」这类明确分区 */
+.hr-sec{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+/* v11 卡片内小节标题（比 .tag 强、比 h2 弱）：用于「蛋白质类 / 主食类 / 蔬菜类」这类分组 */
+.sub-h{font-size:var(--fs-sm);font-weight:600;color:var(--sub);margin:var(--sp-3) 0 var(--sp-1);letter-spacing:.2px}
+.muted{color:var(--sub);font-size:var(--fs-md)}
+.between{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--sp-2)}
+input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);padding:10px 12px;font:inherit;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 input[type=checkbox]{min-height:auto;width:auto}
 input[type=file]{min-height:auto;padding:0}
-.eat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px}
-.eat-opt{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:11px;min-height:62px;display:flex;flex-direction:column;justify-content:center;text-align:left;cursor:pointer;position:relative}
-.eat-opt .eat-del{position:absolute;top:4px;right:6px;font-style:normal;font-size:15px;line-height:1;color:var(--sub);padding:5px 6px;cursor:pointer}
+.eat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:var(--sp-2)}
+.eat-opt{border:1px solid var(--line);background:var(--card);border-radius:var(--r-md);padding:11px;min-height:62px;display:flex;flex-direction:column;justify-content:center;text-align:left;cursor:pointer;position:relative}
+.eat-opt .eat-del{position:absolute;top:4px;right:6px;font-style:normal;font-size:var(--fs-lg);line-height:1;color:var(--sub);padding:5px 6px;cursor:pointer}
 .eat-opt .eat-del:hover{color:var(--danger-text)}
 .eat-opt.on{border-color:var(--brand);background:var(--brand-soft)}
 .eat-opt.on b{color:var(--brand-text)}
 .eat-opt.on span{color:var(--text2)}
-.eat-opt b{font-size:14px;font-weight:700}
-.eat-opt span{font-size:12.5px;color:var(--sub);margin-top:2px}
+.eat-opt b{font-size:var(--fs-md);font-weight:700}
+.eat-opt span{font-size:var(--fs-sm);color:var(--sub);margin-top:2px}
 /* toast 轻提示 */
-.toast-stack{position:fixed;left:16px;right:16px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:150;display:grid;gap:8px}
-.toast{background:var(--text);color:var(--card);border-radius:13px;padding:12px 15px;box-shadow:var(--shadow);font-size:14px;animation:toast-in .22s ease}
+.toast-stack{position:fixed;left:16px;right:16px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:150;display:grid;gap:var(--sp-2)}
+.toast{background:var(--text);color:var(--card);border-radius:var(--r-sm);padding:12px 15px;box-shadow:var(--shadow);font-size:var(--fs-md);animation:toast-in .22s ease}
 @keyframes toast-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 /* 完成度圆环 */
 .ring{--p:0;width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--ring-col,var(--brand)) calc(var(--p)*1%),var(--card2) 0);display:grid;place-items:center;position:relative;flex:0 0 auto}
 .ring:after{content:"";width:74px;height:74px;border-radius:50%;background:var(--card);position:absolute}
 .ring>div{position:relative;z-index:1;text-align:center;line-height:1.2}
-.ring b{font-size:18px;font-weight:800}
-.ring small{font-size:12.5px;color:var(--sub);font-weight:600}
+.ring b{font-size:var(--fs-xl);font-weight:800}
+.ring small{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
+/* v11 统一进度条：一套实现 + 4 档尺寸 + 4 种状态（替换原 .progress/.pbar/.bar/.bar2 四套） */
+.pg{background:var(--card2);border-radius:var(--r-full);overflow:hidden;position:relative}
+.pg>i{display:block;height:100%;border-radius:var(--r-full);background:var(--brand);
+  transition:width var(--dur) var(--ease)}
+.pg.xs{height:var(--pg-xs)} .pg.sm{height:var(--pg-sm)}
+.pg.md{height:var(--pg-md)} .pg.lg{height:var(--pg-lg)}
+.pg.ok>i{background:var(--ok)} .pg.warn>i{background:var(--warn)} .pg.danger>i{background:var(--danger)}
+@media(prefers-reduced-motion:reduce){.pg>i{transition:none}}
 /* 三大营养素行 */
-.macro-row{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;margin:9px 0}
-.macro-row .mLbl{font-size:13px;color:var(--sub);font-weight:600}
-.macro-row .progress{height:8px;background:var(--card2);border-radius:99px;overflow:hidden}
-.macro-row .progress>i{display:block;height:100%;border-radius:99px;background:var(--brand);transition:width .3s}
-.macro-row strong{font-size:13px;white-space:nowrap}
+.macro-row{display:grid;grid-template-columns:38px 1fr auto;gap:var(--sp-2);align-items:center;margin:9px 0}
+.macro-row .mLbl{font-size:var(--fs-md);color:var(--sub);font-weight:600}
+.macro-row .progress{height:var(--pg-sm);background:var(--card2);border-radius:var(--r-full);overflow:hidden}
+.macro-row .progress>i{display:block;height:100%;border-radius:var(--r-full);background:var(--brand);
+  transition:width var(--dur) var(--ease)}
+.macro-row strong{font-size:var(--fs-md);white-space:nowrap}
 /* 分段控件 */
-.segmented{display:flex;background:var(--card2);padding:3px;border-radius:12px;gap:2px}
-.segmented button{min-height:38px;flex:1;border:0;background:transparent;border-radius:10px;padding:0 4px;color:var(--sub);font-weight:700;font-size:13.5px;font-family:inherit;cursor:pointer}
+.segmented{display:flex;background:var(--card2);padding:3px;border-radius:var(--r-sm);gap:var(--sp-1)}
+.segmented button{min-height:38px;flex:1;border:0;background:transparent;border-radius:var(--r-sm);padding:0 4px;color:var(--sub);font-weight:700;font-size:var(--fs-md);font-family:inherit;cursor:pointer}
 .segmented button.on{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 /* 周条 */
-.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
-.week-strip .wd{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 2px;text-align:center;min-height:60px;display:flex;flex-direction:column;gap:4px;justify-content:center}
+/* v11：圆点 → 短棒。7px 圆点在 34px 宽里挤 3 个会折行；24×4px 短棒抗折行，
+   且「有几条亮着」在灰度下也能读，不只靠颜色 */
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-2)}
+.week-strip .wd{border:1px solid var(--line);background:var(--card);border-radius:var(--r-sm);padding:8px 2px;text-align:center;min-height:60px;display:flex;flex-direction:column;gap:var(--sp-1);justify-content:center}
 .week-strip .wd.today{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
-.week-strip .wd .dl{font-size:12.5px;color:var(--sub);line-height:1.3}
-.week-strip .wd .dots{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
-.week-strip .wd .dot{width:7px;height:7px;border-radius:50%;background:var(--card2)}
+.week-strip .wd .dl{font-size:var(--fs-sm);color:var(--sub);line-height:1.3}
+.week-strip .wd .dots{display:flex;flex-direction:column;gap:3px;align-items:center}
+.week-strip .wd .dot{width:100%;max-width:24px;height:4px;border-radius:var(--r-full);background:var(--card3)}
 .week-strip .wd .dot.g{background:var(--ok)}
 .week-strip .wd .dot.y{background:var(--warn)}
 .week-strip .wd .dot.r{background:var(--danger)}
@@ -138,7 +249,7 @@ input[type=file]{min-height:auto;padding:0}
 [data-theme=light] nav{background:color-mix(in srgb,var(--card) 94%,transparent)}
 .sheet-mask{position:fixed;inset:0;background:rgba(10,20,16,.45);z-index:120;display:none}
 .sheet-mask.open{display:block}
-.sheet-panel{position:fixed;left:0;right:0;bottom:0;z-index:130;background:var(--card);border-radius:22px 22px 0 0;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translateY(105%);transition:transform .28s ease;padding:0 16px calc(16px + env(safe-area-inset-bottom))}
+.sheet-panel{position:fixed;left:0;right:0;bottom:0;z-index:130;background:var(--card);border-radius:var(--r-md) var(--r-md) 0 0;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translateY(105%);transition:transform var(--dur) var(--ease);padding:0 16px calc(16px + env(safe-area-inset-bottom))}
 .sheet-panel.open{transform:none}
 /* 记一笔抽屉：固定头 + 独立滚动列表 + 固定底（添加按钮永远可见） */
 .sheet-fix{display:flex;flex-direction:column;overflow:hidden}
@@ -151,119 +262,195 @@ input[type=file]{min-height:auto;padding:0}
 /* v9 C3：把手可视条仍是 46×5，但触摸区放大到 60×24，方便下拉关闭 */
 .sheet-handle{position:relative;flex:none;width:60px;height:24px;margin:6px auto 4px;cursor:grab;touch-action:none}
 .sheet-handle:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:46px;height:5px;border-radius:99px;background:var(--card2)}
+  width:46px;height:5px;border-radius:var(--r-full);background:var(--card2)}
 .sheet-handle:active{cursor:grabbing}
 .sheet-panel.dragging{transition:none}
 /* 周评分 */
-.score-big{font-size:46px;font-weight:800;line-height:1;text-align:center;padding:8px 0 2px}
-.score-lbl{text-align:center;color:var(--sub);font-size:12.5px;margin-bottom:10px}
+.score-big{font-size:var(--fs-4xl);font-weight:800;line-height:1;text-align:center;padding:8px 0 2px}
+.score-lbl{text-align:center;color:var(--sub);font-size:var(--fs-sm);margin-bottom:10px}
 
 header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);
   padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top))}
 header .inner{max-width:560px;margin:0 auto}
-.subline{font-size:12.5px;color:var(--sub);margin-top:2px}
+.subline{font-size:var(--fs-sm);color:var(--sub);margin-top:2px}
 
 .hero{background:var(--card);color:var(--text);border-radius:var(--radius);padding:18px;margin-bottom:14px;border:1px solid var(--line);box-shadow:var(--hl)}
-.hero .big{font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.5px}
-.hero .lbl{font-size:12.5px;color:var(--sub)}
-.hero .big span{color:var(--sub);font-size:15px;font-weight:500}
-.hero .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-top:12px;align-items:stretch}
-.hero .chip{background:var(--card2);border:1px solid var(--line);border-radius:var(--radius-xs);padding:7px 8px;font-size:12.5px;text-align:center;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.hero .big{font-size:var(--fs-3xl);font-weight:700;line-height:1.1;letter-spacing:-.5px}
+.hero .lbl{font-size:var(--fs-sm);color:var(--sub)}
+.hero .big span{color:var(--sub);font-size:var(--fs-lg);font-weight:500}
+.hero .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:var(--sp-2);margin-top:12px;align-items:stretch}
+.hero .chip{background:var(--card2);border:1px solid var(--line);border-radius:var(--radius-xs);padding:7px 8px;font-size:var(--fs-sm);text-align:center;min-width:0;display:flex;flex-direction:column;justify-content:center}
 .hero .chip .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hero .chip b{display:block;font-size:15px;font-weight:700;margin-top:1px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .chip b{display:block;font-size:var(--fs-lg);font-weight:700;margin-top:1px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* hero 快捷条：水/体重/记一笔，常驻首屏 */
-.hero .qbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.hero .qbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-2);margin-top:12px}
 .hero .qbar button{background:var(--card2);border:1px solid var(--line);color:var(--text);
   border-radius:var(--radius-xs);padding:7px 4px 6px;min-height:52px;font:inherit;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;-webkit-tap-highlight-color:transparent}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-1);-webkit-tap-highlight-color:transparent}
 .hero .qbar button:active{background:var(--card3);transform:scale(.96)}
-.hero .qbar em{font-style:normal;font-size:17px;line-height:1;margin-bottom:1px}
-.hero .qbar b{font-size:13px;font-weight:600;line-height:1.25;color:var(--text)}
-.hero .qbar small{font-size:12px;color:var(--sub);line-height:1.25}
-.bar{height:8px;background:var(--card3);border-radius:4px;overflow:hidden;margin-top:12px}
-.bar>i{display:block;height:100%;background:var(--brand);border-radius:4px;transition:width .4s}
-.bar2{height:11px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
-.bar2>i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .4s}
-.mark{display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);margin-top:5px}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
+.hero .qbar em{font-style:normal;font-size:var(--fs-xl);line-height:1;margin-bottom:1px}
+.hero .qbar b{font-size:var(--fs-md);font-weight:600;line-height:1.25;color:var(--text)}
+.hero .qbar small{font-size:var(--fs-xs);color:var(--sub);line-height:1.25}
+/* v11：旧类保留兼容，取值全部改指 token —— 原 .bar 圆角 4px 是笔误，已统一为全圆 */
+.bar{height:var(--pg-sm);background:var(--card2);border-radius:var(--r-full);overflow:hidden;margin-top:var(--sp-3)}
+.bar>i{display:block;height:100%;background:var(--brand);border-radius:var(--r-full);
+  transition:width var(--dur) var(--ease)}
+.bar2{height:var(--pg-md);background:var(--card2);border-radius:var(--r-full);overflow:hidden;margin-top:var(--sp-2)}
+.bar2>i{display:block;height:100%;background:var(--brand);border-radius:var(--r-full);
+  transition:width var(--dur) var(--ease)}
+.mark{display:flex;justify-content:space-between;font-size:var(--fs-sm);color:var(--sub);margin-top:5px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-2);margin-top:8px}
 
-.why{background:var(--card);border-left:3px solid var(--brand);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:13.5px}
-.why>b:first-child{display:block;font-size:12.5px;color:var(--brand-text);margin-bottom:4px}
+/* v11 统一提示卡：一套实现 + 4 语义（替换原 .coach/.why 两套不同圆角内距）
+   用法：.callout 打底 + info/ok/warn/danger 选语义，边框色即语义色 */
+.callout{position:relative;background:var(--card2);border-radius:var(--r-sm);
+  padding:var(--sp-3) var(--sp-3) var(--sp-3) 15px;margin-bottom:var(--sp-2);
+  font-size:var(--fs-md);line-height:1.55;color:var(--text);
+  border-left:3px solid var(--sub)}
+.callout>b:first-child{display:block;font-size:var(--fs-md);margin-bottom:3px;font-weight:700}
+.callout.info{border-left-color:var(--brand)}
+.callout.ok{border-left-color:var(--ok)}
+.callout.warn{border-left-color:var(--warn)}
+.callout.danger{border-left-color:var(--danger)}
 
-.todo{display:flex;flex-direction:column;gap:8px}
-.todo .item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--bg);font-size:14px}
+.why{background:var(--card);border-left:3px solid var(--brand);border-radius:var(--r-sm);
+  padding:11px var(--sp-3);margin-bottom:var(--sp-3);font-size:var(--fs-md)}
+.why>b:first-child{display:block;font-size:var(--fs-sm);color:var(--brand-text);margin-bottom:var(--sp-1)}
+
+.todo{display:flex;flex-direction:column;gap:var(--sp-2)}
+.todo .item{display:flex;align-items:center;gap:var(--sp-2);padding:9px 11px;border-radius:var(--r-sm);background:var(--bg);font-size:var(--fs-md)}
 .todo .item.done{background:var(--ok-soft);color:var(--ok)}
-.todo .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sub);flex:none;display:flex;align-items:center;justify-content:center;font-size:12.5px}
+.todo .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sub);flex:none;display:flex;align-items:center;justify-content:center;font-size:var(--fs-sm)}
 .todo .item.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
 
-.cups{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-top:8px}
-.cup{aspect-ratio:1;border-radius:6px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--sub);cursor:pointer}
-.cup.on{background:#3b9ae1;border-color:#3b9ae1;color:#fff}
+/* v11：水杯点亮色改指 token —— 原来写死 #3b9ae1 蓝色，与全站琥珀主色撞色
+   触摸区：视觉仍是 1:1 方格，但用 ::before 把命中区撑到 44px（iOS HIG 下限） */
+.cups{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--sp-1);margin-top:var(--sp-2)}
+.cup{aspect-ratio:1;border-radius:var(--r-xs);background:var(--bg);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:var(--fs-sm);color:var(--sub);
+  cursor:pointer;transition:all var(--dur-fast) var(--ease);position:relative}
+.cup::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:var(--hit);height:var(--hit);min-width:100%;min-height:100%}
+.cup.on{background:var(--brand);border-color:var(--brand);color:var(--on-brand);font-weight:700}
+/* v12：原 `@media(max-width:359px)` 在 iPhone 16 Pro（393pt）上永不触发，属死代码，已删。
+   但它想解决的窄屏水杯挤压是真问题：393pt 下可用宽约 337pt，8 列每格仅约 38pt，
+   低于 --hit 定义的 44pt 触摸下限，相邻 .cup::before 命中区会重叠（点一个误触另一个）。
+   因此把阈值改为真正会触发的 400px，并在 4 列时放宽间距。 */
+@media(max-width:400px){.cups{grid-template-columns:repeat(4,1fr);gap:var(--sp-2)}}
 
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
-.chip{padding:8px 13px;border-radius:99px;background:var(--card2);color:var(--text);font-size:13.5px;cursor:pointer;border:1px solid transparent;user-select:none;min-height:36px;display:inline-flex;align-items:center;gap:5px}
+/* v11 三态 chip：未记录（中性）/ 守住（绿）/ 破戒（红）
+   解决原设计「默认全守住 = 虚假正面反馈」+「状态语义颠倒」两个问题 */
+.chip3{position:relative;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px 9px 11px;border-radius:var(--r-full);cursor:pointer;
+  font-size:var(--fs-md);font-weight:600;font-family:inherit;
+  background:var(--card2);color:var(--text2);border:1px solid var(--line);
+  min-height:38px;transition:all var(--dur-fast) var(--ease);user-select:none}
+.chip3:active{transform:scale(.96)}
+.chip3:focus-visible{outline:none;box-shadow:var(--ring)}
+.chip3 .ic{width:18px;height:18px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  border:1.5px solid var(--sub);color:transparent;transition:all var(--dur-fast)}
+.chip3 small{font-size:var(--fs-sm);font-weight:400;opacity:.7}
+.chip3.keep{background:var(--ok-soft);border-color:rgba(63,214,140,.35);color:var(--text)}
+.chip3.keep .ic{background:var(--ok);border-color:var(--ok);color:var(--on-ok)}
+.chip3.keep small{color:var(--ok-text);opacity:1;font-weight:600}
+.chip3.broke{background:var(--danger-soft);border-color:rgba(255,95,86,.42);color:var(--text)}
+.chip3.broke .ic{background:var(--danger);border-color:var(--danger);color:var(--on-danger)}
+.chip3.broke small{color:var(--danger-text);opacity:1;font-weight:600}
+/* 三态进度条：绿=守住 红=破戒 灰=未记录 */
+.tri-bar{display:flex;gap:2px;height:var(--pg-xs);margin:var(--sp-2) 0 var(--sp-3)}
+.tri-bar i{display:block;height:100%;border-radius:var(--r-full);
+  transition:width var(--dur) var(--ease)}
+.tri-bar i.g{background:var(--ok)}
+.tri-bar i.b{background:var(--danger)}
+.tri-bar i.u{background:var(--card3)}
+/* 卡片头右侧的三态计数 */
+.tri-meta{margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2);
+  font-size:var(--fs-sm);color:var(--sub);font-weight:400}
+.tri-meta b{font-size:var(--fs-lg);font-weight:800;color:var(--ok-text);
+  font-variant-numeric:tabular-nums}
+.tri-meta.has-bad b{color:var(--warn-text)}
+.tri-meta .bad-n{color:var(--danger-text);font-weight:700}
+/* 一键全守住 */
+.btn.onekey{margin-left:auto}
+@media(prefers-reduced-motion:reduce){.chip3,.tri-bar i{transition-duration:.01ms}}
+
+.chips{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:8px}
+.chip{padding:8px 13px;border-radius:var(--r-full);background:var(--card2);color:var(--text);font-size:var(--fs-md);cursor:pointer;border:1px solid transparent;user-select:none;min-height:36px;display:inline-flex;align-items:center;gap:var(--sp-1)}
 .chip.bad{background:var(--card2);color:var(--text2);border-color:var(--line)}
 /* 抽屉里的食物分类：横向滑动，不占垂直空间，同时放大到触控标准 */
 #eatCats{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
 #eatCats::-webkit-scrollbar{display:none}
 #eatCats .chip{flex:none;min-height:42px;padding:9px 14px}
 .chip.off{background:var(--bg);color:var(--sub);border-color:var(--line);border-style:dashed;opacity:.85}
-.chip small{opacity:.75;font-size:12.5px;margin-left:3px}
+.chip small{opacity:.75;font-size:var(--fs-sm);margin-left:3px}
 
-input[type=number],input[type=time],input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--text);
-  background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
-.btn{min-height:44px;padding:10px 16px;border-radius:13px;border:none;background:var(--brand);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:transform .18s,background .18s}
-.btn:active{transform:translateY(1px)}
+input[type=number],input[type=time],input[type=text]{width:100%;font:inherit;font-size:var(--fs-lg);color:var(--text);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-xs);padding:9px 11px}
+/* v11 按钮：一套实现 + 3 档尺寸（默认 lg 48px，保持原有观感不变） */
+.btn{min-height:var(--h-lg);padding:10px var(--sp-4);border-radius:var(--r-sm);border:none;
+  background:var(--brand);color:#fff;font:inherit;font-size:var(--fs-md);font-weight:700;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  transition:transform var(--dur-fast),background var(--dur-fast)}
+.btn:active{transform:scale(.97)}
 .btn.ghost{background:var(--bg);color:var(--text);border:1px solid var(--line)}
 .btn.full{width:100%}
+.btn.md{min-height:var(--h-md);padding:8px 14px;font-size:var(--fs-md)}
+.btn.sm{min-height:var(--h-sm);padding:6px 12px;font-size:var(--fs-sm);border-radius:var(--r-xs)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.btn{transition:none}.btn:active{transform:none}}
 
-.coach{position:relative;background:var(--card2);border-left:3px solid var(--warn);border-radius:var(--radius-sm);
-  padding:12px 13px 12px 15px;margin-bottom:8px;font-size:13.5px;line-height:1.55;color:var(--text)}
+/* v11：.coach 并入 .callout 规格（原圆角 12/内距 12·13 vs .why 圆角 10/内距 11·12，现已统一） */
+.coach{position:relative;background:var(--card2);border-left:3px solid var(--warn);border-radius:var(--r-sm);
+  padding:var(--sp-3) var(--sp-3) var(--sp-3) 15px;margin-bottom:var(--sp-2);
+  font-size:var(--fs-md);line-height:1.55;color:var(--text)}
 .coach:before{content:"";display:none}
-/* v9 A10：数据陈旧提示条 */
-.stale-tip{display:flex;gap:9px;align-items:flex-start;margin:10px 0 0;padding:11px 13px;border-radius:var(--radius-sm);
-  background:var(--card2);border-left:3px solid var(--danger);color:var(--text2);font-size:13.5px;line-height:1.6}
-.stale-tip .ic{flex:none;font-size:15px;line-height:1.45}
+/* v9 A10：数据陈旧提示条（v11：并入 callout 规格，danger 语义） */
+.stale-tip{display:flex;gap:var(--sp-2);align-items:flex-start;margin:var(--sp-2) 0 0;
+  padding:var(--sp-3);border-radius:var(--r-sm);
+  background:var(--card2);border-left:3px solid var(--danger);color:var(--text2);
+  font-size:var(--fs-md);line-height:1.6}
+.stale-tip .ic{flex:none;font-size:var(--fs-lg);line-height:1.45}
 .stale-tip b{color:var(--danger-text)}
 .coach.ok{background:var(--card2);border-left-color:var(--ok)}
-.coach>b:first-child{display:block;font-size:13px;margin-bottom:2px;font-weight:700}
+.coach>b:first-child{display:block;font-size:var(--fs-md);margin-bottom:3px;font-weight:700}
 .coach b{font-weight:700}
-.quote{text-align:center;padding:14px 12px;font-size:15px;font-weight:600;color:var(--brand-text)}
+.quote{text-align:center;padding:14px var(--sp-3);font-size:var(--fs-lg);font-weight:600;color:var(--brand-text)}
 
-table{width:100%;border-collapse:collapse;font-size:13.5px}
+table{width:100%;border-collapse:collapse;font-size:var(--fs-md)}
 td,th{padding:7px 4px;text-align:left;border-bottom:1px solid var(--line)}
 td:first-child,th:first-child{width:1%;white-space:nowrap;padding-right:8px}
-th{color:var(--sub);font-weight:500;font-size:12.5px}
+th{color:var(--sub);font-weight:500;font-size:var(--fs-sm)}
 .num{font-variant-numeric:tabular-nums;text-align:right}
 
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);
   display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:30}
-nav button{flex:1;background:none;border:none;padding:8px 0 7px;min-width:0;font:inherit;font-size:12.5px;color:var(--sub);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+nav button{flex:1;background:none;border:none;padding:8px 0 7px;min-width:0;font:inherit;font-size:var(--fs-sm);color:var(--sub);display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);cursor:pointer}
 nav button.on{color:var(--brand-text);font-weight:600}
-nav .ico{font-size:19px;line-height:1}
+nav .ico{font-size:var(--fs-xl);line-height:1}
 .page{display:none}.page.on{display:block}
-.pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12.5px;background:var(--bg);color:var(--sub)}
+.pill{display:inline-block;padding:2px 8px;border-radius:var(--r-xs);font-size:var(--fs-sm);background:var(--bg);color:var(--sub)}
 .pill.hot{background:var(--brand-soft);color:var(--brand-text)}
 .pill.good{background:var(--ok-soft);color:var(--ok)}
 ol,ul{margin:6px 0 0;padding-left:19px}
-li{margin-bottom:5px;font-size:13.5px}
-.kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;gap:10px}
+li{margin-bottom:5px;font-size:var(--fs-md)}
+.kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:var(--fs-md);gap:var(--sp-2)}
 .kv:last-child{border:none}
 
-.mv{border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:10px}
-.mv .t{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mv .t .s{font-size:12.5px;font-weight:400;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:5px}
+.mv{border:1px solid var(--line);border-radius:var(--r-sm);padding:11px;margin-bottom:10px}
+.mv .t{font-size:var(--fs-md);font-weight:600;display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.mv .t .s{font-size:var(--fs-sm);font-weight:400;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:var(--r-xs)}
 .mv svg{width:100%;height:auto;display:block;margin:6px 0 8px}
-.mv .ok,.mv .no{font-size:13px;padding:7px 10px;border-radius:8px;margin-top:6px}
+.mv .ok,.mv .no{font-size:var(--fs-md);padding:7px 10px;border-radius:var(--r-xs);margin-top:6px}
 .mv .ok{background:var(--ok-soft)}.mv .no{background:var(--brand-soft)}
-.mv b{display:block;font-size:12.5px;margin-bottom:2px}
+.mv b{display:block;font-size:var(--fs-sm);margin-bottom:2px}
 .mv .ok b{color:var(--ok-text)}.mv .no b{color:var(--brand-text)}
-.sw{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:10px}
+.sw{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:var(--sp-2)}
 .sw input{width:44px;height:24px;accent-color:var(--brand)}
 
 /* ===== v2 高级感升级 ===== */
 /* 卡片微调：更柔阴影 + 更大圆角 */
-.card{border-radius:20px;box-shadow:var(--shadow)}
+.card{border-radius:var(--r-md);box-shadow:var(--shadow)}
 .card h2{font-weight:600;letter-spacing:.2px}
 header{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:color-mix(in srgb,var(--card) 88%,transparent)}
 [data-theme=light] header{background:color-mix(in srgb,var(--card) 94%,transparent)}
@@ -272,20 +459,20 @@ header{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:
 nav{background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid var(--line);box-shadow:0 -6px 26px rgba(16,35,48,.08);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-nav button{position:relative;padding:6px 0 5px;gap:4px;color:var(--sub);font-size:12.5px;
+nav button{position:relative;padding:6px 0 5px;gap:var(--sp-1);color:var(--sub);font-size:var(--fs-sm);
   transition:color .2s ease,opacity .15s;letter-spacing:.3px}
 nav button .ico{width:24px;height:24px;display:grid;place-items:center;transition:transform .28s cubic-bezier(.34,1.4,.5,1)}
 nav button .ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--brand-text);font-weight:700}
 nav button.on .ico{transform:translateY(-1px) scale(1.04)}
-nav button.on:before{content:"";position:absolute;top:0;left:50%;margin-left:-9px;width:18px;height:2.5px;border-radius:99px;
+nav button.on:before{content:"";position:absolute;top:0;left:50%;margin-left:-9px;width:18px;height:2.5px;border-radius:var(--r-full);
   background:var(--brand);animation:nbIn .3s ease}
 @keyframes nbIn{from{width:0;margin-left:0;opacity:0}to{width:18px;margin-left:-9px;opacity:1}}
 nav button:active{opacity:.65}
-nav .nb{font-size:12.5px}
+nav .nb{font-size:var(--fs-sm)}
 /* 未完成徽标 */
-.dot-badge{position:absolute;top:1px;left:50%;margin-left:6px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;
-  background:var(--danger);color:#fff;font-size:12.5px;font-weight:700;line-height:17px;text-align:center;font-style:normal;
+.dot-badge{position:absolute;top:1px;left:50%;margin-left:6px;min-width:17px;height:17px;padding:0 4px;border-radius:var(--r-full);
+  background:var(--danger);color:#fff;font-size:var(--fs-sm);font-weight:700;line-height:17px;text-align:center;font-style:normal;
   border:1.5px solid var(--card);box-shadow:0 2px 7px rgba(0,0,0,.14)}
 .dot-badge[hidden]{display:none}
 .dot-badge.all-done{background:var(--ok);margin-left:8px}
@@ -293,16 +480,16 @@ nav .nb{font-size:12.5px}
 /* v9：删除「切页流光边框」——闪一次是新鲜，看 100 次是廉价 */
 
 /* 今日必做：侧滑完成 / 撤销 */
-.swipe{position:relative;overflow:hidden;border-radius:12px;touch-action:pan-y;user-select:none}
+.swipe{position:relative;overflow:hidden;border-radius:var(--r-sm);touch-action:pan-y;user-select:none}
 .swipe .sw-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;
-  padding:0 15px;font-size:12.5px;font-weight:700;color:var(--sub);background:var(--card2);border-radius:12px}
+  padding:0 15px;font-size:var(--fs-sm);font-weight:700;color:var(--sub);background:var(--card2);border-radius:var(--r-sm)}
 /* v10 修复穿模：滑出层文案默认不可见，只有 .sw-front 真的被移开时才透出来 */
 .swipe .sw-bg .l,.swipe .sw-bg .r{opacity:0;transition:opacity .12s}
 .swipe.open-bg .sw-bg .l,.swipe.open-bg .sw-bg .r{opacity:1}
 /* v10 修复穿模：滑出层不再用低对比的 brand-dim + 白字，改用实心琥珀 + 深字 */
-.swipe .sw-bg.okbg{background:var(--brand);color:#2B1D00}
+.swipe .sw-bg.okbg{background:var(--brand);color:var(--on-brand)}
 .sw-front{position:relative;z-index:2;transform:translateX(0);transition:transform .24s cubic-bezier(.2,.8,.2,1);will-change:transform;
-  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:var(--card2);color:var(--text);font-size:14px}
+  display:flex;align-items:center;gap:var(--sp-2);padding:11px 12px;border-radius:var(--r-sm);background:var(--card2);color:var(--text);font-size:var(--fs-md)}
 /* v10 修复撞色：完成态改用不透明语义底，文字色走独立专用变量 */
 .sw-front.done{background:#1E3A2C;color:var(--ok-text)}
 /* v9 A11：逾期顺延项标红，进首屏就能看见 */
@@ -310,33 +497,33 @@ nav .nb{font-size:12.5px}
 .swipe.late .sw-front:not(.done){background:#3B211E;border-left:3px solid var(--danger)}
 .swipe.late .sw-front:not(.done) .txt{color:var(--danger-text);font-weight:600}
 .swipe.late .sw-front:not(.done) .dot{border-color:var(--danger)}
-.sw-front .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sub);flex:none;display:flex;align-items:center;justify-content:center;font-size:12.5px}
-.sw-front.done .dot{background:var(--ok);border-color:var(--ok);color:#0B2A1C}
+.sw-front .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sub);flex:none;display:flex;align-items:center;justify-content:center;font-size:var(--fs-sm)}
+.sw-front.done .dot{background:var(--ok);border-color:var(--ok);color:var(--on-ok)}
 .sw-front .txt{flex:1;min-width:0}
-.sw-front .hint{font-size:12.5px;color:var(--sub);flex:none;opacity:.7}
+.sw-front .hint{font-size:var(--fs-sm);color:var(--sub);flex:none;opacity:.7}
 /* v10：浅色下侧滑各态专用覆盖，避免退化 */
 [data-theme=light] .swipe .sw-bg.okbg{background:var(--brand);color:#fff}
 [data-theme=light] .sw-front.done{background:#DCF3E7;color:var(--ok-text)}
 [data-theme=light] .swipe.late .sw-front:not(.done){background:#FBE2DF}
 
 /* 吃：日期切换 + 近 7 天汇总 */
-.datenav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.datenav .dn-b{width:44px;height:44px;min-height:44px;border-radius:13px;border:1px solid var(--line);background:var(--bg);
-  color:var(--text);font:inherit;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.datenav{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-bottom:12px}
+.datenav .dn-b{width:44px;height:44px;min-height:44px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--bg);
+  color:var(--text);font:inherit;font-size:var(--fs-2xl);line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
 .datenav .dn-b:disabled{opacity:.35}
 .datenav .dn-t{text-align:center;flex:1}
-.datenav .dn-t b{font-size:15px;font-weight:700;display:block}
-.datenav .dn-t span{font-size:12.5px;color:var(--sub)}
-.wk7{display:grid;gap:6px}
-.wk7 .r7{display:grid;grid-template-columns:44px 1fr 58px 46px;gap:8px;align-items:center;padding:9px 10px;border-radius:12px;
-  background:var(--bg);font-size:13px;cursor:pointer}
+.datenav .dn-t b{font-size:var(--fs-lg);font-weight:700;display:block}
+.datenav .dn-t span{font-size:var(--fs-sm);color:var(--sub)}
+.wk7{display:grid;gap:var(--sp-2)}
+.wk7 .r7{display:grid;grid-template-columns:44px 1fr 58px 46px;gap:var(--sp-2);align-items:center;padding:9px 10px;border-radius:var(--r-sm);
+  background:var(--bg);font-size:var(--fs-md);cursor:pointer}
 .wk7 .r7.today{outline:1.5px solid var(--brand);background:var(--brand-soft)}
 .wk7 .r7.empty{opacity:.5}
-.wk7 .r7 .d7{font-size:12.5px;color:var(--sub)}
-.wk7 .r7 .pbar{height:6px;background:var(--card2);border-radius:99px;overflow:hidden}
-.wk7 .r7 .pbar>i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.wk7 .r7 .d7{font-size:var(--fs-sm);color:var(--sub)}
+.wk7 .r7 .pbar{height:6px;background:var(--card2);border-radius:var(--r-full);overflow:hidden}
+.wk7 .r7 .pbar>i{display:block;height:100%;background:var(--brand);border-radius:var(--r-full)}
 .wk7 .r7 .k7{text-align:right;font-variant-numeric:tabular-nums}
-.wk7 .r7 .g7{text-align:right;font-size:12.5px;font-weight:700}
+.wk7 .r7 .g7{text-align:right;font-size:var(--fs-sm);font-weight:700}
 
 /* ================= v3 视觉升级 ================= */
 /* 防横向溢出：所有嵌入内容与表单不得撑破容器 */
@@ -355,13 +542,14 @@ body{font-family:var(--font);-webkit-font-smoothing:antialiased;background:var(-
   .grad-t,.hero .big{-webkit-text-fill-color:currentColor;background:none}
 }
 /* ---- 字号层级 H1–H6 ---- */
-h1{font-size:22px;font-weight:800;letter-spacing:-.4px;line-height:1.25;margin:0}
-h2{font-size:17px;font-weight:700;letter-spacing:-.25px;margin:0}
-h3{font-size:15.5px;font-weight:700;margin:0}
-h4{font-size:14px;font-weight:600;margin:0}
-h5{font-size:13.5px;font-weight:600;margin:0}
-h6{font-size:12.5px;font-weight:600;color:var(--sub);margin:0}
-.card h2{font-size:15.5px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+h1{font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.4px;line-height:1.25;margin:0}
+h2{font-size:var(--fs-xl);font-weight:700;letter-spacing:-.25px;margin:0}
+h3{font-size:var(--fs-lg);font-weight:700;margin:0}
+h4{font-size:var(--fs-md);font-weight:600;margin:0}
+h5{font-size:var(--fs-md);font-weight:600;margin:0}
+h6{font-size:var(--fs-sm);font-weight:600;color:var(--sub);margin:0}
+/* v11：这里原来又定义了一遍 .card h2（15px/700），会把上面的三层标题设计整个盖掉。
+   已删除重复定义 —— 标题规格统一由 .card h2 主定义（13.5px/600 + .tag 弱化 + .hval 结论位）负责。 */
 /* 数字统一等宽 */
 .num,td.num,.big,.score-big,.ring b,.ring small,.kv b,.macro-row strong,.r7 b,.wk7 b{
   font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -379,7 +567,7 @@ h6{font-size:12.5px;font-weight:600;color:var(--sub);margin:0}
 @media(hover:hover){.card.hov:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}}
 
 /* ---- 12 列栅格 ---- */
-.row12{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.row12{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--sp-3)}
 .c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
 .c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
 @media(max-width:560px){.c3,.c4,.c5{grid-column:span 6}.c7,.c8{grid-column:span 12}}
@@ -390,7 +578,7 @@ h6{font-size:12.5px;font-weight:600;color:var(--sub);margin:0}
      算式：(1280 - W)/2 + pad = 206，取 pad=4 → W=876 */
   header .inner{max-width:876px;padding:0 4px}
   .wrap{max-width:900px;padding:16px}
-  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);align-items:start}
   /* v9 B3：桌面端 hero 的 chip / 快捷条按列收窄，避免被拉成超宽长条 */
   .hero .chips{grid-template-columns:repeat(3,minmax(0,1fr));max-width:560px}
   .hero .qbar{max-width:560px}
@@ -401,7 +589,7 @@ h6{font-size:12.5px;font-weight:600;color:var(--sub);margin:0}
 .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
 .ic.sm{width:17px;height:17px}.ic.lg{width:26px;height:26px}
-.ic-badge{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}
+.ic-badge{width:34px;height:34px;border-radius:var(--r-sm);display:grid;place-items:center;flex:none}
 .ic-badge.b{background:var(--brand-soft);color:var(--brand-text)}
 .ic-badge.g{background:var(--ok-soft);color:var(--ok)}
 .ic-badge.o{background:var(--accent-soft);color:var(--accent)}
@@ -416,7 +604,7 @@ button:active,.chip:active,.cup:active,.wd:active,.eat-opt:active{transform:scal
 .btn{display:block;width:100%;min-height:48px;border:0;border-radius:var(--radius-sm);
   font:600 15px/1 var(--font);cursor:pointer;padding:14px;
   background:var(--card2);color:var(--text);border:1px solid var(--line)}   /* v9：补回背景/文字色 */
-.btn.primary{background:var(--brand);color:#2B1D00;border-color:transparent}   /* v10：琥珀底配深棕字 */
+.btn.primary{background:var(--brand);color:var(--on-brand);border-color:transparent}   /* v10：琥珀底配深棕字 */
 .btn.accent{background:var(--brand-soft2);color:var(--brand-text);border-color:transparent}  /* v10：dim 底对比不足，改 soft 底 + 专用文字色 */
 .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
 .btn:active{transform:scale(.975)}
@@ -424,7 +612,7 @@ button:active,.chip:active,.cup:active,.wd:active,.eat-opt:active{transform:scal
 .spin{width:16px;height:16px;border:2px solid var(--brand-soft2);border-top-color:var(--brand);
   border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:-2px}
 .skel{background:linear-gradient(90deg,var(--card2) 25%,var(--card3) 37%,var(--card2) 63%);
-  background-size:400% 100%;animation:skel 1.3s ease infinite;border-radius:8px;height:12px}
+  background-size:400% 100%;animation:skel 1.3s ease infinite;border-radius:var(--r-xs);height:12px}
 @keyframes skel{0%{background-position:100% 50%}100%{background-position:0 50%}}
 
 /* ---- 触摸目标 ≥44px ---- */
@@ -436,109 +624,113 @@ input,select,textarea{min-height:46px}
 /* ---- 自定义滚动条 ---- */
 ::-webkit-scrollbar{width:7px;height:7px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--card3);border-radius:99px}
+::-webkit-scrollbar-thumb{background:var(--card3);border-radius:var(--r-full)}
 ::-webkit-scrollbar-thumb:hover{background:var(--sub)}
 
 /* ---- focus 效果 ---- */
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:var(--ring)}
 button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 
-/* ---- 渐变进度 ---- */
-.pbar{height:10px;background:var(--card2);border-radius:99px;overflow:hidden}
-.pbar>i{display:block;height:100%;border-radius:99px;background:var(--brand-grad);
-  transition:width .5s cubic-bezier(.22,.9,.3,1)}
+/* ---- 进度条（v11：与其他进度条统一尺寸与动效，保留状态变体） ---- */
+.pbar{height:var(--pg-md);background:var(--card2);border-radius:var(--r-full);overflow:hidden}
+.pbar>i{display:block;height:100%;border-radius:var(--r-full);background:var(--brand-grad);
+  transition:width var(--dur) var(--ease)}
 .pbar.ok>i{background:var(--ok-grad)}.pbar.warn>i{background:var(--warn-grad)}
 .pbar.danger>i{background:var(--danger-grad)}.pbar.accent>i{background:var(--accent-grad)}
 .macro-row .progress>i{background:var(--brand-grad)}
 .bar2>i{background:var(--brand-grad)}
 
-/* ---- 环形进度（多色） ---- */
-.ring2{--v:0;--sz:104px;width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
+/* ---- 环形进度（v11 统一：整环与半环共用 conic-gradient 画法，靠修饰符区分） ---- */
+.ring2{--v:0;--sz:104px;--th:9px;width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
   display:grid;place-items:center;position:relative;
   background:conic-gradient(var(--rc,var(--brand)) calc(var(--v)*1%),var(--card2) 0)}
-.ring2:after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
-  box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
+.ring2:after{content:"";position:absolute;inset:var(--th);border-radius:50%;background:var(--card);
+  box-shadow:var(--hl)}
 .ring2>div{position:relative;z-index:1;text-align:center;line-height:1.15}
-.ring2 b{display:block;font-size:20px;font-weight:800;font-family:var(--mono)}
-.ring2 small{font-size:12.5px;color:var(--sub);font-weight:600}
+.ring2 b{display:block;font-size:var(--fs-2xl);font-weight:800;font-family:var(--mono)}
+.ring2 small{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
+/* 尺寸档位：一套类，两个尺寸 */
+.ring2.sm2{--sz:76px;--th:8px}
+.ring2.sm2 b{font-size:var(--fs-xl)}
 
-/* ---- 仪表盘（综合分） ---- */
+/* ---- 仪表盘（综合分）：半环 —— 同一套画法的半圆裁切版本 ---- */
 .gauge{position:relative;width:150px;height:84px;margin:2px auto 0;overflow:hidden}
-.gauge .arc{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;
-  box-sizing:border-box;border:13px solid var(--card2);border-bottom-color:transparent;border-right-color:transparent;
+.gauge .arc{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;box-sizing:border-box;
+  border:13px solid var(--card2);border-bottom-color:transparent;border-right-color:transparent;
   transform:rotate(-45deg)}
 .gauge .val{position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;box-sizing:border-box;
   border:13px solid var(--brand);border-bottom-color:transparent;border-right-color:transparent;
-  transform:rotate(-45deg);transition:transform .8s cubic-bezier(.22,.9,.3,1)}
-.gauge .num{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:30px;font-weight:800;
+  transform:rotate(-45deg);transition:transform var(--dur-slow) var(--ease-out)}
+.gauge .num{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:var(--fs-3xl);font-weight:800;
   font-family:var(--mono);line-height:1}
+@media(prefers-reduced-motion:reduce){.gauge .val{transition:none}}
 
 /* ---- 趋势箭头 ---- */
-.trend{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:700;
-  font-family:var(--mono);padding:2px 7px;border-radius:99px}
+.trend{display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-sm);font-weight:700;
+  font-family:var(--mono);padding:2px 7px;border-radius:var(--r-full)}
 .trend.up{background:var(--ok-soft);color:var(--ok-text)}
 .trend.down{background:var(--danger-soft);color:var(--danger-text)}
 .trend.flat{background:var(--card2);color:var(--sub)}
 
 /* ---- 迷你柱状图（围度对比） ---- */
-.bars{display:flex;align-items:flex-end;gap:10px;height:96px;padding:0 2px}
-.bars .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
-.bars .bcol i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;
+.bars{display:flex;align-items:flex-end;gap:var(--sp-2);height:96px;padding:0 2px}
+.bars .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);height:100%;justify-content:flex-end}
+.bars .bcol i{display:block;width:100%;max-width:34px;border-radius:var(--r-xs) var(--r-xs) 3px 3px;
   background:var(--brand-grad);min-height:4px;transition:height .6s cubic-bezier(.22,.9,.3,1)}
 .bars .bcol.g i{background:var(--ok-grad)}
 .bars .bcol.o i{background:var(--accent-grad)}
-.bars .bcol span{font-size:12.5px;color:var(--sub);white-space:nowrap}
-.bars .bcol em{font-size:12.5px;font-weight:700;font-style:normal;font-family:var(--mono)}
+.bars .bcol span{font-size:var(--fs-sm);color:var(--sub);white-space:nowrap}
+.bars .bcol em{font-size:var(--fs-sm);font-weight:700;font-style:normal;font-family:var(--mono)}
 
-.bars .bg{flex:1;display:flex;gap:4px;align-items:flex-end;height:100%;position:relative}
-.bars .bg .bl{position:absolute;left:0;right:0;bottom:-15px;text-align:center;font-size:12.5px;color:var(--sub)}
+.bars .bg{flex:1;display:flex;gap:var(--sp-1);align-items:flex-end;height:100%;position:relative}
+.bars .bg .bl{position:absolute;left:0;right:0;bottom:-15px;text-align:center;font-size:var(--fs-sm);color:var(--sub)}
 .bars{margin-bottom:16px}
 /* ---- 饼图（热量/成本分布） ---- */
-.pie-wrap{display:flex;align-items:center;gap:14px}
+.pie-wrap{display:flex;align-items:center;gap:var(--sp-4)}
 .pie{--a:0;--b:0;width:88px;height:88px;border-radius:50%;flex:none;
   background:conic-gradient(var(--brand) 0 calc(var(--a)*1%),var(--accent) 0 calc(var(--b)*1%),var(--ok) 0);
   display:grid;place-items:center;position:relative}
 .pie:after{content:"";position:absolute;inset:19px;border-radius:50%;background:var(--card);
   box-shadow:inset 0 1px 3px rgba(16,35,48,.06)}
-.pie>span{position:relative;z-index:1;font-size:12.5px;font-weight:700;font-family:var(--mono);text-align:center;line-height:1.2}
-.legend{display:grid;gap:6px;font-size:12.5px;flex:1;min-width:0}
-.legend div{display:flex;align-items:center;gap:7px}
-.legend i{width:9px;height:9px;border-radius:3px;flex:none}
-.legend b{margin-left:auto;font-family:var(--mono);font-size:13px}
+.pie>span{position:relative;z-index:1;font-size:var(--fs-sm);font-weight:700;font-family:var(--mono);text-align:center;line-height:1.2}
+.legend{display:grid;gap:var(--sp-2);font-size:var(--fs-sm);flex:1;min-width:0}
+.legend div{display:flex;align-items:center;gap:var(--sp-2)}
+.legend i{width:9px;height:9px;border-radius:var(--r-xs);flex:none}
+.legend b{margin-left:auto;font-family:var(--mono);font-size:var(--fs-md)}
 
 /* ---- 常用套餐 ---- */
-.combos{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px}
-.combo{position:relative;border:1px solid var(--line);background:var(--card2);border-radius:14px;
+.combos{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:var(--sp-2)}
+.combo{position:relative;border:1px solid var(--line);background:var(--card2);border-radius:var(--r-md);
   padding:11px 26px 11px 12px;text-align:left;min-height:58px;cursor:pointer;
-  display:flex;flex-direction:column;justify-content:center;gap:2px}
+  display:flex;flex-direction:column;justify-content:center;gap:var(--sp-1)}
 .combo:active{transform:scale(.96)}
-.combo b{font-size:14px;font-weight:700;line-height:1.3}
-.combo span{font-size:12.5px;color:var(--sub);font-family:var(--mono)}
+.combo b{font-size:var(--fs-md);font-weight:700;line-height:1.3}
+.combo span{font-size:var(--fs-sm);color:var(--sub);font-family:var(--mono)}
 .combo .del{position:absolute;right:5px;top:5px;width:21px;height:21px;border-radius:50%;
-  background:var(--card3);color:var(--sub);font-size:13.5px;line-height:21px;text-align:center;font-weight:700}
+  background:var(--card3);color:var(--sub);font-size:var(--fs-md);line-height:21px;text-align:center;font-weight:700}
 .combo.add{border-style:dashed;background:transparent;align-items:center;justify-content:center;padding:11px}
-.combo.add b{color:var(--brand-text);font-size:14px}
+.combo.add b{color:var(--brand-text);font-size:var(--fs-md)}
 /* ---- 四餐完成度 ---- */
-.mslots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
-.mslot{border:1px solid var(--line);border-radius:10px;padding:6px 2px;text-align:center;font-size:12.5px;color:var(--sub)}
+.mslots{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);margin-top:10px}
+.mslot{border:1px solid var(--line);border-radius:var(--r-sm);padding:6px 2px;text-align:center;font-size:var(--fs-sm);color:var(--sub)}
 .mslot.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:700}
 /* 餐次标题右侧「存套餐」 */
-.tl .savecb{float:right;font-size:12.5px;font-weight:700;color:var(--brand-text);
-  background:var(--brand-soft);padding:2px 8px;border-radius:99px;cursor:pointer}
+.tl .savecb{float:right;font-size:var(--fs-sm);font-weight:700;color:var(--brand-text);
+  background:var(--brand-soft);padding:2px 8px;border-radius:var(--r-full);cursor:pointer}
 /* ---- 时间轴（饮食） ---- */
 .tl{position:relative;padding-left:20px}
 .tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;
-  background:var(--line);border-radius:99px}
+  background:var(--line);border-radius:var(--r-full)}
 .tl .ti{position:relative;padding:0 0 12px}
 .tl .ti:before{content:"";position:absolute;left:-19px;top:6px;width:10px;height:10px;border-radius:50%;
   background:var(--card);border:2.5px solid var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
 .tl .ti.o:before{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .tl .ti.g:before{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
-.tl .tt{font-size:12.5px;font-weight:700;color:var(--sub);letter-spacing:.3px;margin-bottom:4px}
+.tl .tt{font-size:var(--fs-sm);font-weight:700;color:var(--sub);letter-spacing:.3px;margin-bottom:4px}
 
 /* ---- 训练强度指示器 ---- */
-.inten{display:flex;gap:4px;align-items:center}
-.inten i{flex:1;height:6px;border-radius:99px;background:var(--card2)}
+.inten{display:flex;gap:var(--sp-1);align-items:center}
+.inten i{flex:1;height:6px;border-radius:var(--r-full);background:var(--card2)}
 .inten i.on{background:var(--accent-grad)}
 .inten.i1 i:nth-child(-n+1).on{background:var(--ok-grad)}
 .inten.i2 i:nth-child(-n+2).on{background:var(--ok-grad)}
@@ -548,14 +740,14 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .hero{background:var(--card);color:var(--text);border-radius:var(--radius);padding:18px;
   margin-bottom:14px;border:1px solid var(--line);box-shadow:var(--hl);position:relative;overflow:hidden}
 .hero>*{position:relative;z-index:1}
-.hero .big{font-size:36px;font-weight:800;line-height:1.05;letter-spacing:-1px}
+.hero .big{font-size:var(--fs-3xl);font-weight:800;line-height:1.05;letter-spacing:-1px}
 
 /* ---- 计划页：分段 + 卡片折叠 ---- */
 .plan-seg,.eat-seg{margin:0 0 14px;position:sticky;top:calc(59px + env(safe-area-inset-top));z-index:15}
 .plan-seg button,.eat-seg button{min-height:42px}
 .card.foldable>h2{cursor:pointer;user-select:none}
-.card.foldable>h2:after{content:"收起";margin-left:auto;font-size:12.5px;font-weight:700;
-  color:var(--brand-text);background:var(--brand-soft);padding:3px 9px;border-radius:99px;flex:none}
+.card.foldable>h2:after{content:"收起";margin-left:auto;font-size:var(--fs-sm);font-weight:700;
+  color:var(--brand-text);background:var(--brand-soft);padding:3px 9px;border-radius:var(--r-full);flex:none}
 .card.foldable.fold>h2:after{content:"展开";color:var(--sub);background:var(--card2)}
 .card.foldable.fold>*:not(h2){display:none}
 .card.foldable.fold{padding-bottom:13px}
@@ -563,20 +755,34 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .card.foldable.peek.fold>#coachList{display:block}
 .card.foldable.peek.fold>#coachList>*:not(:first-child){display:none}
 .card.foldable.peek.fold>#quote{display:none}
+/* v12 路径②：长文卡折叠时「只露第一句」——
+   原 .peek 是给叮嘱卡写死的（只认 #coachList），这里泛化成「露第一个直接内容块」。
+   规则：折叠态下，除 h2 外的直接子元素全部隐藏，只放行第一个内容块。
+   用 :not(.peek-lead) 精确放行，避免误露后续段落。 */
+.card.foldable.peek-lead.fold>*:not(h2){display:none}
+.card.foldable.peek-lead.fold>.peek-lead{display:block}
+/* 露出的那块内部：如果是 coach（标题+正文同块），只留首行；
+   如果是 table，只留表头 + 第一行数据。 */
+.card.foldable.peek-lead.fold>.peek-lead.coach{display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+.card.foldable.peek-lead.fold>.peek-lead table tr:nth-child(n+3){display:none}
+/* 折叠态下的「展开全文」提示 —— 复用 :after 徽标，文案改为更明确 */
+.card.foldable.peek-lead>h2:after{content:"展开 ▾"}
+.card.foldable.peek-lead:not(.fold)>h2:after{content:"收起 ▴"}
 /* ---- 启动画面 ---- */
 #splash{position:fixed;inset:0;z-index:999;background:var(--brand-grad);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-4);color:#fff;
   transition:opacity .45s ease,visibility .45s}
 #splash.hide{opacity:0;visibility:hidden}
-#splash .logo{width:74px;height:74px;border-radius:22px;background:rgba(255,255,255,.18);
-  display:grid;place-items:center;font-size:34px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+#splash .logo{width:74px;height:74px;border-radius:var(--r-md);background:rgba(255,255,255,.18);
+  display:grid;place-items:center;font-size:var(--fs-3xl);animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
-#splash .st{font-size:16px;font-weight:700;letter-spacing:.5px}
-#splash .ss{font-size:13px;opacity:.8}
+#splash .st{font-size:var(--fs-lg);font-weight:700;letter-spacing:.5px}
+#splash .ss{font-size:var(--fs-md);opacity:.8}
 
 /* ---- 离线提示条 ---- */
 #offbar{position:fixed;left:0;right:0;bottom:0;z-index:140;background:var(--warn);color:#fff;
-  padding:9px 14px;font-size:13px;font-weight:600;text-align:center;display:none}
+  padding:9px 14px;font-size:var(--fs-md);font-weight:600;text-align:center;display:none}
 #offbar.show{display:block}
 
 /* ---- 添加到主屏幕引导 ---- */
@@ -586,46 +792,52 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 #a2hs.show{display:block;animation:cardIn .35s ease both}
 
 /* ---- 多言卡·结构化排版 ---- */
-.wc-hero{background:var(--brand-dim);color:var(--text);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;border:1px solid var(--line)}
-.wc-kicker{font-size:12.5px;font-weight:600;color:var(--brand-text);letter-spacing:.4px;margin-bottom:9px}
-.wc-title{font-size:19px;font-weight:800;line-height:1.35;letter-spacing:.2px}
-.wc-sub{font-size:13.5px;line-height:1.7;margin-top:6px;opacity:.96}
-.wc-sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px}
-.wc-sec h4{font-size:14px;font-weight:700;margin:0 0 4px;color:var(--text)}
-.wc-sec p{font-size:13.5px;line-height:1.7;color:var(--text2);margin:0 0 5px}
+/* v11 修复：hero 卡的文字色改为配套变量 --brand-dim-fg，
+   不再用 var(--text)（它会随主题变深变浅，但背景明度是固定的 → 必然有一边看不清） */
+.wc-hero{background:var(--brand-dim);color:var(--brand-dim-fg);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;border:1px solid color-mix(in srgb,var(--brand-dim-fg) 16%,transparent)}
+.wc-kicker{font-size:var(--fs-sm);font-weight:600;color:var(--brand-dim-fg);opacity:.78;letter-spacing:.4px;margin-bottom:9px}
+.wc-title{font-size:var(--fs-xl);font-weight:800;line-height:1.35;letter-spacing:.2px}
+.wc-sub{font-size:var(--fs-md);line-height:1.7;margin-top:6px;opacity:.96}
+.wc-sec{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:8px}
+.wc-sec h4{font-size:var(--fs-md);font-weight:700;margin:0 0 4px;color:var(--text)}
+.wc-sec p{font-size:var(--fs-md);line-height:1.7;color:var(--text2);margin:0 0 5px}
 .wc-sec p:last-child{margin-bottom:0}
 .wc-hl{color:var(--brand-text);font-weight:700;font-style:normal}
-.wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.wc-cell{background:var(--brand-soft);border-radius:10px;padding:9px 11px;min-width:0}
-.wc-cell span{font-size:12.5px;color:var(--sub);display:block;margin-bottom:2px}
-.wc-cell b{font-size:14.5px;color:var(--brand-text);line-height:1.35;display:block;word-break:break-word}
-.wc-cell small{display:block;font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.4}
-.wc-alert{border-left:3px solid var(--peach);background:var(--peach-soft);border-radius:10px;padding:10px 13px;margin-bottom:8px}
-.wc-alert h4{font-size:14px;font-weight:700;margin:0 0 4px;color:var(--text)}
-.wc-alert p{font-size:13.5px;line-height:1.7;color:var(--text2);margin:0}
-.sec-h{display:flex;align-items:center;gap:8px;margin:18px 2px 9px;font-size:14px;font-weight:800;color:var(--text);letter-spacing:.2px}
-.sec-h:before{content:"";width:3px;height:14px;border-radius:2px;background:var(--brand);flex:none}
-.sec-h span{font-size:12.5px;font-weight:400;color:var(--sub)}
+/* v11：hero 卡内的高亮数字改用「同色加粗 + 半透明白底」区分 ——
+   不靠颜色差（--brand-text 在深金底只有 3.8:1），靠字重和色块，深浅两个主题都成立 */
+.wc-hero .wc-hl{color:inherit;font-weight:800;background:color-mix(in srgb,currentColor 14%,transparent);
+  border-radius:4px;padding:0 3px;margin:0 .5px}
+.wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);margin-top:8px}
+.wc-cell{background:var(--brand-soft);border-radius:var(--r-sm);padding:9px 11px;min-width:0}
+.wc-cell span{font-size:var(--fs-sm);color:var(--sub);display:block;margin-bottom:2px}
+.wc-cell b{font-size:var(--fs-md);color:var(--brand-text);line-height:1.35;display:block;word-break:break-word}
+.wc-cell small{display:block;font-size:var(--fs-sm);color:var(--sub);margin-top:3px;line-height:1.4}
+.wc-alert{border-left:3px solid var(--peach);background:var(--peach-soft);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:8px}
+.wc-alert h4{font-size:var(--fs-md);font-weight:700;margin:0 0 4px;color:var(--text)}
+.wc-alert p{font-size:var(--fs-md);line-height:1.7;color:var(--text2);margin:0}
+.sec-h{display:flex;align-items:center;gap:var(--sp-2);margin:18px 2px 9px;font-size:var(--fs-md);font-weight:800;color:var(--text);letter-spacing:.2px}
+.sec-h:before{content:"";width:3px;height:14px;border-radius:var(--r-xs);background:var(--brand);flex:none}
+.sec-h span{font-size:var(--fs-sm);font-weight:400;color:var(--sub)}
 .sec-h.rec:before{background:var(--peach)}
 .sec-h.see:before{background:var(--brand)}
 .sec-h.hist:before{background:var(--sub)}
 .hd{display:inline-block;min-width:36px}
-.wd-b{display:inline-block;font-size:12.5px;font-weight:700;padding:1px 7px;border-radius:6px;margin-left:5px;vertical-align:middle;white-space:nowrap}
+.wd-b{display:inline-block;font-size:var(--fs-sm);font-weight:700;padding:1px 7px;border-radius:var(--r-xs);margin-left:5px;vertical-align:middle;white-space:nowrap}
 .wd-b.train{background:#FFF2CC;color:#9A6400}
 .wd-b.rest{background:var(--ok-soft);color:var(--ok)}
 [data-theme=light] .wd-b.train{background:#FFF2CC;color:#8A5A00}
 [data-theme=light] .wd-b.rest{background:#E4FAF3;color:#0A7A57}
-.vac-sw{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:7px 4px;margin:-7px -4px;min-height:32px;color:var(--text2)}
+.vac-sw{display:inline-flex;align-items:center;gap:var(--sp-2);cursor:pointer;user-select:none;padding:7px 4px;margin:-7px -4px;min-height:32px;color:var(--text2)}
 .vac-sw input{position:absolute;opacity:0;width:0;height:0}
-.vac-sw .tr{width:34px;height:20px;border-radius:99px;background:var(--card3);position:relative;transition:background .2s;flex:none}
+.vac-sw .tr{width:34px;height:20px;border-radius:var(--r-full);background:var(--card3);position:relative;transition:background .2s;flex:none}
 .vac-sw .tr i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.22);transition:transform .2s}
 .vac-sw input:checked + .tr{background:var(--warn)}
 .vac-sw input:checked + .tr i{transform:translateX(14px)}
-.vac-sw .vl{font-size:12.5px;color:var(--sub);font-weight:600}
+.vac-sw .vl{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
 .vac-sw input:checked ~ .vl{color:var(--warn-text)}
 /* v9 C1：连胜徽章 */
-.streak{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 8px;border-radius:99px;
-  background:var(--brand-soft);color:var(--brand-text);font-size:12.5px;font-weight:700;white-space:nowrap}
+.streak{display:inline-flex;align-items:center;gap:var(--sp-1);margin-left:8px;padding:2px 8px;border-radius:var(--r-full);
+  background:var(--brand-soft);color:var(--brand-text);font-size:var(--fs-sm);font-weight:700;white-space:nowrap}
 /* v10 修复撞色：大连胜徽章不再拿图形色当文字色 */
 .streak.big{background:var(--brand-soft2);color:var(--brand-text)}
 .streak.shield{background:var(--warn-soft);color:var(--warn-text)}
@@ -636,482 +848,520 @@ body.kb nav{display:none}
 body.kb .toast-stack{bottom:calc(12px + env(safe-area-inset-top))}
 body.kb #a2hs{display:none}
 
+/* ============================================================
+   v11 全局无障碍兜底
+   只降级动效，保留颜色过渡 —— 照搬 Whoop 的处理方式：
+   一刀切全禁会让界面失去状态反馈，反而更难用。
+   ============================================================ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  /* 例外：颜色与背景的过渡保留，它们承载状态信息 */
+  .pg>i,.bar>i,.bar2>i,.pbar>i,.callout,.coach,.btn{transition-duration:.15s !important}
+}
+
+/* ============================================================
+   v11 空态：新用户首次打开时，卡片不再是空的
+   每张卡配一句「从这里开始」+ 一个立刻能做的动作入口
+   ============================================================ */
+.empty{text-align:center;padding:var(--sp-5) var(--sp-3) var(--sp-4);color:var(--sub)}
+.empty .eico{font-size:var(--fs-3xl);line-height:1;margin-bottom:var(--sp-2);opacity:.75}
+.empty .et{font-size:var(--fs-md);color:var(--text2);font-weight:600;margin-bottom:var(--sp-1)}
+.empty .es{font-size:var(--fs-sm);line-height:1.6;margin-bottom:var(--sp-3);color:var(--sub)}
+.empty .btn{display:inline-flex}
+
+/* ============================================================
+   v11 可点元素统一触摸目标 + 键盘可达
+   补 .todo .item / .chip / .cup 等原本无 focus 反馈的交互元素
+   ============================================================ */
+.todo .item,.chip,.cup{transition:background var(--dur-fast),border-color var(--dur-fast),opacity var(--dur-fast)}
+.todo .item{cursor:pointer}
+.todo .item:focus-visible,.chip:focus-visible,.cup:focus-visible{
+  outline:none;box-shadow:var(--ring)}
+@media(prefers-reduced-motion:reduce){.todo .item,.chip,.cup{transition-duration:.01ms}}
+
 </style>
 </head>
-<body>
-<div id="splash"><div class="logo">💪</div><div class="st">减重助手</div><div class="ss">正在准备你的数据…</div></div>
-<div id="offbar"></div>
-<div id="a2hs"></div>
+<body data-page-node-id="jNblIOfsveXpJj6K3aLSVn">
+<div id="splash" data-page-node-id="cWpgRefNEfST6ZNWLE1raw"><div class="logo" data-page-node-id="Y7TASNHhf45XDbwLoN7bEU">💪</div><div class="st" data-page-node-id="9a6ackfzvRhCRz1Y4s04kw">减重助手</div><div class="ss" data-page-node-id="91HQw26Dsjej7Okg7QNEGC">正在准备你的数据…</div></div>
+<div id="offbar" data-page-node-id="jgy3Ko7gFDkYCUUk3DOSsR"></div>
+<div id="a2hs" data-page-node-id="qNJuFV05d8AGU7iKbmpHGb"></div>
 
-<header>
-  <div class="inner">
-    <div class="between">
-      <h1 class="grad-t">减重助手</h1>
-      <div style="display:flex;align-items:center;gap:9px">
-        <label class="vac-sw" id="vacWrap" title="假期模式（连胜护符）：只保「每天称一次体重 + 喝水 8 杯」两条底线，期间连胜不清零">
-          <input type="checkbox" id="swVac">
-          <span class="tr"><i></i></span>
-          <span class="vl" id="vacLbl">假期</span>
+<header data-page-node-id="14nXoqZwXAtyvLQMs8eje8">
+  <div class="inner" data-page-node-id="Gz4ChEyXo6HG0GGjscpH0v">
+    <div class="between" data-page-node-id="8OkVF2unW9NMSmBOCCYioF">
+      <h1 class="grad-t" data-page-node-id="0VR25BgpO6XVpMNWyug1MR">减重助手</h1>
+      <div style="display:flex;align-items:center;gap:var(--sp-2)" data-page-node-id="Pur2ohEhNhpPYiv6e16Gxy">
+        <label class="vac-sw" id="vacWrap" title="假期模式（连胜护符）：只保「每天称一次体重 + 喝水 8 杯」两条底线，期间连胜不清零" data-page-node-id="GAgUt3xfLBHoLTn5jEFx38">
+          <input type="checkbox" id="swVac" data-page-node-id="5xG1bEl4j2iGieUeGM46Mt">
+          <span class="tr" data-page-node-id="1MRVNVmuTFXNxY3Ttfbfli"><i data-page-node-id="EZRPRjjiDQsgyQz5EIIaq0"></i></span>
+          <span class="vl" id="vacLbl" data-page-node-id="DR8B7kA6Eg7iUXrpCkVtAd">假期</span>
         </label>
-        <span class="streak" id="hdrStreak" style="display:none">🔥 0 天</span>
-        <span class="pill" id="hdrDay">—</span>
+        <span class="streak" id="hdrStreak" style="display:none" data-page-node-id="k0oHCrC8ErFKANejESaYwW">🔥 0 天</span>
+        <span class="pill" id="hdrDay" data-page-node-id="ocQTyMIo1ZSJFmSmvaPUuQ">—</span>
       </div>
     </div>
-    <div class="subline" id="hdrSub">—</div>
+    <div class="subline" id="hdrSub" data-page-node-id="lFJ5BarKb0NLbTYJ6cAWpy">—</div>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap" data-page-node-id="dxoK3jHprUIMktw55CU4cj">
 
-<div class="page on" id="p-today">
+<div class="page on" id="p-today" data-page-node-id="SUVoKbBTIVQ4Va5My1hzIi">
 
-  <div class="hero">
-    <div class="lbl" style="display:flex;align-items:center;gap:8px">当前体重<span id="hTrend"></span></div>
-    <div class="big"><span id="hWeight">76.7</span><span> kg</span></div>
-    <div class="bar"><i id="hBar" style="width:0%"></i></div>
-    <div class="chips">
-      <div class="chip"><span class="lbl">阶段目标</span><b id="hPhase">67.0</b></div>
-      <div class="chip"><span class="lbl">还差</span><b id="hLeft">0.0</b></div>
-      <div class="chip"><span class="lbl">预计达成</span><b id="hEta">—</b></div>
+  <div class="hero" data-page-node-id="216NnS5YzOuaxgNoXPeqFm">
+    <div class="lbl" style="display:flex;align-items:center;gap:var(--sp-2)" data-page-node-id="cNM0KgWidVrLqfu0Tg7Jji">当前体重<span id="hTrend" data-page-node-id="7KfdofHQlLzBGg8tXVx78q"></span></div>
+    <div class="big" data-page-node-id="G9A1qhCGMsZBSkBmJkfSSY"><span id="hWeight" data-page-node-id="mlxUnPgG4xmOmgFSWxMHAs">76.7</span><span data-page-node-id="NRTSjbWxrJ13AtWpzBvhmJ"> kg</span></div>
+    <div class="bar" data-page-node-id="zBAEi67xb4amTMmOQl9wvI"><i id="hBar" style="width:0%" data-page-node-id="JemWuU2fcYdAXxeGxwhj0E"></i></div>
+    <div class="chips" data-page-node-id="bNG8Z7GkUuFuW4tMreuZYW">
+      <div class="chip" data-page-node-id="4ECoX4Q6qBn7zF5dHxV0HS"><span class="lbl" data-page-node-id="2DItFcEoNPdijQa1CgAnSc">阶段目标</span><b id="hPhase" data-page-node-id="FiqPAlvTG9i44WXE9oCa4U">67.0</b></div>
+      <div class="chip" data-page-node-id="92z2F1dqoF5odzRMyr7DjR"><span class="lbl" data-page-node-id="fOLMIPJ79PfLRWOU16OWcB">还差</span><b id="hLeft" data-page-node-id="uH1CTMyqCRc7xdUuMPdTnO">0.0</b></div>
+      <div class="chip" data-page-node-id="CnpsY7WKbGK9oH8N4vpvFd"><span class="lbl" data-page-node-id="avlhvBHGW7Yy8cgD2ciXmS">预计达成</span><b id="hEta" data-page-node-id="L8O1L3ERhvknLBJrVWzNUV">—</b></div>
     </div>
     <!-- 常驻快捷条：每天重复最多次的三个动作，不用滚屏也能点到 -->
-    <div class="qbar">
-      <button type="button" id="qbWater"><em>💧</em><b>喝水 +1</b><small id="qbWaterTxt">0/8 杯</small></button>
-      <button type="button" id="qbWeigh"><em>⚖️</em><b>记体重</b><small>跳到输入框</small></button>
-      <button type="button" id="qbEat"><em>🍽️</em><b>记一笔</b><small>打开选择</small></button>
+    <div class="qbar" data-page-node-id="7d5nBuiwOEHAF1U7hqDE39">
+      <button type="button" id="qbWater" data-page-node-id="M6dU1q0ORMOckT9GXsWgGk"><em data-page-node-id="CH3qtcEQHlStX02ur7fNj2">💧</em><b data-page-node-id="LXEtiipLlOfvvvn1PtlMmH">喝水 +1</b><small id="qbWaterTxt" data-page-node-id="KoUMzEOaeakZQu6D4Cfe4o">0/8 杯</small></button>
+      <button type="button" id="qbWeigh" data-page-node-id="8T0jJ7w9d5276YlheIWkqV"><em data-page-node-id="wgCIpBVUX14Z3xRkqv06Cg">⚖️</em><b data-page-node-id="ml5aLrsl3J7oSD8oK3AzcD">记体重</b><small data-page-node-id="noyd10WVH4NqmsozIuSvhZ">跳到输入框</small></button>
+      <button type="button" id="qbEat" data-page-node-id="qHme7OjzkfGo5IQPEgIU76"><em data-page-node-id="m1P4Fyz0NNdHW3yfZAhLSW">🍽️</em><b data-page-node-id="uO95Ecl8rx0Yc45Xx3x47i">记一笔</b><small data-page-node-id="TaAO10cQGwTppBCW84GC66">打开选择</small></button>
     </div>
   </div>
 
-  <div id="staleTip"></div>
+  <div id="staleTip" data-page-node-id="UvcTDaXQRGCSnuCKOaUdxo"></div>
 
-  <div class="card foldable peek fold">
-    <h2>今天要叮嘱你的 <span class="tag">按你的数据实时生成</span></h2>
-    <div id="coachList"></div>
-    <div class="quote" id="quote"></div>
+  <div class="card foldable peek fold" data-page-node-id="m2z7QiEAXUQe1TbDkYtzjw">
+    <h2 data-page-node-id="JmrqIukAwmGMoqA6vghVkt">今天要叮嘱你的 <span class="tag" data-page-node-id="f3bzcFQXasmqaMcYHnIjgM">按你的数据实时生成</span></h2>
+    <div id="coachList" data-page-node-id="FIbEzWc5DC78kdb7pqAYny"></div>
+    <div class="quote" id="quote" data-page-node-id="BoTFq6dDnQ3iUACC61m3Qc"></div>
   </div>
 
-  <div class="card">
-    <h2>今天必做 <span class="tag" id="todoDate"></span></h2>
-    <div class="todo" id="todoList"></div>
-    <div id="stepsBox"></div>
+  <div class="card" data-page-node-id="7fEBt5E9zlNg6XoOiVMOxQ">
+    <h2 data-page-node-id="PMlrvZ7GIeIFWrTJAe97Kq">今天必做 <span class="tag" id="todoDate" data-page-node-id="aHa8MEGbWlNMpSRO4XUWgv"></span></h2>
+    <div class="todo" id="todoList" data-page-node-id="8GnBQSfUI6TYD4HuLeFOxH"></div>
+    <div id="stepsBox" data-page-node-id="E0Cdil0Gpr1xoskGXE5hGV"></div>
   </div>
 
-  <div class="card">
-    <h2>今日打卡</h2>
-    <div class="grid2" style="margin-bottom:12px">
-      <div>
-        <div class="muted">晨起体重（kg）</div>
-        <input type="number" step="0.1" inputmode="decimal" id="inWeight" placeholder="如 76.4" style="margin-top:5px">
+  <div class="card" data-page-node-id="j00HdAvFrm3q9SbUZ9NBC1">
+    <h2 data-page-node-id="TqBM36BjmA0gwlERRzEo3r">今日打卡</h2>
+    <div class="grid2" style="margin-bottom:12px" data-page-node-id="viHuPtTaM4cdzVUbHMSRKk">
+      <div data-page-node-id="PX44h21PNCRBUl1qbLLeWs">
+        <div class="muted" data-page-node-id="3ighSjVksnPmm1N3xCQT3p">晨起体重（kg）</div>
+        <input type="number" step="0.1" inputmode="decimal" id="inWeight" placeholder="如 76.4" style="margin-top:5px" data-page-node-id="suLSfbTUE2qbmee0rhLekJ">
       </div>
-      <div>
-        <div class="muted">昨晚入睡时间</div>
-        <input type="time" id="inSleep" style="margin-top:5px">
+      <div data-page-node-id="d5C0Em6paUwGt94BkT0tuy">
+        <div class="muted" data-page-node-id="GxbLaoZ64g8FpMNT9IERGl">昨晚入睡时间</div>
+        <input type="time" id="inSleep" style="margin-top:5px" data-page-node-id="Lj1mH0p7dioOqAFGzv88ZD">
       </div>
     </div>
 
-    <div class="between">
-      <div class="muted">喝水 <span id="waterTxt">0 / 8 杯</span></div>
-      <span class="muted">约 <b id="waterMl">0</b> ml</span>
+    <div class="between" data-page-node-id="HjTC4i2E7T5mt7xBr8KRby">
+      <div class="muted" data-page-node-id="CtFc8DKP9jcnDqiGiKpQyv">喝水 <span id="waterTxt" data-page-node-id="vosAUJz8F445vTjT41DARQ">0 / 8 杯</span></div>
+      <span class="muted" data-page-node-id="xfKJOPDLchPkuE3kr5ZIvH">约 <b id="waterMl" data-page-node-id="pJJQyfndYLV5yHJWzLh2fI">0</b> ml</span>
     </div>
-    <div class="cups" id="cups"></div>
+    <div class="cups" id="cups" data-page-node-id="QIPyKqvgkpr1eEtBVLyaCV"></div>
 
-    <div style="margin-top:14px">
-      <div class="muted">红线 <span style="opacity:.75">（点一下 = 今天破戒了）</span></div>
-      <div class="chips" id="redlines"></div>
+    <div class="sec" data-page-node-id="aQM4idZ10HjNzLLTLfUZ0k">
+      <div class="muted" style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-1)" data-page-node-id="C41XuL7bRwvpsyneBKlEFc">
+        红线 <span style="opacity:.72" data-page-node-id="j7BAfkG5qETwSDy5EJQT0C">点一下切换：守住 → 破戒 → 未记录</span>
+        <span id="rlHead" style="margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2)"></span>
+      </div>
+      <div class="tri-bar" id="rlBar"></div>
+      <div class="chips" id="redlines" data-page-node-id="rASzHDxbRKz6mxVflwN5KK"></div>
     </div>
 
-    <div style="margin-top:14px" id="workoutBox"></div>
+    <div class="sec" id="workoutBox" data-page-node-id="pO6Ecd3bqKCfkeAWMU46KJ"></div>
 
   </div>
 
-  <div class="card">
-    <h2>今日习惯打卡 <span class="tag">点一下切换</span></h2>
-    <div class="chips" id="habits"></div>
+  <div class="card" data-page-node-id="3MAFlNSxB7Y3beRPXNRdYx">
+    <h2 data-page-node-id="yC2By5lCZ7BqkJYdmkJB7E">今日习惯打卡 <span class="tag" data-page-node-id="wf244HezELyfIQ4HnmwmaH">点一下切换状态</span><span id="hbHead" class="tri-meta-wrap" style="margin-left:auto;display:inline-flex;align-items:center;gap:var(--sp-2)"></span></h2>
+    <div class="tri-bar" id="hbBar" style="margin-top:0"></div>
+    <div class="chips" id="habits" data-page-node-id="OoUxffZOLdjWmvpKukHPV1"></div>
   </div>
 
-  <div class="card">
-    <h2>最近 7 天 <span class="tag">圆点：体重 · 训练 · 红线</span></h2>
-    <div class="week-strip" id="weekStrip"></div>
-    <div class="muted" style="margin-top:8px">绿=完成 · 黄=该做没做 · 红=破戒 · 灰=不适用</div>
+  <div class="card" data-page-node-id="Tlcu3dEBm9BfxG6XDhWynp">
+    <h2 data-page-node-id="1Ty9pE7GDRxzuT3KdVcoU0">最近 7 天 <span class="tag" data-page-node-id="Svdu0KiTDoji3zzitR0QpA">三根短棒：体重 · 训练 · 红线</span></h2>
+    <div class="week-strip" id="weekStrip" data-page-node-id="04jKalFWL5Elm7vKWebRLd"></div>
+    <div class="muted" style="margin-top:8px" data-page-node-id="N0eUWMcAQqeSkS6lbnPEf1">绿=完成 · 黄=该做没做 · 红=破戒 · 灰=未记录/不适用</div>
   </div>
 
-  <div class="card">
-    <h2>舒适腰围 <span class="tag">91.5cm 舒适 · 90cm 健康线</span></h2>
-    <div id="pantsBox"></div>
+  <div class="card" data-page-node-id="QC9wDtmWoHDzyDcIywNAi9">
+    <h2 data-page-node-id="OcbcqOOMXUSQAiKNT2wwi0">舒适腰围 <span class="tag" data-page-node-id="f7Zq2dqLSyBJif35nv1z9P">91.5cm 舒适 · 90cm 健康线</span><span id="pantsVal" class="hval" data-page-node-id="pnv11slot"></span></h2>
+    <div id="pantsBox" data-page-node-id="yAgDxPS77tFV4V17lC0GHv"></div>
   </div>
 
-  <div class="card">
-    <h2>本周围度 <span class="tag">每周一早上量一次</span></h2>
-    <div id="girthBox"></div>
+  <div class="card" data-page-node-id="GbOXoLx9XauDTZH06VWGJZ">
+    <h2 data-page-node-id="E6f5F9H3vUYGmkgy503cQp">本周围度 <span class="tag" data-page-node-id="mHAGguwvSfjUU1Rn1t7qtU">每周一早上量一次</span><span id="girthVal" class="hval" data-page-node-id="giv11slot"></span></h2>
+    <div id="girthBox" data-page-node-id="v9OaBbWwGRySIfv1OToIKY"></div>
   </div>
 
-  <div class="why">
-    <b>你最在意的四件事，靠「吃对」都能改善</b>
-    脱发 ← 蛋白质严重不足（你吃 40g，需要 125g）｜便秘 ← 几乎不吃菜 + 水不够<br>
-    出油 ← 包子面条可乐反复拉高胰岛素｜口臭 ← 不刷牙 + 便秘<br>
-    <span class="muted">这四条没有一条是「吃太多」造成的。别再靠饿肚子解决了。</span>
+  <div class="why" data-page-node-id="N9wjaGYdpwlTmNGUfPj0UP">
+    <b data-page-node-id="3pmiiuDnhLCVYmSigMhUxq">你最在意的四件事，靠「吃对」都能改善</b>
+    脱发 ← 蛋白质严重不足（你吃 40g，需要 125g）｜便秘 ← 几乎不吃菜 + 水不够<br data-page-node-id="ZopUmyopaB5gDo6k5Scsr5">
+    出油 ← 包子面条可乐反复拉高胰岛素｜口臭 ← 不刷牙 + 便秘<br data-page-node-id="ZzlInDguvsEOhCKFnefZVt">
+    <span class="muted" data-page-node-id="Qw7MeSbk1ndnaFeuNpg0mU">这四条没有一条是「吃太多」造成的。别再靠饿肚子解决了。</span>
   </div>
 
 </div><!-- /#p-today -->
 
-<div class="page" id="p-eat">
-  <div class="segmented eat-seg" id="eatSeg">
-    <button class="on" data-g="rec">记一笔</button>
-    <button data-g="see">今天的账</button>
-    <button data-g="hist">回看</button>
+<div class="page" id="p-eat" data-page-node-id="ecZBPAjaKzWpIGnrzvzgPk">
+  <div class="segmented eat-seg" id="eatSeg" data-page-node-id="VbMxil7j1KsV4XZWbbvED0">
+    <button class="on" data-g="rec" data-page-node-id="GJkYZ4X9E6N3Zt72DqeGVZ">记一笔</button>
+    <button data-g="see" data-page-node-id="5HXMvVgdHxzD3pRElmljH3">今天的账</button>
+    <button data-g="hist" data-page-node-id="WQHA91easJQ9ZBBaOp5wtZ">回看</button>
   </div>
-  <div class="card">
-    <div class="datenav">
-      <button class="dn-b" id="eatPrev" aria-label="前一天">‹</button>
-      <div class="dn-t"><b id="eatDateTxt">—</b><span id="eatDateSub">—</span></div>
-      <button class="dn-b" id="eatNext" aria-label="后一天">›</button>
+  <div class="card" data-page-node-id="61LfDjwLyzvBYcAJGG8eZn">
+    <div class="datenav" data-page-node-id="IgQzThj3Gmo229I0RiR4F9">
+      <button class="dn-b" id="eatPrev" aria-label="前一天" data-page-node-id="nb1j66loA7ZKiaWVFSLcgO">‹</button>
+      <div class="dn-t" data-page-node-id="PkeRC7ILoc7XB7YNFlwY5t"><b id="eatDateTxt" data-page-node-id="HZLjDk9JMwKo3qMazQMEWi">—</b><span id="eatDateSub" data-page-node-id="OZ0cKdmuGRA2Vv9dfCkAwO">—</span></div>
+      <button class="dn-b" id="eatNext" aria-label="后一天" data-page-node-id="hXeklEj6dnolvnMEMtzCwM">›</button>
     </div>
   </div>
 
-  <div class="card" data-g="rec">
-    <h2>记一笔 <span class="tag">套餐点一下 / 手动 10 秒</span></h2>
-    <div class="combos" id="comboList"></div>
-    <button class="btn full ghost" id="btnEatOpen" style="margin-top:11px">＋ 手动添加食物</button>
-    <div class="muted" style="margin-top:8px">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
+  <div class="card" data-g="rec" data-page-node-id="5GZVPlu8nCld4PJdvY9gix">
+    <h2 data-page-node-id="PmUfC3lnCzDOKddqO98ctr">记一笔 <span class="tag" data-page-node-id="rPz8OAVb1N4NF7STdGEeXq">套餐点一下 / 手动 10 秒</span></h2>
+    <div class="combos" id="comboList" data-page-node-id="GspsKaaexr805Hi6l8oV9f"></div>
+    <button class="btn full ghost sec-sm" id="btnEatOpen" data-page-node-id="PFmq93bIrtTtR1kUHvBapr">＋ 手动添加食物</button>
+    <div class="muted" style="margin-top:8px" data-page-node-id="6RDuzbrR2V2mDBss3znbSy">套餐把你常吃的组合存起来，点一下整餐自动入账。想存新的：在下面任一餐的标题右边点「存套餐」。</div>
   </div>
 
-  <div class="card" data-g="see">
-    <h2>今日营养 <span class="tag">记一笔，自动累加</span></h2>
-    <div class="mslots" id="eatSlotStat"></div>
-    <div id="eatSum"></div>
+  <div class="card" data-g="see" data-page-node-id="Myc0MaY8hGGOd8cGdDUr3J">
+    <h2 data-page-node-id="b1EYKvfvjUu8UrijWG0W8H">今日营养 <span class="tag" data-page-node-id="4xWZ6WAyxpRnemmuyH6xcT">记一笔，自动累加</span></h2>
+    <div class="mslots" id="eatSlotStat" data-page-node-id="FB6tJeh726ZR2bOQ8ZtOCI"></div>
+    <div id="eatSum" data-page-node-id="AajalhWvFinIuEs5lWTeiY"></div>
   </div>
 
-  <div class="card" data-g="see">
-    <h2>今天吃了啥 <span class="tag" id="eatCount"></span></h2>
-    <div id="eatList"></div>
+  <div class="card" data-g="see" data-page-node-id="BrUXy55LXTPouBGvd5fQ57">
+    <h2 data-page-node-id="bHMqoT8bSnJBd1Ryjt9fVK">今天吃了啥 <span class="tag" id="eatCount" data-page-node-id="FLKHSivzoXet8pjVzGfMkT"></span></h2>
+    <div id="eatList" data-page-node-id="b6JBFPHTvpSB6upooJkTJB"></div>
   </div>
 
-  <div class="card" data-g="hist">
-    <h2>最近 7 天 <span class="tag">点日期可跳转</span></h2>
-    <div class="wk7" id="eatWeek7"></div>
-    <div class="muted" style="margin-top:8px" id="eat7Tip"></div>
+  <div class="card" data-g="hist" data-page-node-id="f8QY5Ct7ceJecJEt3lswio">
+    <h2 data-page-node-id="bId3GVhqLKWaT6fGEDqh2C">最近 7 天 <span class="tag" data-page-node-id="HUML01UReTZzAEoeQiAHog">点日期可跳转</span></h2>
+    <div class="wk7" id="eatWeek7" data-page-node-id="r2vj77JjFc8NZS4iVUeFzc"></div>
+    <div class="muted" style="margin-top:8px" id="eat7Tip" data-page-node-id="5jyYGjDCGwoACOzL3V3kTl"></div>
   </div>
 </div>
 
-<div class="page" id="p-trend">
-  <div class="card">
-    <h2>本周综合分 <span class="tag">按记录自动算，满分 100</span></h2>
-    <div id="scoreCard"></div>
+<div class="page" id="p-trend" data-page-node-id="e64bAsTrh2PD5QS8YORlYp">
+  <div class="card" data-page-node-id="Yy2bZYfyEN95zGH2Lf5rRa">
+    <h2 data-page-node-id="vudYKIeNm2zR10Szd5dznn">本周综合分 <span class="tag" data-page-node-id="DBHfCmoMwICPXYg68eNscN">按记录自动算，满分 100</span><span id="scoreVal" class="hval" data-page-node-id="scv11slot"></span></h2>
+    <div id="scoreCard" data-page-node-id="WZiauHZxFF58A5omxmfZeG"></div>
   </div>
 
-  <div class="card">
-    <h2>体重曲线 <span class="tag">细线=每日，粗线=7日均线</span><span id="chartTrend" style="margin-left:auto"></span></h2>
-    <div id="chart"></div>
-    <div class="muted" style="margin-top:6px">体重每天上下波动 1~2kg 都是水分，别看单日，只看均线走向。</div>
+  <div class="card" data-page-node-id="3eCkJlpUEariGsDLE9vBpC">
+    <h2 data-page-node-id="4hsMgthVH2QoewGDzEBxnf">体重曲线 <span class="tag" data-page-node-id="EoGF9GBh0Q2eJ93OInKArE">细线=每日，粗线=7日均线</span><span id="chartTrend" class="hval" data-page-node-id="KbjAdsEz9ISMSRrHlncGrA"></span></h2>
+    <div id="chart" data-page-node-id="Xmvy2vZuNphuaA4IP0yiwQ"></div>
+    <div class="muted" style="margin-top:6px" data-page-node-id="9B1yBUlVBIsbuNuY2gAXBC">体重每天上下波动 1~2kg 都是水分，别看单日，只看均线走向。</div>
   </div>
 
-  <div class="card">
-    <h2>围度曲线 <span class="tag">决定穿着体感的是这个</span></h2>
-    <div id="gchart"></div>
-    <div id="gtext"></div>
+  <div class="card" data-page-node-id="wU2G15MGuQiu5EAekcAImh">
+    <h2 data-page-node-id="ODIBbFnTI5uBwE6BpnIhGH">围度曲线 <span class="tag" data-page-node-id="7TR5CPMvyQHH2nVzHyPHks">决定穿着体感的是这个</span></h2>
+    <div id="gchart" data-page-node-id="xYBb4LcSu5Q0a7OvgLVXeC"></div>
+    <div id="gtext" data-page-node-id="BsrGjPN0q6iG6GOU1eHPQK"></div>
   </div>
-  <div class="card">
-    <h2>本周复盘</h2>
-    <div id="weekBox"></div>
+  <div class="card" data-page-node-id="xEqM19UqyqA45ZDQwZyNS5">
+    <h2 data-page-node-id="f7fAJVpTUrBXNrP5zWTe5m">本周复盘</h2>
+    <div id="weekBox" data-page-node-id="MxOOlVeY6aDCwpgVbCIUFT"></div>
   </div>
-  <div class="card">
-    <h2>红线战绩 <span class="tag">近 14 天</span></h2>
-    <div id="rlStat"></div>
+  <div class="card" data-page-node-id="1U7m2pjlLlpns4hwEiF4TV">
+    <h2 data-page-node-id="OOI0YEqarhS826koeCkjKE">红线战绩 <span class="tag" data-page-node-id="HVga0CQypTZAa7jtIYxBOS">近 14 天</span><span id="rlVal" class="hval" data-page-node-id="rlv11slot"></span></h2>
+    <div id="rlStat" data-page-node-id="Cc4cJVgK58py5UaDritxvG"></div>
   </div>
-  <div class="card">
-    <h2>历史记录</h2>
-    <div id="histBox"></div>
+  <div class="card" data-page-node-id="wLv4w2ZW0IY7VFdLK5nZXX">
+    <h2 data-page-node-id="EcCmWmBLtA1LxwximzXlUV">历史记录</h2>
+    <div id="histBox" data-page-node-id="CcirMrPVsI2YY26uKR9Gv1"></div>
   </div>
 </div>
 
-<div class="page" id="p-plan">
-  <div class="card">
-    <h2>吃 · 双模式（按你作息排的，不是通用模板）</h2>
-    <div class="coach"><b>工作日 · 在公司</b>外食为主，控量靠"换和加"</div>
-    <table>
-      <tr><th>时间</th><th>吃什么</th><th class="num">成本</th></tr>
-      <tr><td>8:40<br><span class="muted">起床</span></td><td><b>2 个水煮蛋</b> + 一杯水<br><span class="muted">打破 16 小时空腹</span></td><td class="num">1.4 元</td></tr>
-      <tr><td>12:30<br><span class="muted">午餐</span></td><td><b>2 水煮蛋 + 玉米 1 根 + 冰美式</b><br><span class="muted">~385kcal · 蛋白 23g · 咖啡因 14 点红线内</span></td><td class="num">~6 元</td></tr>
-      <tr><td><b>17:00</b><br><span class="muted">在公司</span></td><td><b>2 水煮蛋 + 1 西红柿/黄瓜</b><br><span class="muted">轮换：即食鸡胸 1 袋 + 黄瓜（免烹饪，蛋白翻倍）；早上煮好带走，防 20 点饿疯</span></td><td class="num">2.4~6 元</td></tr>
-      <tr><td>20:00<br><span class="muted">到家</span></td><td>训练日：先吃<b>半份</b>（2 个<b>蛋白</b> + 青菜）<br>非训练日：直接吃正餐<br><span class="muted">晚间起改用蛋白（蛋清）——白天已吃够全蛋，这里不叠加</span></td><td class="num">—</td></tr>
-      <tr><td><b>晚下班应急</b><br><span class="muted">21:30 后到家</span></td><td>即食鸡胸 <b>1 袋</b> + 蔬菜（烫一把）+ 主食减半<br><span class="muted">牛肉丸 5~8 颗 = 配菜蛋白 · 红薯干 <b>1 份(30g) 封顶</b> = 练前糖弹 · 三样都是工具，不是零食</span></td><td class="num">~6 元</td></tr>
-      <tr><td>21:10<br><span class="muted">运动后</span></td><td><b>正餐</b>：红薯/半碗饭 + 蛋白质（<b>豆腐 / 鸡胸 / 蛋白</b>）+ 大量蔬菜<br><span class="muted">煮面时加 <b>2 个蛋白</b> + 一把青菜（不再叠全蛋）</span></td><td class="num">3 元</td></tr>
-      <tr><td>21:00 后</td><td><b>刷牙</b>，之后不再进食</td><td class="num">0</td></tr>
+<div class="page" id="p-plan" data-page-node-id="nDAsaGIzNZB4dFP3kz79dx">
+  <div class="card peek-lead" data-page-node-id="eDNHb2epF68xlsZk3MIyZ5">
+    <h2 data-page-node-id="KLolMpg7RKqCoMHkcTO0hv">吃 · 双模式（按你作息排的，不是通用模板）</h2>
+    <div class="coach peek-lead" data-page-node-id="uSA0dzBwpC5yRrWjVFmM2q"><b data-page-node-id="BRkAFOKmEk6Ij2LeVQrcrL">工作日 · 在公司</b>外食为主，控量靠"换和加"</div>
+    <table data-page-node-id="nsQiD0zQeQUmCx991jC31T">
+      <tr data-page-node-id="o4h0xME150qV6mWHJGmbUN"><th data-page-node-id="2DPyI0jOEjesZnla5bJNtj">时间</th><th data-page-node-id="fL8viqL0bjJGsqVB5DVysH">吃什么</th><th class="num" data-page-node-id="aNJiTH9wFpXYRb2HqHwnfN">成本</th></tr>
+      <tr data-page-node-id="akInct7zHn4Ljhk1yBDS3T"><td data-page-node-id="FNBfccABCWmC98ufFvwhEm">8:40<br data-page-node-id="vBklAfdfs3RyWBqmshFa0V"><span class="muted" data-page-node-id="3zbUuKfkm2msanTHOsB2Io">起床</span></td><td data-page-node-id="H53Gdmb44ExDNzcDmYXVl1"><b data-page-node-id="T1ppCG7SPKlLUqJtuCMS7N">2 个水煮蛋</b> + 一杯水<br data-page-node-id="DEFvDxPmRCHpP0PmYuiltZ"><span class="muted" data-page-node-id="RG1NqxGpwoFE8ixkSHEcXM">打破 16 小时空腹</span></td><td class="num" data-page-node-id="E81lBVzBnJHbZV1XwJxFJB">1.4 元</td></tr>
+      <tr data-page-node-id="i0XgvUkXQmYT1Y9sln2npO"><td data-page-node-id="Q50ocoUstcwtYx7HjkmzvX">12:30<br data-page-node-id="qThsuZztQqJMF0QBgHhGmm"><span class="muted" data-page-node-id="PCa3L6hwHnsxAwCQjK3Uva">午餐</span></td><td data-page-node-id="14v8VDZDBbh6XD5z7LBJZ4"><b data-page-node-id="B12b5xh5G1W3GEFxWB90lh">2 水煮蛋 + 玉米 1 根 + 冰美式</b><br data-page-node-id="XUEcmRBCi3UCubf82jAHAq"><span class="muted" data-page-node-id="OwzVec2mGFj62S7KKQbfGU">~385kcal · 蛋白 23g · 咖啡因 14 点红线内</span></td><td class="num" data-page-node-id="qep02x1Lwi2OGeYrBqcy7L">~6 元</td></tr>
+      <tr data-page-node-id="hsUr3PVD6RxuGdaDl8T4Gg"><td data-page-node-id="R5AtVZpocyARiROfXKW5nq"><b data-page-node-id="fHK1zqS1vemql6UGwdUf51">17:00</b><br data-page-node-id="AM0HLWxCsUd2JFp6ISdMtC"><span class="muted" data-page-node-id="lS1wPfAxb2iEvd9AWyjhg7">在公司</span></td><td data-page-node-id="wNJuYCkcG0YHvjXXSEbH50"><b data-page-node-id="pEzpbeKJTxf9c2CHACglU9">2 水煮蛋 + 1 西红柿/黄瓜</b><br data-page-node-id="zzx3L2Zd0HeY326cLPIPa9"><span class="muted" data-page-node-id="knF60b8zOccThe1Zoh3jwX">轮换：即食鸡胸 1 袋 + 黄瓜（免烹饪，蛋白翻倍）；早上煮好带走，防 20 点饿疯</span></td><td class="num" data-page-node-id="BT1e0CPHUIjP6WIivi8JK0">2.4~6 元</td></tr>
+      <tr data-page-node-id="7Pn1OChQ7aFHoHT2oJ3RQw"><td data-page-node-id="puDZXkoLF7JkQoC9kbZ3OP">20:00<br data-page-node-id="DENc3bNSBh0YKlD1EGwRUu"><span class="muted" data-page-node-id="ACtcoGyixAt7c48p148j4L">到家</span></td><td data-page-node-id="lTg5ZryBKNgXDDeM2gjOkV">训练日：先吃<b data-page-node-id="bPunXMaLL4cr7GPpFvTwiO">半份</b>（2 个<b data-page-node-id="xnhDZVSYxNi24YL7hXl3Yn">蛋白</b> + 青菜）<br data-page-node-id="6XalfCkUfwUDOetpp4cRc7">非训练日：直接吃正餐<br data-page-node-id="fktPQCGdGxApfnPiRokuAC"><span class="muted" data-page-node-id="n68ZBBF5Dm5XDi42GzR39b">晚间起改用蛋白（蛋清）——白天已吃够全蛋，这里不叠加</span></td><td class="num" data-page-node-id="EKx5TppiTOKOyoi2GXItbC">—</td></tr>
+      <tr data-page-node-id="1GeodTQcZUlH9UqYzcUZRZ"><td data-page-node-id="jjLc79pyIqw0wMKzIiQ4bq"><b data-page-node-id="bBcoM7PjaifiU619rBLiXM">晚下班应急</b><br data-page-node-id="fCwih3YOWKBwcDhL4EgrrB"><span class="muted" data-page-node-id="7xJcahFbqYFmenBrI6vx8k">21:30 后到家</span></td><td data-page-node-id="VvJY2IbJTTcX37VOO9N6PL">即食鸡胸 <b data-page-node-id="jqgBERMUx7q8OEuEnM8PGM">1 袋</b> + 蔬菜（烫一把）+ 主食减半<br data-page-node-id="7mwYvDlIARySBS4EvPEl6k"><span class="muted" data-page-node-id="VLCpixq255qlYDN261tIrG">牛肉丸 5~8 颗 = 配菜蛋白 · 红薯干 <b data-page-node-id="gr7hkBHHZDbjj0kGuDTO6f">1 份(30g) 封顶</b> = 练前糖弹 · 三样都是工具，不是零食</span></td><td class="num" data-page-node-id="CqM2EAj2OfxXhjS0zbANHN">~6 元</td></tr>
+      <tr data-page-node-id="s1fvrlWTvbJbpU7HsnkREe"><td data-page-node-id="n68qwrMsaLusOXu7TkqxHK">21:10<br data-page-node-id="0AZmdcTMTZlergfCcwTjs9"><span class="muted" data-page-node-id="qjq00lu18vMZ1HXqRYEKp1">运动后</span></td><td data-page-node-id="xKTcVcwhB9W8nOFcl6GLJb"><b data-page-node-id="3nVfigCQyMuI4skAK6IpxI">正餐</b>：红薯/半碗饭 + 蛋白质（<b data-page-node-id="TkNCYrRPsFeM3PdNEkkhZP">豆腐 / 鸡胸 / 蛋白</b>）+ 大量蔬菜<br data-page-node-id="VWRxJhUXWRx8eAfggRfADL"><span class="muted" data-page-node-id="ssPIbRMUdqBskHCE9MMQNn">煮面时加 <b data-page-node-id="bULbsqAgpIZc4pmmULGDcl">2 个蛋白</b> + 一把青菜（不再叠全蛋）</span></td><td class="num" data-page-node-id="e183nV3TqNCOk3Xhk8jHWW">3 元</td></tr>
+      <tr data-page-node-id="cBuUJey9DeH46blBoGNJqq"><td data-page-node-id="M8RwBhEDT0VgJd4NLlkBFN">21:00 后</td><td data-page-node-id="oDWEk0HPHFIY17CFqXusgB"><b data-page-node-id="yvaxAtgiP8pCkIAzlq1uxt">刷牙</b>，之后不再进食</td><td class="num" data-page-node-id="B5eejFOSuGGmxrykqLjrWv">0</td></tr>
     </table>
-    <div class="coach" style="margin-top:12px"><b>居家日 · 周末/假日</b>自炊为主，三餐提前+规律</div>
-    <table>
-      <tr><th>时间</th><th>吃什么</th><th class="num">成本</th></tr>
-      <tr><td>起床后 30 分钟内<br><span class="muted">周末红线 9:30 前</span></td><td>温水 250ml → <b>2~3 个水煮蛋 + 西红柿/生菜</b><br><span class="muted">冰美式可选，先喝温水再喝</span></td><td class="num">~2 元</td></tr>
-      <tr><td>12:00~13:00<br><span class="muted">午餐（自炊）</span></td><td><b>肉 + 蔬菜 + 主食</b>：如瘦肉炒彩椒 + 米饭 1 碗<br><span class="muted">比工作日强的地方：热菜现炒，油量自己控</span></td><td class="num">8~12 元</td></tr>
-      <tr><td><b>17:00</b><br><span class="muted">加餐</span></td><td><b>1~2 水煮蛋 + 半个红薯</b><br><span class="muted">和工作日逻辑一样：防晚上饿疯</span></td><td class="num">~2 元</td></tr>
-      <tr><td>19:00~20:00<br><span class="muted">晚餐（自炊）</span></td><td><b>豆腐/蛋白/瘦肉 + 大量蔬菜 + 半碗饭或红薯</b><br><span class="muted">居家日优势：晚餐能提前 1~2 小时，对睡眠更好 · 晚间用蛋白替代全蛋</span></td><td class="num">5~8 元</td></tr>
-      <tr><td>21:00 后</td><td><b>刷牙</b>，之后不再进食</td><td class="num">0</td></tr>
+    <div class="coach sec-sm" data-page-node-id="TUE2TG5XJABV3A1hep7dpH"><b data-page-node-id="my7q1tYrH3syiFK51sLGEr">居家日 · 周末/假日</b>自炊为主，三餐提前+规律</div>
+    <table data-page-node-id="4ASgAFpFDzmd1M8c1YQmnZ">
+      <tr data-page-node-id="kI8Kguix0TJVBOpFmRjXMR"><th data-page-node-id="vyOVFmAFOOMVzPRoStBzyz">时间</th><th data-page-node-id="hzso7zyMxOosoOGcAhkcUv">吃什么</th><th class="num" data-page-node-id="rslvKlVFzweXJOavyMYzEO">成本</th></tr>
+      <tr data-page-node-id="Aa61jZP1c8mOh8cKCGCFeU"><td data-page-node-id="mIaFb6sayUJbJO0ItRdqT4">起床后 30 分钟内<br data-page-node-id="XOEWMIRpeQ8zoFG0ejl5dQ"><span class="muted" data-page-node-id="gQfH8Fe3zpxc8snpu12mmS">周末红线 9:30 前</span></td><td data-page-node-id="q94eWp2MOds7u2Xerar4YA">温水 250ml → <b data-page-node-id="vmwCyrBmvq7a86PMGpIH8D">2~3 个水煮蛋 + 西红柿/生菜</b><br data-page-node-id="eow3BdhtsTGY2tIkSNwADP"><span class="muted" data-page-node-id="bcXCZWKcvW2XktF2s55BLw">冰美式可选，先喝温水再喝</span></td><td class="num" data-page-node-id="Dj8v3BjLcDhJ3Fxg35mveh">~2 元</td></tr>
+      <tr data-page-node-id="bCnUmJEFfF5vC3OiJvPFPP"><td data-page-node-id="DZ1akdZHrhOdTRkiVUrWQX">12:00~13:00<br data-page-node-id="9CujzznKNZ6xaeyur7NC1h"><span class="muted" data-page-node-id="4JYZsvvXEo0XOClAaBb536">午餐（自炊）</span></td><td data-page-node-id="LyRdxPo0QpVFfxX1OpzY6l"><b data-page-node-id="hONDjy1yUc2giFgSS6xvR4">肉 + 蔬菜 + 主食</b>：如瘦肉炒彩椒 + 米饭 1 碗<br data-page-node-id="zyNWHC6dVt8jH1EHHwjM1Q"><span class="muted" data-page-node-id="H4bvZFPKvUI2QAnG6qMmlA">比工作日强的地方：热菜现炒，油量自己控</span></td><td class="num" data-page-node-id="9fAYNkLU0zSKISVhyK233L">8~12 元</td></tr>
+      <tr data-page-node-id="FtBfdvB2WUS6K7NvTMx1fV"><td data-page-node-id="6RqXziiBMaCMRuzirV6OpM"><b data-page-node-id="78qtIySC8ajPLhRI5razAI">17:00</b><br data-page-node-id="zE5pnlkGLU9pejN9EBND0E"><span class="muted" data-page-node-id="e8KpgT1sNR9jajzBkJ8pDy">加餐</span></td><td data-page-node-id="mNufiSDmX4lzi8qlvX64dH"><b data-page-node-id="7QFpqHYR5kPXc6En9E9h7S">1~2 水煮蛋 + 半个红薯</b><br data-page-node-id="h12IygJQiA7dwCGHIPVOk4"><span class="muted" data-page-node-id="FxDKx1U1K876EfRgBmBEI3">和工作日逻辑一样：防晚上饿疯</span></td><td class="num" data-page-node-id="kj163h67DLa5MyDRTJN6aM">~2 元</td></tr>
+      <tr data-page-node-id="BDXlkjhdlZGrOvSsYglRKd"><td data-page-node-id="ijnXwuKvr4hXdSy7CVgFbZ">19:00~20:00<br data-page-node-id="GjWTi5tRBTNSsgUTXJkhg0"><span class="muted" data-page-node-id="vQMpBmpix05Tp4Zhm341WH">晚餐（自炊）</span></td><td data-page-node-id="kNmHu2A6rAsDiKLD2A0ZCk"><b data-page-node-id="nNGyDREUXfWZCBjWEIo58o">豆腐/蛋白/瘦肉 + 大量蔬菜 + 半碗饭或红薯</b><br data-page-node-id="BrBgIFnADIdwyunA69363x"><span class="muted" data-page-node-id="hyZpinDP6U6GVACS0YxKxN">居家日优势：晚餐能提前 1~2 小时，对睡眠更好 · 晚间用蛋白替代全蛋</span></td><td class="num" data-page-node-id="u8KTuKY6Tf8OzZWFV2aoSD">5~8 元</td></tr>
+      <tr data-page-node-id="mhDdCXh0cJz5e5hoFNgMYO"><td data-page-node-id="OhzOxCRwOUdqmPbRqYymN8">21:00 后</td><td data-page-node-id="8CL2MEj6kfmWDg6FwgLGkg"><b data-page-node-id="TA7B7joatke9M9WpZp8EVT">刷牙</b>，之后不再进食</td><td class="num" data-page-node-id="lFGwh8RZJDiMEJc1B2qnVT">0</td></tr>
     </table>
-    <div class="coach" style="margin-top:10px"><b>核心改动：不是少吃，是重排</b>你现在一天约 1100 kcal、蛋白质仅 40g。目标是 <b>1700~1800 kcal、蛋白质 125g</b>。先加蛋白质，别急着减量。</div>
-    <div class="coach ok"><b>全蛋怎么吃：每天上限 6 个，晚间改蛋白</b>白天的 6 个全蛋照吃（早餐 2 + 午餐 2 + 17 点 2）。<b>晚上的蛋一律换成「蛋白（蛋清）」</b>——一个蛋白 33g 约 60kcal、11.6g 蛋白，几乎不含脂肪和胆固醇，正好把晚间这顿的蛋白质补够。<br><span class="muted">参考：约 25% 的人属于「胆固醇高反应者」。你如果哪天体检方便，顺手查一次空腹血脂（重点看 LDL-C），吃满 1 个月后复查一次，心里有底。若 LDL-C 明显升高，把白天全蛋减到 3 个。</span></div>
-    <div class="coach ok"><b>红薯的正确用法</b>红薯是<b>主食</b>不是菜。它替代米饭和面条，别当零食猛吃。</div>
+    <div class="coach sec-sm" data-page-node-id="QYvdwiom0cfSxBqysALlMH"><b data-page-node-id="tE2bMDO80z4nhrCrtQbEy2">核心改动：不是少吃，是重排</b>你现在一天约 1100 kcal、蛋白质仅 40g。目标是 <b data-page-node-id="RsWz3IWr3TpCPMwhYbXVWD">1700~1800 kcal、蛋白质 125g</b>。先加蛋白质，别急着减量。</div>
+    <div class="coach ok" data-page-node-id="PtjFnjebkUXldNhebUDILS"><b data-page-node-id="vFZhYpxg2fZYaAEOuKFCpB">全蛋怎么吃：每天上限 6 个，晚间改蛋白</b>白天的 6 个全蛋照吃（早餐 2 + 午餐 2 + 17 点 2）。<b data-page-node-id="28tbSvbrqzNadf1K6l9sb8">晚上的蛋一律换成「蛋白（蛋清）」</b>——一个蛋白 33g 约 60kcal、11.6g 蛋白，几乎不含脂肪和胆固醇，正好把晚间这顿的蛋白质补够。<br data-page-node-id="GUJG6RQdffZXtkfQGg3BYK"><span class="muted" data-page-node-id="D2Iac2jaI51QP475WB1Zh7">参考：约 25% 的人属于「胆固醇高反应者」。你如果哪天体检方便，顺手查一次空腹血脂（重点看 LDL-C），吃满 1 个月后复查一次，心里有底。若 LDL-C 明显升高，把白天全蛋减到 3 个。</span></div>
+    <div class="coach ok" data-page-node-id="3XKFfDBSMRFV0ci5kTzbCe"><b data-page-node-id="58fVtaF3oPyISWcwccBPpD">红薯的正确用法</b>红薯是<b data-page-node-id="CVPR8fKw44TIwp8R1JP9P2">主食</b>不是菜。它替代米饭和面条，别当零食猛吃。</div>
   </div>
 
-  <div class="card">
-    <h2>我的食材 <span class="tag">点亮的 = 冰箱里有</span></h2>
-    <div class="muted">先勾你现在有的，下面的「能做什么」会自动算</div>
-    <div class="muted" style="margin-top:10px">蛋白质类</div>
-    <div class="chips" id="pantryP"></div>
-    <div class="muted" style="margin-top:10px">主食类</div>
-    <div class="chips" id="pantryC"></div>
-    <div class="muted" style="margin-top:10px">蔬菜类</div>
-    <div class="chips" id="pantryV"></div>
+  <!-- v12 合并：原「我的食材」+「你现在能做的」+「再买一样就能做」三张卡
+       合并为一张 —— 同一逻辑链被拆成三张卡、中间隔着滚动，视线要跳两次才能
+       从「勾食材」走到「能做什么」。现在勾选 → 结果 → 差一样，一次读完。
+       注意：所有挂载点 ID 保持不变，下游 renderPantry 无需改动渲染逻辑。 -->
+  <div class="card" data-page-node-id="bflZ608tk8DNONfShk8poq">
+    <h2 data-page-node-id="hjAutXEBPTTpl0C7dcRJ4L">我的食材 <span class="tag" id="canCount" data-page-node-id="jFGeNmGBXxwVT9B6PJJXIc"></span></h2>
+    <div class="muted" data-page-node-id="BqGvqevQbrvmSAgjp1pnQO">点亮的 = 冰箱里有。勾完自动算「能做什么」</div>
+    <div class="sub-h" data-page-node-id="BX6kHkTAeaZNY3k6KhHAL5">蛋白质类</div>
+    <div class="chips" id="pantryP" data-page-node-id="PhHhw3fTGjRMoB9EvArVJg"></div>
+    <div class="sub-h" data-page-node-id="jwX3Gk39Ph2pSK9wZO3wnJ">主食类</div>
+    <div class="chips" id="pantryC" data-page-node-id="NRdCgASne4GY6KWL8TEWGU"></div>
+    <div class="sub-h" data-page-node-id="MiX8OFBEqrZIzof7DN3GXp">蔬菜类</div>
+    <div class="chips" id="pantryV" data-page-node-id="Lw5aRp13j6KEUYWrd6lDDJ"></div>
+
+    <div class="sub-h hr-sec" data-page-node-id="PoDN3JnynD6hngURvDSgBf">✓ 现在能做的</div>
+    <div id="mealBox" data-page-node-id="vniOkvf8cX2T9QqNVOzb7G"></div>
+
+    <div class="sub-h" data-page-node-id="MHSvTdz0e3Nvx9V9Gc3j5j">＋ 再买一样就能解锁</div>
+    <div id="almostBox" data-page-node-id="Ln7VEi0nLJfRUE6PqfPPpR"></div>
   </div>
 
-  <div class="card">
-    <h2>你现在能做的 <span class="tag" id="canCount"></span></h2>
-    <div id="mealBox"></div>
-  </div>
-
-  <div class="card">
-    <h2>再买一样就能做 <span class="tag">差一个食材就能解锁</span></h2>
-    <div id="almostBox"></div>
-  </div>
-
-  <div class="card">
-    <h2>薄肌路线图 <span class="tag">分两段走，别急</span></h2>
-    <table>
-      <tr><th>阶段</th><th>时间</th><th>目标</th><th>训练的作用</th></tr>
-      <tr><td><b>一 · 减脂保肌</b></td><td>9/7 → 12/7</td><td>76.7 → <b>67kg</b><br><span class="muted">腰围 → 90cm</span></td><td><b>保住肌肉</b>，让掉的重量尽量多来自脂肪</td></tr>
-      <tr><td><b>二 · 收尾</b></td><td>12/7 → 2027/1</td><td>67 → <b>65kg</b></td><td>同上</td></tr>
-      <tr><td><b>三 · 增肌出线条</b></td><td>65kg 之后</td><td>体脂降到 <b>15~17%</b></td><td>热量回调，<b>真正开始长肌肉</b></td></tr>
+  <div class="card" data-page-node-id="aVCCpFB4FEzkaatBZV5U8D">
+    <h2 data-page-node-id="WxKP0xB90jqZcXv5SIe2lU">薄肌路线图 <span class="tag" data-page-node-id="4v3uHBDXGMqKhQ81H2SjBS">分两段走，别急</span></h2>
+    <table data-page-node-id="OFMvXceOosvo2ObFAVzMlf">
+      <tr data-page-node-id="l30YD3QTjObj02BvhiBBTR"><th data-page-node-id="1a1NIdiNjOkTFTCKJjfYDB">阶段</th><th data-page-node-id="aGI5s9WH7NICrsmMGe5FAA">时间</th><th data-page-node-id="0eijBOqk7MhLO756kOGpLP">目标</th><th data-page-node-id="2OaYo5PnliTdwaeFjoDDAg">训练的作用</th></tr>
+      <tr data-page-node-id="0VBPhiHKJ8lMCQTjHl6HAM"><td data-page-node-id="X1nhwiePPN79Hg1aRBNENC"><b data-page-node-id="plYzOS8jOnlVepMczVIboL">一 · 减脂保肌</b></td><td data-page-node-id="6GZHVvRHRVUUjIRpSGhqLc">9/7 → 12/7</td><td data-page-node-id="xRE5d80poXp0dJfdx9atBT">76.7 → <b data-page-node-id="aoZkxW7aCrSVPkcEHv4fAT">67kg</b><br data-page-node-id="qSVTP6DDBKRmoevHOErm1K"><span class="muted" data-page-node-id="L6yd1o3NKab57hHSFe8z2d">腰围 → 90cm</span></td><td data-page-node-id="TJV9NYLPhrmjEBjIitvA4F"><b data-page-node-id="sRGDCBsHzAyJGF0fJg4SsG">保住肌肉</b>，让掉的重量尽量多来自脂肪</td></tr>
+      <tr data-page-node-id="ecpPNM2GiCfYApB205fhsF"><td data-page-node-id="NizS5dQvfFyyIwDrDVvL01"><b data-page-node-id="dOXy3sIO8CiH55jl7HNzgH">二 · 收尾</b></td><td data-page-node-id="Zi46H3BMx737nG1PN4W4ZG">12/7 → 2027/1</td><td data-page-node-id="ChCsXqtdD0MlWhuPzwEPEu">67 → <b data-page-node-id="ybDfUtEW87KkZhwdhiCQsC">65kg</b></td><td data-page-node-id="uNyGZyz7r6LTxv55Mjsr90">同上</td></tr>
+      <tr data-page-node-id="bbiKX3qGNmD8wrZCCF7YM6"><td data-page-node-id="w5Sg2SXKfUlNMvNEMekUfg"><b data-page-node-id="Qln3KlaaU0GTTchVB8VwsZ">三 · 增肌出线条</b></td><td data-page-node-id="wSs7oElzXatvh9RVi1ndqB">65kg 之后</td><td data-page-node-id="eGHgtLTzdpl2knz5NWpIXo">体脂降到 <b data-page-node-id="dvobPVcY6gd1MyBedEn0EQ">15~17%</b></td><td data-page-node-id="YPxs8KqcuNZMdsEH7tRRpH">热量回调，<b data-page-node-id="ObaBdW3RggpC7VX1whzjju">真正开始长肌肉</b></td></tr>
     </table>
-    <div class="coach" style="margin-top:10px"><b>为什么不能一步到位</b>减脂期有热量缺口，人体很难同时长肌肉。现在这 4 个月，力量训练的作用是<b>「别掉肌肉」</b>——这是薄肌的地基，不是薄肌本身。</div>
-    <div class="coach"><b>如果蛋白质没吃够会怎样</b>你会变成「瘦胖子」：体重掉了，肚子还在，腰围照样大。<b>蛋白质 125g + 力量训练，就是防这件事的两道保险。</b></div>
-    <div class="coach ok"><b>一个让你安心的现象</b>新手头几个月有「新手红利」，你可能边减脂边长一点肌肉。所以如果<b>体重掉得慢、但镜子里变化明显</b>——那是最好的情况，别慌，也别去加有氧。</div>
+    <div class="coach sec-sm" data-page-node-id="E1ANQfhCRnxaf2ylAYrt4L"><b data-page-node-id="IHeEkhkVFhajpOH9cavY2G">为什么不能一步到位</b>减脂期有热量缺口，人体很难同时长肌肉。现在这 4 个月，力量训练的作用是<b data-page-node-id="Ru2XO3NDIBBONH15NXyzTE">「别掉肌肉」</b>——这是薄肌的地基，不是薄肌本身。</div>
+    <div class="coach" data-page-node-id="w49aLohDKSddMGtnX6M98b"><b data-page-node-id="J9IHWzwGvEQzZGu1AVyhSR">如果蛋白质没吃够会怎样</b>你会变成「瘦胖子」：体重掉了，肚子还在，腰围照样大。<b data-page-node-id="dAjPytiB6IQ50xop3Y65ZZ">蛋白质 125g + 力量训练，就是防这件事的两道保险。</b></div>
+    <div class="coach ok" data-page-node-id="2yrVMRhzmmWTRLmFiOvDdN"><b data-page-node-id="F8vl8lmI3GDxVlGZkNbuis">一个让你安心的现象</b>新手头几个月有「新手红利」，你可能边减脂边长一点肌肉。所以如果<b data-page-node-id="mWCX1SN65FArKk2PbKgOfk">体重掉得慢、但镜子里变化明显</b>——那是最好的情况，别慌，也别去加有氧。</div>
   </div>
 
-  <div class="card">
-    <h2>非训练日 · 墙面三件套 <span class="tag">周三 / 周日 · 15~20 分钟 · 微汗即可</span></h2>
-    <table>
-      <tr><th>动作</th><th>你的量</th><th class="num">练什么</th></tr>
-      <tr><td><b>靠墙静蹲</b><br><span class="muted">背贴墙下滑，大腿平行地面</span></td><td>45 秒 × 2 组<br><span class="muted">组间歇 1 分钟 · 膝盖不超脚尖</span></td><td class="num">腿 · 臀</td></tr>
-      <tr><td><b>推墙俯卧撑</b><br><span class="muted">双手推墙，双脚与胯同宽</span></td><td>12 次 × 2 组<br><span class="muted">身体一条直线 · 别塌腰</span></td><td class="num">胸 · 肩 · 臂</td></tr>
-      <tr><td><b>推墙提踵</b><br><span class="muted">扶墙抬起后脚跟</span></td><td>15 次 × 2 组<br><span class="muted">顶峰停 2 秒再落</span></td><td class="num">小腿 · 踝</td></tr>
+  <div class="card" data-page-node-id="nBFfPjZ2GmLGCHH9FEHkQ4">
+    <h2 data-page-node-id="YRx3DCkNvDCfxwQFAYRC8p">采购建议 <span class="tag" data-page-node-id="CNg1IT3zEgdfBN8ew5VYA9">每天多花不到 8 块</span></h2>
+    <table data-page-node-id="qHAX9k0FJCWEliEqVwtOTa">
+      <tr data-page-node-id="7cxgAN1rhgGJBGu1w6ovRd"><th data-page-node-id="oO5xsIl08BPQTlM2PFmJE9">食材</th><th data-page-node-id="Kog47iIp4wBv15csl4Bbl6">用法</th><th class="num" data-page-node-id="DhZXj7Pg4NHvqAxIurIZkB">每天</th></tr>
+      <tr data-page-node-id="HWiE4T6Q9dIfMb1peyZBwK"><td data-page-node-id="X6jPKqIyQf17AJDcOhLLic">鸡蛋 <span class="muted" data-page-node-id="J9v3F7rLAPxOUMNb0fvxQT">约0.7元/个</span></td><td data-page-node-id="CmRguYA8vMKDnaqJJGJuJU">早餐 2 个 + 17 点 2 个</td><td class="num" data-page-node-id="d1r7Jyq1qnevgOqnfXzi3u">2.8 元</td></tr>
+      <tr data-page-node-id="DRDmA18YgJjno6DNvZnpfH"><td data-page-node-id="M3XpM7DMlBVlU2IPTO57zi">豆腐 <span class="muted" data-page-node-id="hpthz5CDmHMcGTGyfPjYvS">2元/块</span></td><td data-page-node-id="s5vwY8A0O30mIKAOW0TtcJ">晚餐蛋白质主力，能换口味</td><td class="num" data-page-node-id="oHX4oSqQQlbn7KxJjcwAvZ">2 元</td></tr>
+      <tr data-page-node-id="YhYHBemVt34uZMp16iWdJE"><td data-page-node-id="QhB7mXu92HkuToQPYL2Wau">时令青菜</td><td data-page-node-id="bKDwYlmGR08XH05Hptvh4R">午餐 + 晚餐各一份</td><td class="num" data-page-node-id="EmM1aLRt1uA0zVMjHOZu3y">2 元</td></tr>
+      <tr data-page-node-id="Gx3PMKonQZHpbrSTCfNCPz"><td data-page-node-id="A8PylBqqpnDGZQ2zkbWdDr">西红柿/黄瓜</td><td data-page-node-id="I586F9xVNZCpQzzZZOOhyc">17 点加餐，洗了就走</td><td class="num" data-page-node-id="snFmsXQbxsiZe9s4tEtTKg">1 元</td></tr>
+      <tr data-page-node-id="wvPEXg7OPPPwW4SSNyuMdF"><td data-page-node-id="E9uwfwMvtpYYGO7yWVqGzO">香蕉 <span class="muted" data-page-node-id="rF0ze8ZPOFMoKVgY3b40o3">4~6 根/周</span></td><td data-page-node-id="liKGIqLJZ74IoWlanXoJIO">训练日练前 1 根 / 下午垫餐加 1 根（一天最多 1 根）</td><td class="num" data-page-node-id="Wqu5STOzBMveCfYgwtFl22">1 元</td></tr>
+      <tr data-page-node-id="omD8IvccWz3BIaYTMnYuiS"><td data-page-node-id="lxwTEuEhRxnQ0xmfQ5K2sJ">应急三件套 <span class="muted" data-page-node-id="5l9dMldngvYBQtDYRNZE88">已购</span></td><td data-page-node-id="bRrnj2NkcP4rFkLFUe96ur">即食鸡胸 1 袋 / 牛肉丸 5~8 颗 / 红薯干 30g 封顶——晚下班保险，不当零食</td><td class="num" data-page-node-id="t0HmH0iDFthXrxhLu4rZyX">摊薄</td></tr>
     </table>
-    <div class="coach" style="margin-top:12px"><b>三条边界</b>①强度压到 60%：每组留 3~4 次余力，做完不影响说话；②不与二/四/六训练日撞车，<b>周五保持纯休息</b>；③这是加分项不是必做项，状态差就只散步。</div>
-    <div class="coach ok"><b>怎么判断做对了</b>做完还有余力 = 做对了。两周后再考虑加量（静蹲 60 秒 / 俯卧撑 15 次）。它养的是神经肌肉连接和习惯，不是消耗。</div>
+    <div class="muted" style="margin-top:8px" data-page-node-id="dC7IjIlra9XTGFg1LFsHVd">砍掉碳酸饮料每天省 3~5 元，基本能覆盖。<b data-page-node-id="OXTHv2XFDqSFjEGjFZbgLV">越没钱，越要把钱花在蛋白质上</b>——饿得快才是真浪费钱。<br data-page-node-id="iz4XQVEqAlCUDqX3ib2hoG">光靠鸡蛋蛋白质到不了 125g（那得一天吃十几个蛋），<b data-page-node-id="gtTZUfjujjXeHKnvdjbFUZ">下次买菜记得加块豆腐</b>。</div>
   </div>
 
-  <div class="card">
-    <h2>采购建议 <span class="tag">每天多花不到 8 块</span></h2>
-    <table>
-      <tr><th>食材</th><th>用法</th><th class="num">每天</th></tr>
-      <tr><td>鸡蛋 <span class="muted">约0.7元/个</span></td><td>早餐 2 个 + 17 点 2 个</td><td class="num">2.8 元</td></tr>
-      <tr><td>豆腐 <span class="muted">2元/块</span></td><td>晚餐蛋白质主力，能换口味</td><td class="num">2 元</td></tr>
-      <tr><td>时令青菜</td><td>午餐 + 晚餐各一份</td><td class="num">2 元</td></tr>
-      <tr><td>西红柿/黄瓜</td><td>17 点加餐，洗了就走</td><td class="num">1 元</td></tr>
-      <tr><td>香蕉 <span class="muted">4~6 根/周</span></td><td>训练日练前 1 根 / 下午垫餐加 1 根（一天最多 1 根）</td><td class="num">1 元</td></tr>
-      <tr><td>应急三件套 <span class="muted">已购</span></td><td>即食鸡胸 1 袋 / 牛肉丸 5~8 颗 / 红薯干 30g 封顶——晚下班保险，不当零食</td><td class="num">摊薄</td></tr>
+  <div class="card peek-lead" data-page-node-id="DtiM4yGMfQLOZ1Ej4rLv1i">
+    <h2 data-page-node-id="56mWAJI7aKDvkB45LcxxUw">护肤 · 早C晚A，先慢一拍 <span class="tag" data-page-node-id="4doh1QiWkmlFlA46h9hrxO">你手上的三支刚好够用</span></h2>
+    <div class="coach peek-lead" data-page-node-id="KmUJSP4lRJXxC2A8PqwvM7"><b data-page-node-id="orehf1IO5clDsigFhxk4F1">耐受节奏（别跳级）</b>第 1 周早晚只涂 B5（先修屏障）→ 第 2 周晚上隔天加维A → 第 3 周起早上加维C。<b data-page-node-id="dKL22KxrskOs3bxhyzLgeC">维A 刺痛/脱皮 = 退回只涂 B5</b>，好了再上，别硬扛。</div>
+    <table data-page-node-id="CMeIWXNraS2aLAAXHc9e8u">
+      <tr data-page-node-id="TbdodfWG6rJWBYrLJdDSJA"><th data-page-node-id="HfFLrybj39ZMO7ADsBZrCs">时段</th><th data-page-node-id="TM9i1PB3GnS9l71yqzg29M">程序</th><th data-page-node-id="zvlgAVAeFrBHbMEOCSVWFH">耗时</th></tr>
+      <tr data-page-node-id="XCGXXGTggRDfm2yWIoJMcM"><td data-page-node-id="o8a6LmaRHIFAfJXn3lulbe"><b data-page-node-id="Zlzd3O5onUle0ygS77fQ1K">早</b><br data-page-node-id="u3AOlpMrVBC5hpgKaZra5m"><span class="muted" data-page-node-id="giyO3LKtwz6HXpuGGqTChk">起床后</span></td><td data-page-node-id="eHaMQNjupCu1l53Zd4quWF">清水/洁面 → <b data-page-node-id="gLpmYZJnHBof07tfDRU3Xh">B5 特护霜</b> →（第 3 周起）维C → 出门戴帽子</td><td class="num" data-page-node-id="wzimrnBinZBGnewtHI7mNF">30 秒</td></tr>
+      <tr data-page-node-id="16kcGDC4EdCe5mF84xaEjt"><td data-page-node-id="Q3VfYtzKJR9JnCWGMNkHs1"><b data-page-node-id="noEHKDwrMT97yJSNXTK4kj">晚</b><br data-page-node-id="Yrf0WjAgPviQievR67mC2M"><span class="muted" data-page-node-id="tOlHFZzOaVapE7EpymSSRk">刷牙前</span></td><td data-page-node-id="QpJRx44PXySzmr1C2IpYev">洗脸 → <b data-page-node-id="KPQHRhHutEkmJoHEZTdzMs">B5</b> →（第 2 周起）维A <b data-page-node-id="Qarhu5gyTTe7Ulxz4zHI9X">隔天用</b> → 然后刷牙</td><td class="num" data-page-node-id="07VsVWxfJw0sm7cuU7SVtI">1 分钟</td></tr>
     </table>
-    <div class="muted" style="margin-top:8px">砍掉碳酸饮料每天省 3~5 元，基本能覆盖。<b>越没钱，越要把钱花在蛋白质上</b>——饿得快才是真浪费钱。<br>光靠鸡蛋蛋白质到不了 125g（那得一天吃十几个蛋），<b>下次买菜记得加块豆腐</b>。</div>
+    <div class="coach ok" data-page-node-id="0eNR83etT4NUX2CSaufe5I"><b data-page-node-id="R52U0vYaGDXAOXvBLhUbI3">绑死在刷牙前面</b>洗脸护肤 → 刷牙 → 封口。你本来就要重建刷牙习惯，护肤搭这趟车，一个流程两件事。21:00 刷牙改到哪，护肤就跟到哪。</div>
+    <div class="coach" style="background:var(--brand-soft)" data-page-node-id="sZlCZCFa1kDVfr6hu4lCZ3"><b data-page-node-id="DRAFSzg3E3y70eWfIiIWrc">两条红线</b>①大宝 SOD 蜜只抹手脚，<b data-page-node-id="62eZtTmCTuXtoPWfLuev3B">别上脸</b>（矿油+棕榈酸异丙酯，油痘肌闷痘）；②出油别猛洗，早晚各一次就够——过度清洁会出油更凶。油痘肌用维A是对的方向，皮肤代谢会慢慢正常化，配合睡够和少吃糖，2~3 个月见变化。</div>
   </div>
 
-  <div class="card">
-    <h2>护肤 · 早C晚A，先慢一拍 <span class="tag">你手上的三支刚好够用</span></h2>
-    <table>
-      <tr><th>时段</th><th>程序</th><th>耗时</th></tr>
-      <tr><td><b>早</b><br><span class="muted">起床后</span></td><td>清水/洁面 → <b>B5 特护霜</b> →（第 3 周起）维C → 出门戴帽子</td><td class="num">30 秒</td></tr>
-      <tr><td><b>晚</b><br><span class="muted">刷牙前</span></td><td>洗脸 → <b>B5</b> →（第 2 周起）维A <b>隔天用</b> → 然后刷牙</td><td class="num">1 分钟</td></tr>
-    </table>
-    <div class="coach" style="margin-top:10px"><b>耐受节奏（别跳级）</b>第 1 周早晚只涂 B5（先修屏障）→ 第 2 周晚上隔天加维A → 第 3 周起早上加维C。<b>维A 刺痛/脱皮 = 退回只涂 B5</b>，好了再上，别硬扛。</div>
-    <div class="coach ok"><b>绑死在刷牙前面</b>洗脸护肤 → 刷牙 → 封口。你本来就要重建刷牙习惯，护肤搭这趟车，一个流程两件事。21:00 刷牙改到哪，护肤就跟到哪。</div>
-    <div class="coach" style="background:var(--brand-soft)"><b>两条红线</b>①大宝 SOD 蜜只抹手脚，<b>别上脸</b>（矿油+棕榈酸异丙酯，油痘肌闷痘）；②出油别猛洗，早晚各一次就够——过度清洁会出油更凶。油痘肌用维A是对的方向，皮肤代谢会慢慢正常化，配合睡够和少吃糖，2~3 个月见变化。</div>
-  </div>
+  <div class="card" data-page-node-id="oeM3HlB2S6xxTAZ7jPWAx0">
+    <h2 data-page-node-id="k3WNQNPZ04hCHKbmWiW9wg">每日执行细则 <span class="tag" data-page-node-id="jmhbKnhSGMHRoS5DEqzY2S">睡 · 动 · 非训练日</span></h2>
 
-  <div class="card">
-    <h2>动 · 全用你已有的器材 <span class="tag">水瓶 10kg + 瑜伽垫 + 6 楼 + 腹肌轮</span></h2>
-    <div class="coach"><b>爬楼梯（免费 cardio，非训练日做）</b>你住 6 楼顶楼，这是现成的器械。<b>非训练日</b>回家刻意走 <b>3 趟</b> 而不是 1 趟。<br><span style="color:var(--brand-text)">⚠️ ①<b>上楼爬、下楼坐电梯</b>——下楼时膝盖受力是体重的 5~7 倍，是最伤膝盖的动作；②<b>周二 / 周四 / 周六训练日不爬</b>，避免与深蹲硬拉叠加；③全脚掌踩实台阶，膝盖方向与脚尖一致，别内扣；④练完觉得膝盖发酸发紧，当天爬楼取消，改平地散步。</span></div>
-    <div style="margin-top:8px"><button class="btn" id="btnExpand" style="font-size:12px;padding:6px 10px">全部展开 / 收起</button></div>
-    <div id="movesBox"></div>
-  </div>
-
-  <div class="card">
-    <h2>睡 · 目标 0:30 前</h2>
-    <ol>
-      <li>23:50 手机放客厅充电。</li>
-      <li><b>21:00 刷牙</b>——一箭三雕：口臭改善 + 刷了牙再吃会觉得麻烦，夜宵自然少 + 重建生活秩序。</li>
-      <li>熬夜直接推高第二天食欲和胰岛素抵抗。<b>睡觉本身就在减脂。</b></li>
+    <div class="sub-h" data-page-node-id="K4KpCzsu0ZQvbHiMvWlihe">睡 · 目标 0:30 前</div>
+    <ol data-page-node-id="tkAymaVZjUPTn3srCLzMTW">
+      <li data-page-node-id="Xy3WALTcIxGpzHvJQWqJtn">23:50 手机放客厅充电。</li>
+      <li data-page-node-id="Bhu0a95v8W9nt1q39j4TaH"><b data-page-node-id="TDEJjoqJhGHkGuL5V4QUCv">21:00 刷牙</b>——一箭三雕：口臭改善 + 刷了牙再吃会觉得麻烦，夜宵自然少 + 重建生活秩序。</li>
+      <li data-page-node-id="dFi20p6ADzCg0e1sQi5iJz">熬夜直接推高第二天食欲和胰岛素抵抗。<b data-page-node-id="J9cyRlZXVVyAyoCtS9XyUK">睡觉本身就在减脂。</b></li>
     </ol>
-  </div>
 
-  <div class="card">
-    <h2>气 · 自卑不是性格，是缺证据 <span class="tag">7 件低成本的事</span></h2>
-    <table>
-      <tr><th>事</th><th>怎么做</th><th>为什么有效</th></tr>
-      <tr><td><b>站墙根</b></td><td>每天 1~2 次，背贴墙站 5 分钟（后脑、肩、臀、脚跟四点贴墙）</td><td>改善驼背低头——驼背是「我不够好」的体态翻译，挺直 5 分钟大脑就开始相信「我可以」。<b>镜子前照相打卡，看变化。</b></td></tr>
-      <tr><td><b>走路兜手</b></td><td>走路时双手自然摆动、眼睛平视前方 5 米</td><td>低头看地是回避眼神的外化，抬头 2 周熟人就会说「你最近不一样了」</td></tr>
-      <tr><td><b>慢说话</b></td><td>每句话尾音<b>不往下掉</b>，句尾放平或上扬</td><td>陈述句尾音下掉 = 不确定 = 弱势信号；放平/上扬 = 自信</td></tr>
-      <tr><td><b>笑露牙</b></td><td>笑的时候让牙齿露出来，不要抿嘴</td><td>抿嘴笑是「怕被人看见」的动作，3 周就能改</td></tr>
-      <tr><td><b>看人不躲</b></td><td>和别人说话时眼睛看着对方鼻梁（看着眼睛容易躲，看着鼻梁对方感觉你在看眼）</td><td>这是自卑者最难的关——躲眼神会让对方也尴尬，不躲就行</td></tr>
-      <tr><td><b>衣服素+净</b></td><td>深色 T 恤/衬衫+长裤，<b>无 logo</b>，<b>每天洗</b></td><td>衣服干净的男生会被人默认为「有秩序」，小成本人设</td></tr>
-      <tr><td><b>问到底</b></td><td>不懂的事不装懂，问「能不能再说一遍」或「我搜一下」</td><td>自卑的反面不是「什么都懂」是「我不懂也不会丢脸」</td></tr>
+    <div class="coach hr-sec" data-page-node-id="zfdEEEwWkbhdjjANMILubN"><b data-page-node-id="FxxcZFnPzBZO3QYi3VGZ2v">动 · 爬楼梯（免费 cardio，非训练日做）</b>你住 6 楼顶楼，这是现成的器械。<b data-page-node-id="ndasBQCAghoMibV4ncQ99H">非训练日</b>回家刻意走 <b data-page-node-id="6lbIpnJdBfzwAiXYSYG6gA">3 趟</b> 而不是 1 趟。<br data-page-node-id="eEmuA1WLY74DyqryzRL3iV"><span style="color:var(--brand-text)" data-page-node-id="mhqRgbmGVvCoDBIpEdEvAu">⚠️ ①<b data-page-node-id="y5X2fVniUcluatXbjTum3T">上楼爬、下楼坐电梯</b>——下楼时膝盖受力是体重的 5~7 倍，是最伤膝盖的动作；②<b data-page-node-id="lig6XkajBjH7Xf6w1i1YJ0">周二 / 周四 / 周六训练日不爬</b>，避免与深蹲硬拉叠加；③全脚掌踩实台阶，膝盖方向与脚尖一致，别内扣；④练完觉得膝盖发酸发紧，当天爬楼取消，改平地散步。</span></div>
+    <div style="margin-top:8px" data-page-node-id="2Uu4fZv94whFAKsj28g53G"><button class="btn" id="btnExpand" style="font-size:var(--fs-xs);padding:6px 10px" data-page-node-id="gf4fVxiqrXjCzgz6kpBoWa">全部展开 / 收起</button></div>
+    <div id="movesBox" data-page-node-id="3xjhMPyxUrmNDlz5gOBTug"></div>
+
+    <div class="sub-h hr-sec" data-page-node-id="gxLvkOUTSvfYUf3BttrPGJ">非训练日 · 墙面三件套 <span class="tag" data-page-node-id="i2UzDvJHCoilwKktISJ9Qt">周三 / 周日 · 15~20 分钟 · 微汗即可</span></div>
+    <table data-page-node-id="KFjd4G02ZljBtO3Sd4LODI">
+      <tr data-page-node-id="nGlontXNkvGtzQWPCkUoJC"><th data-page-node-id="qlmLRCmundBCcAStbvvCH1">动作</th><th data-page-node-id="gkUvnYRi9kefCpTHpUQc6a">你的量</th><th class="num" data-page-node-id="czxgYC1PhcGnTw5d97kq5E">练什么</th></tr>
+      <tr data-page-node-id="EaYYt6fMyHrXkcQ2ENtfon"><td data-page-node-id="LBX7jhFbXiMHfALYh4br58"><b data-page-node-id="Go0zfb2U6q0LYrdArrEYCA">靠墙静蹲</b><br data-page-node-id="0Z6AgCZ09qtri2TguzGgyj"><span class="muted" data-page-node-id="KD9Dy6BV93XPJDzw089k09">背贴墙下滑，大腿平行地面</span></td><td data-page-node-id="fQGcg3skrGNQLjycQ7hHUn">45 秒 × 2 组<br data-page-node-id="7mLAsdPso2wTchAxN7TowF"><span class="muted" data-page-node-id="DxLaJJOTZOaRCyr8XGvy2p">组间歇 1 分钟 · 膝盖不超脚尖</span></td><td class="num" data-page-node-id="GWCN5cvdJfgCmZhzKF2EIa">腿 · 臀</td></tr>
+      <tr data-page-node-id="gd3mvpOX2TsvWH5wAq2cTk"><td data-page-node-id="yxtVGJ2qwNn0m67gXxAe9D"><b data-page-node-id="9VMFbnrp7cb6CjPNQ0uXwx">推墙俯卧撑</b><br data-page-node-id="Usr9sNTKA2PLsbKxAvlhaW"><span class="muted" data-page-node-id="9x3LUkHkoOxCqmbFq208D3">双手推墙，双脚与胯同宽</span></td><td data-page-node-id="iv2gE9tevhgh64LrPpavr5">12 次 × 2 组<br data-page-node-id="aRSSBePpjSL4ZGu49Yxjpw"><span class="muted" data-page-node-id="rfLOaSjWREDn6gZgQxp82L">身体一条直线 · 别塌腰</span></td><td class="num" data-page-node-id="Gt3U2hSSoDCy9oItvLKB3Z">胸 · 肩 · 臂</td></tr>
+      <tr data-page-node-id="NDlkf6GBzDMQErqxXk30Vy"><td data-page-node-id="wpXawT63guucWZUAvkBHnm"><b data-page-node-id="NknhrIcLyckX09LOaPjoMd">推墙提踵</b><br data-page-node-id="u7HpOKnurGb8oFt3x4Zqlm"><span class="muted" data-page-node-id="oNo9lGeYSQwECoFAwnqcKY">扶墙抬起后脚跟</span></td><td data-page-node-id="FJuGnpJ5hlr0XKc8Kco2F4">15 次 × 2 组<br data-page-node-id="Z3mqvtUxIZzGXK2PCCHADc"><span class="muted" data-page-node-id="ifnnZDZVczh3eMp8Unm4Ps">顶峰停 2 秒再落</span></td><td class="num" data-page-node-id="fwsDrG8ign8p6YwBB3d9og">小腿 · 踝</td></tr>
     </table>
-    <div class="coach" style="margin-top:10px"><b>为什么不是鸡汤</b>气质 = <b>姿态 + 节奏 + 边界</b>，不是发型不是穿搭不是有钱。上面 7 条都在这个范围内。<b>自卑不是性格缺陷</b>，是被否定后的应激反应——它会用「低头+快说+躲眼神+不拒绝」这套身体语言不断强化自己。等你站得直、看着对方说话、不轻易答应别人的要求，自卑就会反向走。</div>
-    <div class="coach ok"><b>最容易开始的一条</b><b>站墙根 5 分钟 + 每天洗衣服</b>，这两件加起来不要钱，2 周就能从镜子里看到不一样。</div>
-    <div class="coach" style="background:var(--brand-soft)"><b>不适合现在做的</b>①研究穿搭——你现在衣服少，研究半天没衣服买更焦虑，等身材到位再换；②学社交技巧话术——硬学会让自卑者更拧巴，先练体态，眼神和姿态自然了话术自然来。</div>
+    <div class="coach sec-sm" data-page-node-id="T0GPW3Ra6ua2y4aYpz61Zl"><b data-page-node-id="EA9o2L1O9NwDZR0fXUREOE">三条边界</b>①强度压到 60%：每组留 3~4 次余力，做完不影响说话；②不与二/四/六训练日撞车，<b data-page-node-id="WZVioPjPCLwT6tgB9gq0xo">周五保持纯休息</b>；③这是加分项不是必做项，状态差就只散步。</div>
+    <div class="coach ok" data-page-node-id="yp4keKa2MENDtwacWQ9P2H"><b data-page-node-id="r6E4lyIq3jcUTGccEabexB">怎么判断做对了</b>做完还有余力 = 做对了。两周后再考虑加量（静蹲 60 秒 / 俯卧撑 15 次）。它养的是神经肌肉连接和习惯，不是消耗。</div>
   </div>
 
-<div class="card">
-    <h2>周末 &amp; 节假日 <span class="tag">最容易崩的时段</span></h2>
-    <table>
-      <tr><th></th><th>工作日</th><th>周末上限</th></tr>
-      <tr><td>起床</td><td>8:30</td><td><b>最晚 9:30</b>（晚 1 小时封顶）</td></tr>
-      <tr><td>三餐</td><td>固定钟点</td><td><b>还是三餐</b>，可顺延不能变两餐</td></tr>
-      <tr><td>入睡</td><td>0:30</td><td><b>最晚 1:30</b></td></tr>
-      <tr><td>训练</td><td>周二四六</td><td>周六照练，周日走够 8000 步</td></tr>
+  <div class="card peek-lead" data-page-node-id="cHJk0RJaYDTYHM7kKFIueD">
+    <h2 data-page-node-id="sSstvz8ecQRVHeMXZOmnQB">气 · 自卑不是性格，是缺证据 <span class="tag" data-page-node-id="PbLZVUpHo4JbpElv5pUixX">7 件低成本的事</span></h2>
+    <div class="coach peek-lead" data-page-node-id="5OGQLilisWg41RcLG9GiG4"><b data-page-node-id="HqtlpY99UKUBX3BYJ2Ubti">为什么不是鸡汤</b>气质 = <b data-page-node-id="4pbX1ouH9A9EqLLSOe04XK">姿态 + 节奏 + 边界</b>，不是发型不是穿搭不是有钱。上面 7 条都在这个范围内。<b data-page-node-id="WDWSvvRAQU70LfbGFKIkv4">自卑不是性格缺陷</b>，是被否定后的应激反应——它会用「低头+快说+躲眼神+不拒绝」这套身体语言不断强化自己。等你站得直、看着对方说话、不轻易答应别人的要求，自卑就会反向走。</div>
+    <table data-page-node-id="vVrUO0Ubfz9Lm8lHIZaKOB">
+      <tr data-page-node-id="AVvoDBiXvgEC41hH8xr3PK"><th data-page-node-id="5cjcGBLpipTeNGZ9Ubkc7T">事</th><th data-page-node-id="VgoN1PTdpf2Y5800CarRBM">怎么做</th><th data-page-node-id="AIkYFu2XixuXNORcmFk9J0">为什么有效</th></tr>
+      <tr data-page-node-id="xr8MQwvHgODk44K5vYTpCn"><td data-page-node-id="kcTh9jgXKVzSETlwrFuIFu"><b data-page-node-id="dRBRlmhiif3JRkEuRUWVV7">站墙根</b></td><td data-page-node-id="DWDNHVyDogLBes8DV1by4V">每天 1~2 次，背贴墙站 5 分钟（后脑、肩、臀、脚跟四点贴墙）</td><td data-page-node-id="5w1MyNfMTczwykzoKJI0Gf">改善驼背低头——驼背是「我不够好」的体态翻译，挺直 5 分钟大脑就开始相信「我可以」。<b data-page-node-id="4cpfUWuIfoBgoqzNOH4Q6G">镜子前照相打卡，看变化。</b></td></tr>
+      <tr data-page-node-id="i7usyxCizyQfNT4WtQ0vIs"><td data-page-node-id="CMBPpbEbbjyOgaA9I5iBml"><b data-page-node-id="vvtzsJ4QRJVgXd0MhNukH6">走路兜手</b></td><td data-page-node-id="tCD1KLLwgy45L7kEgymBdG">走路时双手自然摆动、眼睛平视前方 5 米</td><td data-page-node-id="j5pM0H8FI1y4HRsUk3SlfC">低头看地是回避眼神的外化，抬头 2 周熟人就会说「你最近不一样了」</td></tr>
+      <tr data-page-node-id="2z0kAVMeTefzsII6FS0iZO"><td data-page-node-id="fxoBjVEnrABjF29Ck6nG9h"><b data-page-node-id="atqHYXugdT4dYLM0vpB4aq">慢说话</b></td><td data-page-node-id="dj34EfHfluWcNWGKrPZFBA">每句话尾音<b data-page-node-id="uicP2p58jDEVZgpRHoA0NX">不往下掉</b>，句尾放平或上扬</td><td data-page-node-id="KGpA0Y8K7m9mtiCyQwjfks">陈述句尾音下掉 = 不确定 = 弱势信号；放平/上扬 = 自信</td></tr>
+      <tr data-page-node-id="V25ML3ylWD28rdqxf2XSnX"><td data-page-node-id="Ki3xuu9UxyUnyynkFxhB4G"><b data-page-node-id="AQ8gNyF3POvwUYzOtFG5Jq">笑露牙</b></td><td data-page-node-id="2O5BKFTCYZFIrHw6QPwgAV">笑的时候让牙齿露出来，不要抿嘴</td><td data-page-node-id="HzThXzRk5ctwbNcStFup97">抿嘴笑是「怕被人看见」的动作，3 周就能改</td></tr>
+      <tr data-page-node-id="zCsJM2c1csDOFPKiTxy6O7"><td data-page-node-id="QMLOjFd2sLzUGI9aWCKFdt"><b data-page-node-id="VZD5weGMwfDBx3AruUW97t">看人不躲</b></td><td data-page-node-id="H25wai0tI6SMGc14evpJib">和别人说话时眼睛看着对方鼻梁（看着眼睛容易躲，看着鼻梁对方感觉你在看眼）</td><td data-page-node-id="IQRQynHYUAbrRPKiBYIKIT">这是自卑者最难的关——躲眼神会让对方也尴尬，不躲就行</td></tr>
+      <tr data-page-node-id="b4lnVibgfEH1BG1edZZwZa"><td data-page-node-id="TQDJahQ0W7jiSB9sTVSgXE"><b data-page-node-id="V6rBQ8snFef11Ibsbp3oZ9">衣服素+净</b></td><td data-page-node-id="ctolUbe5Z36UAOJ8HzayRD">深色 T 恤/衬衫+长裤，<b data-page-node-id="paXn9Ocmwunu9u1dxSgyUY">无 logo</b>，<b data-page-node-id="1aaeuQMDPFQCNwkaoCH3Il">每天洗</b></td><td data-page-node-id="0imtDX3qdrSgwpCH6HBaak">衣服干净的男生会被人默认为「有秩序」，小成本人设</td></tr>
+      <tr data-page-node-id="QTZEXnjCF3BzR4zVmOtBIf"><td data-page-node-id="t6Qxco5G3JtlG1OUVbDX7G"><b data-page-node-id="e6CdvDcs48oUT3JG3HsHF5">问到底</b></td><td data-page-node-id="oeOUpGfTo5DixJTGyY4ZyZ">不懂的事不装懂，问「能不能再说一遍」或「我搜一下」</td><td data-page-node-id="NyBhZIHU70RVED9SU8dTOu">自卑的反面不是「什么都懂」是「我不懂也不会丢脸」</td></tr>
     </table>
-    <div class="coach ok" style="margin-top:10px"><b>周末多做一件事：备餐（30~60 分钟）</b>一次煮 10 个水煮蛋冷藏、洗好西红柿黄瓜装袋、蒸几个红薯。这一小时能提前解决你工作日 70% 的执行障碍——早餐门槛从「做早饭」降到「从冰箱抓两个蛋」。</div>
-    <div class="coach"><b>节假日：降标准，保链条</b>每天只要求 2 件：<b>称体重 + 喝水</b>。聚餐先吃菜和肉、主食减半。训练允许缺 1 次，<b>绝不允许连着缺 2 次</b>。假期结束第一天就恢复记录。</div>
-    <div class="coach"><b>心理预期：假期后秤上会涨 2~3kg</b>那不是胖，是水分、食物残渣和钠——高碳水高盐会让身体储水，3~5 天回落。<b>别一称涨了就放弃</b>，这是最多人栽的地方。</div>
+    <div class="coach ok" data-page-node-id="KwUzBEBGAdDPJfqCFoOzZm"><b data-page-node-id="tV2q4oxVk0ah7xBtGGpBJc">最容易开始的一条</b><b data-page-node-id="cVeyuDbpP7ZrbzXpCNtrvM">站墙根 5 分钟 + 每天洗衣服</b>，这两件加起来不要钱，2 周就能从镜子里看到不一样。</div>
+    <div class="coach" style="background:var(--brand-soft)" data-page-node-id="OCCeuq6EPkAN9rWTqhAJvZ"><b data-page-node-id="TXfAQa7GiEKWPD5NDRcIXC">不适合现在做的</b>①研究穿搭——你现在衣服少，研究半天没衣服买更焦虑，等身材到位再换；②学社交技巧话术——硬学会让自卑者更拧巴，先练体态，眼神和姿态自然了话术自然来。</div>
   </div>
 
-  <div class="card">
-    <h2>目标节奏 <span class="tag">已按实测 76.7kg 重算</span></h2>
-    <div class="kv"><span>阶段一：9/7 → 12/7（13周）</span><b>76.7 → 67 kg</b></div>
-    <div class="kv"><span>终点：2027 年 1 月初</span><b>67 → 65 kg</b></div>
-    <div class="kv"><span>每周减重速度</span><b>0.4 ~ 0.5 kg（安全区间）</b></div>
-    <div class="muted" style="margin-top:8px">按实际体重 11.7kg、每周 0.4~0.5kg，<b>5~6 个月走完更稳</b>。掉得比这快，掉的更多是肌肉——而肌肉掉了代谢会降，反弹风险反而更大。周期拉长不是拖延，是让这次的成果留得住。</div>
+<div class="card" data-page-node-id="iJxcNwPEjt9WhhHAoIKQ1T">
+    <h2 data-page-node-id="TPv71TyYmoMYc6ZgWd6lw9">周末 &amp; 节假日 <span class="tag" data-page-node-id="1H2yGCUkcy0GVO5xDRq4NK">最容易崩的时段</span></h2>
+    <table data-page-node-id="JPW1TeHz8GIhH6PtRCVAFI">
+      <tr data-page-node-id="DCaM8Q2Hlxvj1Baj0E9ElB"><th data-page-node-id="QsuBrJW6yCFycbVmXuN3Qv"></th><th data-page-node-id="xDSEBRXNcTVe6I0B4PwCAu">工作日</th><th data-page-node-id="TCDFredsQk4CBP737PcmAh">周末上限</th></tr>
+      <tr data-page-node-id="32LoMV75qI35HALHbgvNv6"><td data-page-node-id="92OmCoalEOTFiyjJbzF19k">起床</td><td data-page-node-id="Dw3IMxh3fDmfsOfMb15wm6">8:30</td><td data-page-node-id="GsqgHEWIfGQCn3IitcbKEs"><b data-page-node-id="cX2h9tC7AdiHywzbyH2jAS">最晚 9:30</b>（晚 1 小时封顶）</td></tr>
+      <tr data-page-node-id="9nplTDaKpVJ2laXoSeSfWv"><td data-page-node-id="X6EIyTsDZIxSoJ0Qc9om6G">三餐</td><td data-page-node-id="jpst7JtHdSDIoX85KPI3Fk">固定钟点</td><td data-page-node-id="x5eZOVMymyKIZc5eUfMOqK"><b data-page-node-id="sgXfMGEF0OqHLLPtN4M5e9">还是三餐</b>，可顺延不能变两餐</td></tr>
+      <tr data-page-node-id="bzQm9UGuRSDZDnGujVTVTS"><td data-page-node-id="T9c9UVrFGkcoQqBDT2Fpvf">入睡</td><td data-page-node-id="BeWZgi2IyuZ1pCTgRalolN">0:30</td><td data-page-node-id="p5r57UclTgH7iGvq3953Da"><b data-page-node-id="CSZgTD12nk2UYVPIMyDZ1v">最晚 1:30</b></td></tr>
+      <tr data-page-node-id="EcTAAD8ItXpBRRA7d06a40"><td data-page-node-id="05KBFtu4moOQfGnSqCceUe">训练</td><td data-page-node-id="sfTqbnAknKqCL28GnRjAoU">周二四六</td><td data-page-node-id="UUUhqVgvSvNpoaFP3PNVEd">周六照练，周日走够 8000 步</td></tr>
+    </table>
+    <div class="coach ok sec-sm" data-page-node-id="TyarjSKxtXRlAz8FhclzoL"><b data-page-node-id="2w9zEWJOw1xUar5d4bYPU0">周末多做一件事：备餐（30~60 分钟）</b>一次煮 10 个水煮蛋冷藏、洗好西红柿黄瓜装袋、蒸几个红薯。这一小时能提前解决你工作日 70% 的执行障碍——早餐门槛从「做早饭」降到「从冰箱抓两个蛋」。</div>
+    <div class="coach" data-page-node-id="rA98E9M5t1qQj8yDbbzfk1"><b data-page-node-id="ZVcvDzSFUYGkL9Ihw8NomT">节假日：降标准，保链条</b>每天只要求 2 件：<b data-page-node-id="MsoyYxTwHF3uD0lkFNR9w6">称体重 + 喝水</b>。聚餐先吃菜和肉、主食减半。训练允许缺 1 次，<b data-page-node-id="JLg48QDaCQjke5C2HHQNkV">绝不允许连着缺 2 次</b>。假期结束第一天就恢复记录。</div>
+    <div class="coach" data-page-node-id="vfb94QxD5IGdFqCEx7DSUU"><b data-page-node-id="6DK6HqF0mT1wIp02PtCegD">心理预期：假期后秤上会涨 2~3kg</b>那不是胖，是水分、食物残渣和钠——高碳水高盐会让身体储水，3~5 天回落。<b data-page-node-id="u1JiDoDiSMLkN9Aya7zLs9">别一称涨了就放弃</b>，这是最多人栽的地方。</div>
+  </div>
+
+  <div class="card" data-page-node-id="qNdNufwvJEm2WAcJbOvHYA">
+    <h2 data-page-node-id="eK4N4aiWmj9e8awe08OH9O">目标节奏 <span class="tag" data-page-node-id="DTEvwLOwvGKgM38yq0YEEq">已按实测 76.7kg 重算</span></h2>
+    <div class="kv" data-page-node-id="GY64anOp5mwPCa8DeUuzRf"><span data-page-node-id="PyrZUvrBMP5Soccl4Fh0s5">阶段一：9/7 → 12/7（13周）</span><b data-page-node-id="gIRWR5eExVcjtHeehgRPiV">76.7 → 67 kg</b></div>
+    <div class="kv" data-page-node-id="hu943sydVPQQDvbHT5jurT"><span data-page-node-id="ZJVSOLOIpiVnDbOrWLm3oP">终点：2027 年 1 月初</span><b data-page-node-id="eogVbF4dvF4DBTYMB5jmjU">67 → 65 kg</b></div>
+    <div class="kv" data-page-node-id="JEmLVoEBkYgJWVwIBrbUoq"><span data-page-node-id="P7PubU2ergN2g1NVvd8LDt">每周减重速度</span><b data-page-node-id="G05bzZUPM25iuAIC4P2PsD">0.4 ~ 0.5 kg（安全区间）</b></div>
+    <div class="muted" style="margin-top:8px" data-page-node-id="qMXAOdHP6Ndiwi2KNCJLXW">按实际体重 11.7kg、每周 0.4~0.5kg，<b data-page-node-id="uPrML6s8vHjVWS4puovJZ3">5~6 个月走完更稳</b>。掉得比这快，掉的更多是肌肉——而肌肉掉了代谢会降，反弹风险反而更大。周期拉长不是拖延，是让这次的成果留得住。</div>
   </div>
 </div>
 
-<div class="page" id="p-me">
-  <div class="card" id="kWhisper" style="display:none">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <span style="font-size:15px">🌙</span>
-      <b style="color:var(--brand-text)">今日多言</b>
-      <span class="muted" style="font-size:12.5px;margin-left:auto" id="kWhisperDate"></span>
+<div class="page" id="p-me" data-page-node-id="X5ws7z82hFdZPTHqiCBLeg">
+  <div class="card" id="kWhisper" style="display:none" data-page-node-id="htvlUOXSATVWDRtiyrF58D">
+    <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:6px" data-page-node-id="Dy3q6ZsREu1WemSzRQui8K">
+      <span style="font-size:var(--fs-lg)" data-page-node-id="m6tOQPGpF5g5ux12IphFdd">🌙</span>
+      <b style="color:var(--brand-text)" data-page-node-id="z6DsMycrCY1XWypaVqRx1H">今日多言</b>
+      <span class="muted" style="font-size:var(--fs-sm);margin-left:auto" id="kWhisperDate" data-page-node-id="PPMaRCTlhcwiutvL5UJtwf"></span>
     </div>
-    <div id="kWhisperText" style="color:var(--text2);line-height:1.7;font-size:14.5px;white-space:pre-line"></div>
-    <div style="margin-top:10px">
-      <button id="btnWhisperEd" type="button" class="btn" style="min-height:44px;padding:6px 12px;font-size:12.5px">✎ 粘贴 / 更新今日多言</button>
+    <div id="kWhisperText" style="color:var(--text2);line-height:1.7;font-size:var(--fs-md);white-space:pre-line" data-page-node-id="d7m2q2Vlrzm24cyqp1CXyj"></div>
+    <div class="sec-sm" data-page-node-id="tnt4Z8Zsynpt1FQdLBp0nD">
+      <button id="btnWhisperEd" type="button" class="btn" style="min-height:44px;padding:6px 12px;font-size:var(--fs-sm)" data-page-node-id="BnO56q0ahDjWVCHzKsucLC">✎ 粘贴 / 更新今日多言</button>
     </div>
-    <div id="whisperEd" style="display:none;margin-top:10px">
-      <textarea id="whisperIn" rows="9" placeholder="把 AI 给的卡片文字粘进来（空行分段）" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;font-family:inherit;font-size:16px;line-height:1.6;background:var(--card2);color:var(--text)"></textarea>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="whisperSave" type="button" class="btn primary" style="flex:1;min-height:44px">保存</button>
-        <button id="whisperCancel" type="button" class="btn" style="flex:0 0 76px;min-height:44px">取消</button>
+    <div id="whisperEd" style="display:none;margin-top:10px" data-page-node-id="3AiLMeuCFznzFhIXlIgmRn">
+      <textarea id="whisperIn" rows="9" placeholder="把 AI 给的卡片文字粘进来（空行分段）" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;font-family:inherit;font-size:var(--fs-lg);line-height:1.6;background:var(--card2);color:var(--text)"></textarea>
+      <div style="display:flex;gap:var(--sp-2);margin-top:8px" data-page-node-id="7tKVT3PwCVeZIsRAriHKYk">
+        <button id="whisperSave" type="button" class="btn primary" style="flex:1;min-height:44px" data-page-node-id="i2aCCyn6pkYsbMGreXlN5z">保存</button>
+        <button id="whisperCancel" type="button" class="btn" style="flex:0 0 76px;min-height:44px" data-page-node-id="XshKPbuYRGT270ZvCccHsZ">取消</button>
       </div>
-      <div class="muted" style="font-size:12.5px;margin-top:6px">支持格式：# 大标题 ／ > 导语 ／ ## 小节 ／ - 名称|数值|备注 ／ !! 提醒。直接粘纯文本也会自动排版。同一天再粘会覆盖当天这条，历史不删。</div>
+      <div class="muted" style="font-size:var(--fs-sm);margin-top:6px" data-page-node-id="mFirCLQzvX22MOK9P3RhjR">支持格式：# 大标题 ／ > 导语 ／ ## 小节 ／ - 名称|数值|备注 ／ !! 提醒。直接粘纯文本也会自动排版。同一天再粘会覆盖当天这条，历史不删。</div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>你的参数 <span class="tag">体重已更新为 76.7</span></h2>
-    <div class="kv"><span>性别 / 年龄 / 身高</span><b>男 / 29 / 171cm</b></div>
-    <div class="kv"><span>当前 BMI</span><b id="kBMI">—</b></div>
-    <div class="kv"><span>基础代谢 BMR</span><b id="kBMR">—</b></div>
-    <div class="kv"><span>日常消耗 TDEE（久坐）</span><b id="kTDEE">—</b></div>
-    <div class="kv"><span>每日建议摄入</span><b>1500 ~ 1600 kcal</b></div>
-    <div class="kv"><span>蛋白质目标</span><b>≥ 125 g / 天</b></div>
-    <div class="kv"><span>饮水目标</span><b>8 杯 ≈ 2400 ml</b></div>
-    <div class="muted" style="margin-top:8px">这些数字随你的体重自动重算，瘦下来后会往下调。</div>
+  <div class="card" data-page-node-id="adO57x3jiluAmS3PH2OiEO">
+    <h2 data-page-node-id="vAmkvTLTDOyodvnII7szAk">你的参数 <span class="tag" data-page-node-id="OCTtjHUwkZJBQFskRHzUJ5">体重已更新为 76.7</span></h2>
+    <div class="kv" data-page-node-id="Zphr1eg3cMTXrPPOC9csJW"><span data-page-node-id="KPmx38UkKaPB5eX3gRcvHy">性别 / 年龄 / 身高</span><b data-page-node-id="10bzksXEFHCTZBJqFoXNZm">男 / 29 / 171cm</b></div>
+    <div class="kv" data-page-node-id="Lipt8NR9GfDR38LQul1YrY"><span data-page-node-id="TX65NNCesomgC76OsOTqd5">当前 BMI</span><b id="kBMI" data-page-node-id="Juc1pC2StIghcN7rNHhMXf">—</b></div>
+    <div class="kv" data-page-node-id="0RiFvLwoBM3wh2UMkg9db1"><span data-page-node-id="Yp5W4yHSQMCLBU4prOGCch">基础代谢 BMR</span><b id="kBMR" data-page-node-id="FZjAQ7oogonFHewsbqYwHY">—</b></div>
+    <div class="kv" data-page-node-id="Bg3mBEjVhroWg1XrFXoepm"><span data-page-node-id="ktKSDvoLWYps2z6HmReXCp">日常消耗 TDEE（久坐）</span><b id="kTDEE" data-page-node-id="Lq3PBzwVGPCGvGnYOnyMGA">—</b></div>
+    <div class="kv" data-page-node-id="2Uo6Z1B6Hm0wtHw12GtHCa"><span data-page-node-id="2jEE115qioNIBM4joq48XT">每日建议摄入</span><b data-page-node-id="FOa6k0dl7xGX6Qn0eBzstN">1500 ~ 1600 kcal</b></div>
+    <div class="kv" data-page-node-id="dHSoaiF5vIdfT6f1wLYEaS"><span data-page-node-id="LOCCDNIoLwYm06NJZAxOMj">蛋白质目标</span><b data-page-node-id="u5TG3ZPqNMFqyicqkkpxna">≥ 125 g / 天</b></div>
+    <div class="kv" data-page-node-id="FZHYNqDGe8s2WL9uZGAFRD"><span data-page-node-id="vJ5MGrSFmH3kTtICudtS6X">饮水目标</span><b data-page-node-id="bHfquVukTRZLp96Bl1iFHU">8 杯 ≈ 2400 ml</b></div>
+    <div class="muted" style="margin-top:8px" data-page-node-id="R7P1x2c5SwxMDUcZla9BD6">这些数字随你的体重自动重算，瘦下来后会往下调。</div>
   </div>
 
-  <div class="card">
-    <h2>健康提醒</h2>
-    <div class="coach"><b>脱发 / 皮肤差 —— 主动查，别等「明显」</b>减脂期蛋白质吃不够会加重脱发，务必守住 125g。<b>不要等到「明显」才去查</b>——第 9~12 周（约 11 月中）主动做一次血液检查：<b>血清铁蛋白（首要）、甲状腺功能 TSH/FT3/FT4、维生素D 与锌、性激素六项（看睾酮与 DHT）、血常规 + 生化全套</b>。铁蛋白偏低即使没到贫血也会直接影响毛囊。查出缺什么补什么，不要自行购买非那雄胺、米诺地尔等药物。</div>
-    <div class="coach"><b>胆结石风险</b>减脂期长期滴油不沾，胆囊收缩减少、胆汁淤积，容易形成结石。<b>每天至少保证 15~20g 烹饪油或一小把坚果</b>，别为了省热量把脂肪砍到零。这也是上面脂肪目标定在 0.7g/kg 的原因——它是下限，不是上限。</div>
-    <div class="coach"><b>第 9~12 周安排一次「饮食休息周」</b>连续缺口执行 2~3 个月后，挑一周把热量吃回 <b>2000 kcal</b>（蛋白质不变），给代谢一个喘息窗口。这不是放纵，是防平台期的标准动作。回来之后体重可能涨 0.5~1kg，那多半是水，别慌。</div>
-    <div class="coach"><b>红线</b>每日摄入不要长期低于 1200 kcal。出现头晕、心悸、持续乏力，立刻加餐并就医。</div>
+  <div class="card" data-page-node-id="LfVUTxRvFQBYWC9o9nw2x1">
+    <h2 data-page-node-id="lPhGCgmxV4Ptz5zdUyfYwW">健康提醒</h2>
+    <div class="coach" data-page-node-id="lDesTQOGDjlTau8eYmbUDs"><b data-page-node-id="ikMr3IpocTGBIv09m9PlpL">脱发 / 皮肤差 —— 主动查，别等「明显」</b>减脂期蛋白质吃不够会加重脱发，务必守住 125g。<b data-page-node-id="9qh5fpHRkmboCYiTLepJZM">不要等到「明显」才去查</b>——第 9~12 周（约 11 月中）主动做一次血液检查：<b data-page-node-id="qheE7Wkk29yuk6Ighf4rqQ">血清铁蛋白（首要）、甲状腺功能 TSH/FT3/FT4、维生素D 与锌、性激素六项（看睾酮与 DHT）、血常规 + 生化全套</b>。铁蛋白偏低即使没到贫血也会直接影响毛囊。查出缺什么补什么，不要自行购买非那雄胺、米诺地尔等药物。</div>
+    <div class="coach" data-page-node-id="4WpVeiB8odg5LbY6ufSWt6"><b data-page-node-id="EV8NDbM30REblEksVLqQAf">胆结石风险</b>减脂期长期滴油不沾，胆囊收缩减少、胆汁淤积，容易形成结石。<b data-page-node-id="eYa0q9oO6qWYd3pdySE2Zo">每天至少保证 15~20g 烹饪油或一小把坚果</b>，别为了省热量把脂肪砍到零。这也是上面脂肪目标定在 0.7g/kg 的原因——它是下限，不是上限。</div>
+    <div class="coach" data-page-node-id="jZFszuRUIfg8Zg42EFlpHN"><b data-page-node-id="pUbXJN9U04mJ3FaqkeOkQu">第 9~12 周安排一次「饮食休息周」</b>连续缺口执行 2~3 个月后，挑一周把热量吃回 <b data-page-node-id="ceZKF429IeXmYVQTAcjsXN">2000 kcal</b>（蛋白质不变），给代谢一个喘息窗口。这不是放纵，是防平台期的标准动作。回来之后体重可能涨 0.5~1kg，那多半是水，别慌。</div>
+    <div class="coach" data-page-node-id="UEoPHCMhml7cuyXuQCFc7X"><b data-page-node-id="wZj22LaCBcKQFVDKYznKKz">红线</b>每日摄入不要长期低于 1200 kcal。出现头晕、心悸、持续乏力，立刻加餐并就医。</div>
   </div>
 
-  <div class="card">
-    <h2>数据管理</h2>
-    <div class="muted">数据只存在这台设备的浏览器里，不上传任何服务器。<b>换手机或清缓存前请先导出备份。</b></div>
-    <div class="grid2" style="margin-top:10px">
-      <button class="btn ghost" id="btnTheme">🌗 切换深色 / 浅色</button>
-      <button class="btn ghost" id="btnExport">导出备份</button>
-      <button class="btn ghost" id="btnImport">导入备份</button>
-      <button class="btn ghost" id="btnPure">导出纯净版</button>
+  <div class="card" data-page-node-id="Eze0NDp9416q4OllGvJk4f">
+    <h2 data-page-node-id="huAqLYCRPjxrke42V9AYob">数据管理</h2>
+    <div class="muted" data-page-node-id="Ncs87lCULnOXxxepyJ0kGY">数据只存在这台设备的浏览器里，不上传任何服务器。<b data-page-node-id="XoafGWZUahYU3siWoPFhSL">换手机或清缓存前请先导出备份。</b></div>
+    <div class="grid2 sec-sm" data-page-node-id="ej9StcZzUyOSm0glfOV1in">
+      <button class="btn ghost" id="btnTheme" data-page-node-id="NI4dC05qUwfon4xQxJCiDj">🌗 切换深色 / 浅色</button>
+      <button class="btn ghost" id="btnExport" data-page-node-id="HOUDiflXc8urcm0aD7Smd3">导出备份</button>
+      <button class="btn ghost" id="btnImport" data-page-node-id="5EHPTK33jIJI9awzUdA6RR">导入备份</button>
+      <button class="btn ghost" id="btnPure" data-page-node-id="Ps2RkUkuNScKTPSjIIOESR">导出纯净版</button>
     </div>
-    <div class="muted" style="margin-top:8px;line-height:1.6"><b>「导出纯净版」</b>会另存一份不含任何个人数据的空白 HTML，可以直接发给别人用；你自己的记录仍在原文件里。</div>
-    <div id="backupTip" style="margin-top:10px"></div>
-    <div class="between" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
-      <div style="min-width:0">
-        <div style="font-size:13.5px;font-weight:600">触感与音效反馈</div>
-        <div class="muted" style="margin-top:2px">打勾、喝水、切页有轻微震动和提示音；iPhone 无震动会自动降级为只有声音。</div>
+    <div class="muted" style="margin-top:8px;line-height:1.6" data-page-node-id="uPpZjaMZO6P8GlgQrE1vhR"><b data-page-node-id="j47bFDksCYPD4eHEv7Q90C">「导出纯净版」</b>会另存一份不含任何个人数据的空白 HTML，可以直接发给别人用；你自己的记录仍在原文件里。</div>
+    <div id="backupTip" class="sec-sm" data-page-node-id="Tk4YIRjWG2L7jOtXT3W3qw"></div>
+    <div class="between hr-sec" data-page-node-id="WiEuEZTH1MnWWB0b5P7jdq">
+      <div style="min-width:0" data-page-node-id="EOfWajwMIqLdivCw7VoEnV">
+        <div style="font-size:var(--fs-md);font-weight:600" data-page-node-id="BtE0vv0cxpxcVEjqFyhRKE">触感与音效反馈</div>
+        <div class="muted" style="margin-top:2px" data-page-node-id="bQMNsRPN1MqWavDIOJNQJO">打勾、喝水、切页有轻微震动和提示音；iPhone 无震动会自动降级为只有声音。</div>
       </div>
-      <label class="vac-sw" style="flex:none">
-        <input type="checkbox" id="swFB">
-        <span class="tr"><i></i></span>
-        <span class="vl" id="fbLbl">开</span>
+      <label class="vac-sw" style="flex:none" data-page-node-id="9wFB4JrOBVDUfIPmALYnWN">
+        <input type="checkbox" id="swFB" data-page-node-id="tYoLXec5q6jG763xxhGI6w">
+        <span class="tr" data-page-node-id="Os7SuGfyagKm6BrnWjefC9"><i data-page-node-id="tLbPDWdgJBLESl8APFXwqw"></i></span>
+        <span class="vl" id="fbLbl" data-page-node-id="B8CRxvQZxRuKLO58fCWwvc">开</span>
       </label>
     </div>
-    <input type="file" id="fileIn" accept="application/json" style="display:none">
-    <button class="btn ghost full" id="btnClear" style="margin-top:10px;color:var(--danger-text)">清空所有数据</button>
+    <input type="file" id="fileIn" accept="application/json" style="display:none" data-page-node-id="H07Oue2taO42dhqtfdhyWd">
+    <button class="btn ghost full" id="btnClear" style="margin-top:10px;color:var(--danger-text)" data-page-node-id="iHxYBHa9aQy5J2EW7q6Sj3">清空所有数据</button>
   </div>
 
-  <div class="card">
-    <h2>加桌面（像 App 一样打开）</h2>
-    <div class="muted">iPhone：Safari 打开 → 底部分享按钮 → 「添加到主屏幕」<br>安卓：Chrome 打开 → 右上角菜单 → 「添加到主屏幕」</div>
+  <div class="card" data-page-node-id="BjJByvADs004pckZWicZyi">
+    <h2 data-page-node-id="3NWJDeeVtD4mxytQQu7cXL">加桌面（像 App 一样打开）</h2>
+    <div class="muted" data-page-node-id="NeYFpHgjmQw48YF7ePTmxr">iPhone：Safari 打开 → 底部分享按钮 → 「添加到主屏幕」<br data-page-node-id="cy0GGhGiPJDPOCHdsnkddc">安卓：Chrome 打开 → 右上角菜单 → 「添加到主屏幕」</div>
   </div>
 </div>
 
 </div>
 
-<div class="sheet-mask" id="eatSheetMask"></div>
-<div class="sheet-panel sheet-fix" id="eatSheet">
-  <div class="sheet-handle"></div>
-  <div class="card sheet-body">
-    <h2>记一笔 <span class="tag">选餐次 → 挑食物 → 添加</span></h2>
+<div class="sheet-mask" id="eatSheetMask" data-page-node-id="r1Wugohhbr8TrMZRlPFBE6"></div>
+<div class="sheet-panel sheet-fix" id="eatSheet" data-page-node-id="GycfZ7GFNo52ZGWeogHIFi">
+  <div class="sheet-handle" data-page-node-id="eiqSiuCc4JihrqHytCgyWH"></div>
+  <div class="card sheet-body" data-page-node-id="KHmQhaEUZnZAKHfgHJC72K">
+    <h2 data-page-node-id="mFAfdX8RHOUR2T5pB2HQaJ">记一笔 <span class="tag" data-page-node-id="egz7GTlAHHyjWL4EqSYRAe">选餐次 → 挑食物 → 添加</span></h2>
 
     <!-- 头部固定区：先选餐次，再挑食物 -->
-    <div class="sheet-head">
-      <div class="muted" style="margin-bottom:6px">餐次</div>
-      <div class="segmented" id="eatSlotSeg">
-        <button type="button" data-i="0">早餐</button>
-        <button type="button" data-i="1">午餐</button>
-        <button type="button" data-i="2">加餐</button>
-        <button type="button" data-i="3">晚餐</button>
+    <div class="sheet-head" data-page-node-id="dEwQviVqXlO6wGTLuCttJ7">
+      <div class="muted" style="margin-bottom:6px" data-page-node-id="NK800R2Bb9tGKLC61BqV50">餐次</div>
+      <div class="segmented" id="eatSlotSeg" data-page-node-id="ASGXqHUpARRadQeVdgiVxM">
+        <button type="button" data-i="0" data-page-node-id="RenJ7SLXuYFMcGuwyGpCuf">早餐</button>
+        <button type="button" data-i="1" data-page-node-id="yJ3Y3Co6TYcQdAEWaBvzvQ">午餐</button>
+        <button type="button" data-i="2" data-page-node-id="LFVXcJ201SldakJF1HfsyP">加餐</button>
+        <button type="button" data-i="3" data-page-node-id="QDECm225xYbPiXYLUjXuQa">晚餐</button>
       </div>
-      <input type="text" id="eatSearch" placeholder="搜食物名 / 拼音首字母，如 鸡蛋 / jd" style="margin-top:10px">
-      <div class="chips" id="eatCats" style="margin-top:10px"></div>
-      <button type="button" id="btnMyFood" class="btn" style="margin-top:8px;min-height:38px;padding:4px 12px;font-size:12.5px">＋ 自定义食物</button>
+      <input type="text" id="eatSearch" placeholder="搜食物名 / 拼音首字母，如 鸡蛋 / jd" class="sec-sm" data-page-node-id="Qm3Uod8bIXb52Pr6Saujls">
+      <div class="chips sec-sm" id="eatCats" data-page-node-id="NZWoFDAnJJua8DbRegcwiT"></div>
+      <button type="button" id="btnMyFood" class="btn" style="margin-top:8px;min-height:38px;padding:4px 12px;font-size:var(--fs-sm)" data-page-node-id="6wCV6RKSXGtCJAC413X29O">＋ 自定义食物</button>
     </div>
 
     <!-- 中间滚动区：食物列表独立滚动 -->
-    <div class="sheet-scroll"><div class="eat-grid" id="eatFoods"></div></div>
+    <div class="sheet-scroll" data-page-node-id="gFt6SChX3ROFCHfHXXOaic"><div class="eat-grid" id="eatFoods" data-page-node-id="9k0KNHNTaGChOHVa3oPwi7"></div></div>
 
     <!-- 底部固定条：数量 / 做法 / 添加 永远可见 -->
-    <div class="sheet-foot">
-      <div id="eatPick" class="muted" style="margin-bottom:8px">还没选食物 · 上面点一个</div>
-      <div class="grid2" style="margin-bottom:8px">
-        <div><div class="muted">数量</div><input type="number" step="0.5" inputmode="decimal" id="eatQty" value="1"></div>
-        <div><div class="muted">单位</div><select id="eatUnit"></select></div>
+    <div class="sheet-foot" data-page-node-id="99vkc6BHlmVHuCppp4Vb3S">
+      <div id="eatPick" class="muted" style="margin-bottom:8px" data-page-node-id="dXz6tl4BiNLiXwyDWvpVx0">还没选食物 · 上面点一个</div>
+      <div class="grid2" style="margin-bottom:8px" data-page-node-id="mKBPvMDBK6ebI1bqpja59w">
+        <div data-page-node-id="A55EFrD1fjyQiH2zfm7acS"><div class="muted" data-page-node-id="ijcbzB2ofS7nFlwKewCGoQ">数量</div><input type="number" step="0.5" inputmode="decimal" id="eatQty" value="1" data-page-node-id="emC7VwAxAs6JizcoYN3Bcb"></div>
+        <div data-page-node-id="5EYxmEg4YxCEP5DhahQf26"><div class="muted" data-page-node-id="pdXf6NqiXe5EG89Ld2qTLL">单位</div><select id="eatUnit" data-page-node-id="FMeJ0SndMU9OcKOkWxqjsx"></select></div>
       </div>
-      <div style="margin-bottom:10px;display:flex;align-items:center;gap:9px"><span class="muted" style="flex:none">做法</span><select id="eatCook" style="flex:1;margin:0"></select></div>
-      <button class="btn full" id="eatAdd">＋ 添加</button>
+      <div style="margin-bottom:10px;display:flex;align-items:center;gap:var(--sp-2)" data-page-node-id="xwyEbhByZIOy0ERk7auvNZ"><span class="muted" style="flex:none" data-page-node-id="vF4GfFdbMF28BvwbXOKgcW">做法</span><select id="eatCook" style="flex:1;margin:0" data-page-node-id="KEUw09mclPbDAoWkHCsa11"></select></div>
+      <button class="btn full" id="eatAdd" data-page-node-id="bhGn6WRpnotyzFGnMnUIRH">＋ 添加</button>
     </div>
   </div>
 </div>
 
-<nav>
-  <button class="on" data-p="p-today">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H10l-1 8.5 8.5-11.5H12z"/></svg></span>
-    <span class="nb">今日</span>
-    <em class="dot-badge" id="navBadge" hidden>0</em>
+<nav data-page-node-id="zFazaYvoe9vNrKzlNrbC6F">
+  <button class="on" data-p="p-today" data-page-node-id="gFLKrdSGSQUAOo200FxqzA">
+    <span class="ico" data-page-node-id="RhxsVI5niEnwFbVphlGb5T"><svg viewBox="0 0 24 24" data-page-node-id="G5pwOfSCVq2OTyvCzS95U6"><path d="M13 2 4.5 13.5H10l-1 8.5 8.5-11.5H12z" data-page-node-id="9pTVlCvWNZs6v4RqJF8Y9L"/></svg></span>
+    <span class="nb" data-page-node-id="gV2rvHSeiJiYrBczSJEEMj">今日</span>
+    <em class="dot-badge" id="navBadge" hidden data-page-node-id="hsAPElPtPHOPvOFdnwhxHa">0</em>
   </button>
-  <button data-p="p-eat">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3v8a2 2 0 0 0 4 0V3M8 11v10"/><path d="M16 3c2.2 0 3.5 1.6 3.5 3.6S18.2 10 16 10v11"/></svg></span>
-    <span class="nb">吃</span>
+  <button data-p="p-eat" data-page-node-id="eIoXLB2sasWgHFh86BahII">
+    <span class="ico" data-page-node-id="rqB3IEYWcRdBiMJD6cVA1x"><svg viewBox="0 0 24 24" data-page-node-id="aDC787ogOEP3baidHDXx3Y"><path d="M6 3v8a2 2 0 0 0 4 0V3M8 11v10" data-page-node-id="6Ze7FT0dtLxqz76M6eA7Rs"/><path d="M16 3c2.2 0 3.5 1.6 3.5 3.6S18.2 10 16 10v11" data-page-node-id="76ZUeVCP7i50MvCnxi1iBG"/></svg></span>
+    <span class="nb" data-page-node-id="tYR6k4Y3iTUArBha7AjMtJ">吃</span>
   </button>
-  <button data-p="p-trend">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l5.5-6 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg></span>
-    <span class="nb">趋势</span>
+  <button data-p="p-trend" data-page-node-id="4YHdeIoH5tq5JjyxHYT4EL">
+    <span class="ico" data-page-node-id="hDbhxwFGNiJ47zWrVT3OeP"><svg viewBox="0 0 24 24" data-page-node-id="Y3IBU9MfF6ZCpWAkKUDS9d"><path d="M3 17l5.5-6 3.5 3.5L21 6" data-page-node-id="o5hjFmIStGJOxcqF6qj3Gp"/><path d="M15 6h6v6" data-page-node-id="kSHoEHmRMq1bsTgcoqgUh3"/></svg></span>
+    <span class="nb" data-page-node-id="jqb9QsNnoyIoP3bgylLOF0">趋势</span>
   </button>
-  <button data-p="p-plan">
-    <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span>
-    <span class="nb">计划</span>
+  <button data-p="p-plan" data-page-node-id="yteGWMdIkyfkIxFCxoJ4dc">
+    <span class="ico" data-page-node-id="AL8EGQKn6X7gS3J0Jmk3BD"><svg viewBox="0 0 24 24" data-page-node-id="ziqYiSrb301ozAaGiObMfE"><rect x="4" y="3.5" width="16" height="17" rx="2.5" data-page-node-id="mzQN15zoK2JsyYxWWBvQ7h"/><path d="M8 9h8M8 13h8M8 17h5" data-page-node-id="1BSQjzRSLktGe88uEA8xLc"/></svg></span>
+    <span class="nb" data-page-node-id="rOyOgG6YoAJjf0vpBdJ8t5">计划</span>
   </button>
-  <button data-p="p-me">
-    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-3.6 4.1-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg></span>
-    <span class="nb">我的</span>
+  <button data-p="p-me" data-page-node-id="KAQz7RyEG4FpYQrYhcHcA3">
+    <span class="ico" data-page-node-id="tirMT5ghXFwffrDTylPkxa"><svg viewBox="0 0 24 24" data-page-node-id="EDzogNJlFpIUEuQgFyA0iQ"><circle cx="12" cy="8" r="3.6" data-page-node-id="gBpOhuMVboScKno13UM2If"/><path d="M4.5 20c1.4-3.6 4.1-5.4 7.5-5.4s6.1 1.8 7.5 5.4" data-page-node-id="B6srhfl9XoFiT8uMBdg94S"/></svg></span>
+    <span class="nb" data-page-node-id="01Su9RydjD4ZVJoE774G4C">我的</span>
   </button>
 </nav>
 
@@ -1245,7 +1495,7 @@ function check(x,y){return '<g stroke="#27ae60" stroke-width="2.4" fill="none" s
 function arrowD(x1,y1,x2,y2,color){color=color||'#e0533d';return '<g stroke="'+color+'" stroke-width="2.4" fill="none" stroke-linecap="round"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/><polyline points="'+(x2-4)+','+(y2-3)+' '+x2+','+y2+' '+(x2-4)+','+(y2+3)+'"/></g>';}
 function svg(body,bottles,arrows,labels,vb){
   vb=vb||'0 0 380 200';
-  return '<svg viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg2,#fafbfc);border-radius:8px">'+
+  return '<svg viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg2,#fafbfc);border-radius:var(--r-xs)">'+
     '<line x1="0" y1="190" x2="9999" y2="190" stroke="var(--line,#e0e3e7)" stroke-width="1" stroke-dasharray="3 3"/>'+
     body+
     (bottles||'')+
@@ -1255,42 +1505,42 @@ function svg(body,bottles,arrows,labels,vb){
 }
 var MOVES=[
 {n:'水瓶深蹲',s:'4 × 15',p:'下肢',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/potty-squat.gif\" alt=\"水瓶深蹲\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/potty-squat.gif\" alt=\"水瓶深蹲\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>5 步到位：</b>①脚与肩同宽，脚尖微外八 → ②吸气，臀部向后坐（像坐马桶的感觉）→ ③慢慢下蹲，2 秒下到底，大腿接近与地面平行 → ④ 1 秒起，呼气，蹬脚跟顶起来 → ⑤全程<b>腰背一条直线</b>，眼看前方别低头。',
 no:'①<b>膝盖内扣</b>（最常见，膝盖会响）②<b>弯腰驼背</b>（腰椎承压）③蹲到一半就起（幅度不够=白做）④脚跟离地（重心前移膝盖压力大）。'},
 
 {n:'水瓶推举',s:'3 × 12',p:'肩',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-one-arm-shoulder-press.gif\" alt=\"水瓶推举\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-one-arm-shoulder-press.gif\" alt=\"水瓶推举\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>4 步到位：</b>①站姿双脚与肩同宽 → ②两手各握一瓶（5L 水瓶装 3L 起步），瓶放在肩两侧 → ③吸气，腹部收紧 → ④<b>呼气</b>把瓶从肩向上推，手臂伸直但肘不锁死；下落 2 秒，慢落比快推更练肌肉。',
 no:'①<b>腰部反弓</b>代偿（最容易伤腰椎，要点是腹部始终收紧）②用惯性甩 ③瓶子歪向一边（两手同时发力）④装满 5L 起步（先 3L 练稳）。'},
 
 {n:'水瓶硬拉',s:'3 × 15',p:'后链 · 臀腿',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/dumbbell-deadlift.gif\" alt=\"水瓶硬拉\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/dumbbell-deadlift.gif\" alt=\"水瓶硬拉\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>5 步到位：</b>①站姿，握瓶垂在腿前 → ②<b>膝盖微弯，不要锁死</b> → ③吸气，<b>臀部往后推</b>（不是弯腰往下够）→ ④瓶沿着腿慢慢下降，背部保持一条直线 → ⑤呼气，蹬脚跟、夹臀把身体顶起来。<b>这个动作练臀和整个后侧链，是王牌动作。</b>',
 no:'①<b>弓背</b>（最容易伤腰，宁可少做也别弯腰）②用胳膊硬拽（应该用臀和后腿发力）③膝盖前顶挡住瓶子（应该贴腿走）。'},
 
 {n:'水瓶划船',s:'3 × 12',p:'背',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/dumbbell-bent-over-row.gif\" alt=\"水瓶划船\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/dumbbell-bent-over-row.gif\" alt=\"水瓶划船\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>4 步到位：</b>①俯身约 45 度，腰背挺直（膝盖微弯） → ②手臂垂下握瓶 → ③<b>用肘部「去戳天花板」的感觉</b>把瓶往腹部拉 → ④顶峰<b>停顿 1 秒</b>夹紧肩胛骨，再慢落。',
 no:'①用腰甩起来（伤腰、动作无效）②身体跟着晃（核心没收紧）③拉到一半就放（没夹背就=白做）。<b>背练好了，久坐的含胸驼背也会改善。</b>'},
 
 {n:'水瓶弯举',s:'3 × 12',p:'手臂',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-standing-biceps-curl.gif\" alt=\"水瓶弯举\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-standing-biceps-curl.gif\" alt=\"水瓶弯举\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>4 步到位：</b>①站姿，<b>大臂夹紧身体两侧不许前后晃</b>，手握瓶垂下 → ②<b>只动前臂</b>把瓶弯举到肩前 → ③顶峰停 1 秒挤压肱二头肌 → ④<b>慢落 2 秒</b>，全程别借腰的力。',
 no:'①身体前后摆动借力（最常见，没用的就是它）②大臂抬起 ③手腕乱折（力量都从腕跑了）。<b>重量宁可轻，动作要干净。</b>'},
 
 {n:'平板支撑',s:'3 × 30 秒',p:'核心',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/front-plank-with-twist.gif\" alt=\"平板支撑\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/front-plank-with-twist.gif\" alt=\"平板支撑\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>3 步到位：</b>①前臂和脚尖撑地，肘在肩正下方 → ②<b>收紧腹部和臀部</b> → ③身体成一条直线（<b>头-肩-髋-踝</b>）。<b>撑不住就撑 20 秒，别硬顶到塌腰</b>（塌了腰就废了）。',
 no:'①<b>塌腰</b>（腰椎承压，最伤，常见于硬撑时间）②撅屁股（核心没收紧）③憋气（要均匀呼吸）。<b>宁可时间短，姿势一定要对。</b>'},
 
 {n:'臀桥',s:'3 × 20',p:'臀 · 核心',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/low-glute-bridge-on-floor.gif\" alt=\"臀桥\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/low-glute-bridge-on-floor.gif\" alt=\"臀桥\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>4 步到位：</b>①仰卧屈膝，脚踩实地面（与髋同宽） → ②<b>靠臀部发力把髋顶起来</b> → ③顶到<b>肩-髋-膝成一条直线</b>，停顿 1 秒夹紧屁股 → ④缓慢落下（不是直接砸下去）。',
 no:'①<b>用腰顶而不是用臀</b>（做完腰酸臀没感觉=做错）②顶得过高导致腰部反弓 ③脚离身体太远（会变成练腿）。'},
 
 {n:'腹肌轮',s:'3 × 6~8',p:'核心 · 腹直肌前侧',
-gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/wheel-rollerout.gif\" alt=\"腹肌轮\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:8px;border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:11.5px;margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
+gif:['<div class="gif-card"><img src=\"https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/wheel-rollerout.gif\" alt=\"腹肌轮\" loading=\"lazy\" style=\"width:100%;max-width:240px;aspect-ratio:1/1;object-fit:contain;background:var(--bg2,#fafbfc);border-radius:var(--r-xs);border:1px solid var(--line)\"<div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:6px\">图源：JahelCuadrado/ExerciseGymGifsDB · CC BY</div></div>'],
 ok:'<b>5 步到位：</b>①跪在垫上（膝盖垫毛巾更舒服），双手握手柄 → ②<b>收紧腹部和臀部</b>（关键，否则下一步就塌腰）→ ③慢慢把轮往前滚，背部保持一条直线 → ④ 当身体接近与地面平行时停住（肩超过髋约 60~80cm 即可）→ ⑤<b>挤腹把轮拉回来</b>，全程慢。',
 no:'①<b>塌腰</b>（最常见错误，腰椎会响）②撅屁股借力 ③滚太远起不来（出去 60~80cm 就够，贪远就塌腰）④用惯性回拉（全程慢）。<b>新手可以先做「跪姿静态支撑」找核心感觉，能稳定 30 秒不塌腰再开始滚。</b>'}
 ];
@@ -1600,7 +1850,7 @@ function eatBar(v,tg,unit,label){
   var col=pct>=90?'var(--brand)':(pct>=60?'var(--warn)':'var(--danger)');
   return '<div style="margin-bottom:10px">'+
     '<div class="between"><span class="muted">'+label+'</span><span><b>'+Math.round(v)+'</b> / '+tg+unit+'</span></div>'+
-    '<div style="background:var(--card2);height:8px;border-radius:99px;overflow:hidden;margin-top:5px">'+
+    '<div style="background:var(--card2);height:8px;border-radius:var(--r-full);overflow:hidden;margin-top:5px">'+
     '<div style="width:'+pct+'%;height:100%;background:'+col+'"></div></div></div>';
 }
 function renderMeals(){
@@ -1617,7 +1867,7 @@ function renderMeals(){
       '<div class="progress"><i style="width:'+pct+'%"></i></div>'+
       '<strong>'+Math.round(v)+' / '+tg+'g</strong></div>';
   }
-  $('eatSum').innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:4px">'+
+  $('eatSum').innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:var(--sp-4);align-items:center;margin-bottom:4px">'+
     '<div class="ring" style="--p:'+kpct+';--ring-col:'+kcol+'"><div><b>'+Math.round(T.k)+'</b><br><small>/ '+EAT_TG.k+' kcal</small></div></div>'+
     '<div>'+macroRow('蛋白',T.p,EAT_TG.p)+macroRow('碳水',T.ca,EAT_TG.ca)+macroRow('脂肪',T.f,EAT_TG.f)+'</div></div>'+
     (arr.length?eatPie(T):'<div class="muted" style="margin-top:8px">今天还没记。打开下方「记一笔」，10 秒记完。</div>');
@@ -1692,6 +1942,44 @@ function load(){
   if(!DB.meals)DB.meals={};
   if(DB.whispers===undefined)DB.whispers=[];
   if(!DB.myFoods)DB.myFoods=[];   /* v9 A12：自定义食物 */
+  migrateTri();                    /* v11：旧二元数据 → 三态，只跑一次 */
+
+/* ============================================================
+   v11 数据迁移：二元 true/false → 三态 1/2/0
+   旧 schema：rl[k]=true 表示「破戒了」，hb[k]=true 表示「做到了」
+   新 schema：1=守住/做到，2=破戒/没做到，缺省=未记录
+   迁移规则（保守，不猜）：
+     hb[k]===true  → 1   （旧数据只有「做到」才会写 true）
+     rl[k]===true  → 2   （旧数据只有「破了」才会写 true，这是旧版的核心 bug：
+                          没破的日子根本不会写键，所以能留下来的 true 就是破戒）
+     hb[k]===false / rl[k]===false → 删键（旧版 false 等于没记，不该当记录）
+   ============================================================ */
+var MIGRATE_VER=1;
+function migrateTri(){
+  if(DB.triVer>=MIGRATE_VER)return;
+  var fixed=0;
+  Object.keys(DB.records||{}).forEach(function(d){
+    var r=DB.records[d];if(!r)return;
+    if(r.rl){
+      Object.keys(r.rl).forEach(function(k){
+        var v=r.rl[k];
+        if(v===true){r.rl[k]=2;fixed++;}          /* 旧 true = 破戒 */
+        else if(v===false||v===0)delete r.rl[k];
+        else if(v===1||v===2){/* 已是新格式，保留 */}
+      });
+    }
+    if(r.hb){
+      Object.keys(r.hb).forEach(function(k){
+        var v=r.hb[k];
+        if(v===true){r.hb[k]=1;fixed++;}          /* 旧 true = 做到 */
+        else if(v===false||v===0)delete r.hb[k];
+        else if(v===1||v===2){/* 已是新格式，保留 */}
+      });
+    }
+  });
+  DB.triVer=MIGRATE_VER;
+  if(fixed)try{save();}catch(e){}
+}
 
 // 历史数据种子：只跑一次（seedVer 记录），本机已有的同一天记录优先保留
 function applySeed(){
@@ -1715,6 +2003,7 @@ function applySeed(){
   DB.seedVer=SEED_VER;
 }
   applySeed();
+  migrateTri();   /* v11：种子是旧二元格式，必须在 applySeed 之后跑一次 */
   // 每日多言：AI 对话结尾新增的日期自动补齐（已存在则跳过，不覆盖）
   DAILY_WHISPERS.forEach(function(w){
     var has=false;
@@ -1806,20 +2095,21 @@ function renderPantry(){
     else if(miss.length===1)almost.push({m:m,miss:miss[0]});
   });
   canDo.sort(function(a,b){return b.pr-a.pr;});
-  $('canCount').textContent=canDo.length+' 顿';
+  /* v12：canCount 从卡片标题搬到主标题右侧（三卡合并后不再需要单独标题） */
+  $('canCount').textContent='能做 '+canDo.length+' 顿';
   $('mealBox').innerHTML=canDo.length?canDo.map(function(m){
     return '<div class="mv"><div class="t">'+m.n+'<span class="s">'+m.kc+' kcal</span>'+
       '<span class="s" style="color:var(--brand-text)">蛋白 '+m.pr+'g</span></div>'+
       '<div class="ok" style="margin-top:6px"><b>用料</b>'+m.need.map(foodName).join(' + ')+'</div>'+
-      '<div class="muted" style="margin-top:6px;font-size:12.5px">'+m.how+'</div></div>';
+      '<div class="muted" style="margin-top:6px;font-size:var(--fs-sm)">'+m.how+'</div></div>';
   }).join(''):'<div class="muted">还没点亮足够的食材。上面勾几个试试。</div>';
 
   var byMiss={};
   almost.forEach(function(a){(byMiss[a.miss]=byMiss[a.miss]||[]).push(a.m);});
   var keys=Object.keys(byMiss);
   $('almostBox').innerHTML=keys.length?keys.map(function(k){
-    return '<div class="mv" style="padding:9px 11px"><div class="t" style="font-size:13px">买「'+foodName(k)+'」→ 解锁 '+byMiss[k].length+' 顿</div>'+
-      '<div class="muted" style="margin-top:4px;font-size:12.5px">'+byMiss[k].map(function(m){return m.n+'（蛋白 '+m.pr+'g）';}).join('、')+'</div></div>';
+    return '<div class="mv" style="padding:9px 11px"><div class="t" style="font-size:var(--fs-md)">买「'+foodName(k)+'」→ 解锁 '+byMiss[k].length+' 顿</div>'+
+      '<div class="muted" style="margin-top:4px;font-size:var(--fs-sm)">'+byMiss[k].map(function(m){return m.n+'（蛋白 '+m.pr+'g）';}).join('、')+'</div></div>';
   }).join(''):'<div class="muted">你现有的食材已经能覆盖上面所有搭配，或者差的太多。先补基础食材。</div>';
 }
 
@@ -1846,16 +2136,20 @@ function renderPants(){
   var G=CFG.girth,w=lastGirth('waist'),left=Math.max(0,round1(w-G.pantsFit));
   var pct=Math.max(0,Math.min(100,(G.waistStart-w)/(G.waistStart-G.pantsFit)*100));
   var weeks=left>0?Math.ceil(left/0.85):0;
-  var h='<div class="between"><div><b style="font-size:22px">'+w.toFixed(1)+'</b> <span class="muted">cm 当前腰围</span></div>'+
-    '<div style="text-align:right">'+(left>0?('<b style="font-size:22px;color:var(--brand-text)">'+left.toFixed(1)+'</b> <span class="muted">cm 后进舒适区</span>')
-      :'<b style="font-size:17px;color:var(--ok)">已进舒适区</b>')+'</div></div>';
+  var h='<div class="between"><div><b style="font-size:var(--fs-2xl)">'+w.toFixed(1)+'</b> <span class="muted">cm 当前腰围</span></div>'+
+    '<div style="text-align:right">'+(left>0?('<b style="font-size:var(--fs-2xl);color:var(--brand-text)">'+left.toFixed(1)+'</b> <span class="muted">cm 后进舒适区</span>')
+      :'<b style="font-size:var(--fs-xl);color:var(--ok)">已进舒适区</b>')+'</div></div>';
   h+='<div class="bar2"><i style="width:'+pct.toFixed(1)+'%"></i></div>';
   h+='<div class="mark"><span>起点 '+G.waistStart+'</span><span>舒适线 '+G.pantsFit+'</span><span>舒服+健康线 '+G.waistGoal+'</span></div>';
   var pw=prevGirth('waist'),line='';
   if(pw!=null){var d=round1(w-pw);line='<br>上次 '+pw.toFixed(1)+'cm，这次 '+w.toFixed(1)+'cm（'+(d>0?'+':'')+d.toFixed(1)+'）。';}
-  h+='<div class="coach'+(left<=0?' ok':'')+'" style="margin-top:10px"><b>进度判读</b>'+
+  h+='<div class="coach'+(left<=0?' ok':'')+' sec-sm"><b>进度判读</b>'+
     (left<=0?('腰围已到 '+w.toFixed(1)+'cm，已进舒适区了。继续往 '+G.waistGoal+'cm 走——那是腹型肥胖的分界线，跨过去健康收益最大。')
      :('还差 '+left.toFixed(1)+'cm 进舒适区，按当前节奏约 <b>'+weeks+' 周</b>。腰围减到 <b>'+G.waistGoal+'cm</b> 时你会一次拿到两样东西：穿着舒服 + 脱离腹型肥胖。'))+line+'</div>';
+  /* v11：结论上标题行 —— 当前腰围 + 距舒适区还差多少（好=绿 / 差=琥珀 / 已达标=绿） */
+  var pv=$('pantsVal');
+  if(pv){pv.textContent=w.toFixed(1)+'cm'+(left>0?' · 差 '+left.toFixed(1):' · 已达标');
+    pv.className='hval'+(left<=0?' good':'');}
   $('pantsBox').innerHTML=h;
 }
 function renderGirth(){
@@ -1869,6 +2163,17 @@ function renderGirth(){
     '<div><div class="muted">臀围 cm</div><input type="number" step="0.5" inputmode="decimal" id="gH" value="'+(g.hip||'')+'" placeholder="100"></div></div>';
   h+='<div class="muted" style="margin-top:8px">当前：腰 '+lastGirth('waist').toFixed(1)+' · 右腿 '+lastGirth('thigh').toFixed(1)+' · 臀 '+lastGirth('hip').toFixed(1)+'</div>';
   h+=girthBars();
+  /* v11：结论上标题行 —— 本周腰围，有上周数据才显示涨跌（降=绿，升=红） */
+  var gv=$('girthVal');
+  if(gv){
+    var cw=lastGirth('waist'),pw2=prevGirth('waist');
+    if(cw!=null){
+      var d3=(pw2!=null)?round1(cw-pw2):null;
+      /* 没有上一周数据时只显示当前值，不显示涨跌（不猜） */
+      gv.textContent=cw.toFixed(1)+'cm'+(d3!=null&&d3!==0?(' '+(d3<0?'↓':'↑')+Math.abs(d3).toFixed(1)):'');
+      gv.className='hval'+(d3!=null?((d3<0)?' good':(d3>0?' bad':'')):'');
+    }else{gv.textContent='';}
+  }
   $('girthBox').innerHTML=h;
   ['gW','gT','gH'].forEach(function(id){
     $(id).onchange=function(){
@@ -1921,7 +2226,7 @@ function renderGChart(){
   }
   $('gchart').innerHTML=h;
   var d=round1(lastGirth('waist')-prevGirth('waist'));
-  $('gtext').innerHTML='<div class="coach'+(d<0?' ok':'')+'" style="margin-top:10px"><b>腰围变化</b>'+
+  $('gtext').innerHTML='<div class="coach'+(d<0?' ok':'')+' sec-sm"><b>腰围变化</b>'+
     (d<0?('本次比上次少 '+Math.abs(d).toFixed(1)+'cm，方向对了。腹部脂肪是全身对热量缺口反应最快的部位，继续。')
       :d>0?('本次比上次多 '+d.toFixed(1)+'cm。先别慌，单次波动常是水分和胀气，看连续两周的趋势。')
       :'本次与上次持平。')+'</div>'+
@@ -1937,7 +2242,10 @@ function streakDays(){
     var r=DB.records&&DB.records[ds];
     var meals=(DB.meals&&DB.meals[ds]&&DB.meals[ds].length)?true:false;
     var any=false;
-    if(r)any=(r.weight!=null&&r.weight!=='')||r.water>0||r.workout||meals||!!(r.hb&&(r.hb.breakfast||r.hb.add17||r.hb.brush));
+    /* v11：三态下「有记录」= 任一条目被点过（守住或破戒都算记录过），
+       所以判 triVal()!==0，而不是判真值（判真值会把「守住=1」误判为无记录） */
+    if(r)any=(r.weight!=null&&r.weight!=='')||r.water>0||r.workout||meals||
+      !!(r.hb&&(triVal(r.hb,'breakfast')||triVal(r.hb,'add17')||triVal(r.hb,'brush')));
     if(!any){
       if(DB.vacation)any=true;                       /* 假期模式 = 连胜护符：不清零 */
       else if(i===0)continue;                        /* 今天还没记，不急着吃掉昨天的连胜，从昨天接着数 */
@@ -2065,11 +2373,12 @@ function todoItems(){
   }else{
     items=[
       {txt:'晨起空腹称重',done:r.weight!=null&&r.weight!=='',act:function(rr,on){if(on)focusWeight();else rr.weight=null;}},
-      {txt:'早餐 2 个水煮蛋',done:!!r.hb.breakfast,act:function(rr,on){rr.hb.breakfast=!!on;}},
-      {txt:'17:00 垫一口（蛋 + 西红柿）',done:!!r.hb.add17,act:function(rr,on){rr.hb.add17=!!on;}},
+      /* v11：习惯类条目带 hbKey，勾选写 1 / 取消删键；done 判 triIsKeep，绝不判真值 */
+      {txt:'早餐 2 个水煮蛋',hbKey:'breakfast',done:triIsKeep(r.hb,'breakfast'),act:function(rr,on){if(on)rr.hb.breakfast=1;else delete rr.hb.breakfast;}},
+      {txt:'17:00 垫一口（蛋 + 西红柿）',hbKey:'add17',done:triIsKeep(r.hb,'add17'),act:function(rr,on){if(on)rr.hb.add17=1;else delete rr.hb.add17;}},
       {txt:'喝水 8 杯（约 2400ml）',done:r.water>=CFG.waterGoal,act:function(rr,on){rr.water=on?CFG.waterGoal:0;}},
       {txt:isTrain?'完成今日训练（30 分钟）':'走够 8000 步 + 爬楼 3 趟',done:!!r.workout,act:function(rr,on){rr.workout=!!on;}},
-      {txt:'21:00 刷牙 + 0:30 前睡',done:!!r.hb.brush&&!!r.sleep,act:function(rr,on){rr.hb.brush=!!on;if(on&&!rr.sleep)toast('刷牙打勾了，睡前记得填入睡时间');}}
+      {txt:'21:00 刷牙 + 0:30 前睡',hbKey:'brush',done:triIsKeep(r.hb,'brush')&&!!r.sleep,act:function(rr,on){if(on)rr.hb.brush=1;else delete rr.hb.brush;if(on&&!rr.sleep)toast('刷牙打勾了，睡前记得填入睡时间');}}
     ];
     if(isWkend)items.push({txt:'周末红线：起床不晚于 9:30',done:!!r.sleep,act:function(rr,on){if(on){if(!rr.sleep)rr.sleep='09:00';}else{rr.sleep='';}}});
     items=carryOver(t,r).concat(items);   /* v9 A11：逾期项置顶，标红提醒 */
@@ -2120,6 +2429,16 @@ function bindSwipe(){
 }
 function renderTodo(){
   var items=todoItems();
+  /* v11 空态：首次打开时不再是空白卡片，给一句引导 + 一个立刻能做的动作 */
+  if(!items||!items.length){
+    $('todoList').innerHTML='<div class="empty">'+
+      '<div class="eico">☀️</div>'+
+      '<div class="et">今天还没有要做的</div>'+
+      '<div class="es">先记一次体重，后面的一切都从这里开始算。</div>'+
+      '<button type="button" class="btn md" onclick="openSheet&&openSheet()">现在记一笔</button>'+
+      '</div>';
+    return;
+  }
   $('todoList').innerHTML=items.map(function(it,i){
     var bg=it.done
       ? '<div class="sw-bg"><span class="l">右滑撤销 →</span><span class="r"></span></div>'
@@ -2141,20 +2460,20 @@ function renderStepsBox(){
   var v=(r.steps!=null&&r.steps!==''&&!isNaN(parseInt(r.steps,10)))?parseInt(r.steps,10):null;
   box.style.display='block';
   var state,hit=v!=null&&v>=STEP_GOAL;
-  if(v==null)state='<span style="font-size:11.5px;color:var(--sub)">戴着 Watch 就把真实数据记进来，走路也是减脂的一部分</span>';
-  else if(hit)state='<span style="font-size:11.5px;color:var(--ok);font-weight:600">✓ 已走 '+v.toLocaleString()+' 步 · 达标，上面那项已自动打勾</span>';
-  else state='<span style="font-size:11.5px;color:var(--sub)">已走 '+v.toLocaleString()+' 步 · 距 '+(STEP_GOAL).toLocaleString()+' 还差 '+(STEP_GOAL-v).toLocaleString()+' 步，到达自动打勾</span>';
+  if(v==null)state='<span style="font-size:var(--fs-xs);color:var(--sub)">戴着 Watch 就把真实数据记进来，走路也是减脂的一部分</span>';
+  else if(hit)state='<span style="font-size:var(--fs-xs);color:var(--ok);font-weight:600">✓ 已走 '+v.toLocaleString()+' 步 · 达标，上面那项已自动打勾</span>';
+  else state='<span style="font-size:var(--fs-xs);color:var(--sub)">已走 '+v.toLocaleString()+' 步 · 距 '+(STEP_GOAL).toLocaleString()+' 还差 '+(STEP_GOAL-v).toLocaleString()+' 步，到达自动打勾</span>';
   box.innerHTML=
-    '<div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;background:var(--card2)">'+
-      '<span style="font-size:18px">🚶</span>'+
+    '<div style="display:flex;align-items:center;gap:var(--sp-2);margin-top:12px;padding:10px 12px;border:1px dashed var(--line);border-radius:var(--r-sm);background:var(--card2)">'+
+      '<span style="font-size:var(--fs-xl)">🚶</span>'+
       '<div style="flex:1;min-width:0">'+
-        '<div style="font-size:12.5px;font-weight:600;margin-bottom:2px">今日步数 <span style="font-weight:400;font-size:12.5px;color:var(--sub)">Apple Watch</span></div>'+
+        '<div style="font-size:var(--fs-sm);font-weight:600;margin-bottom:2px">今日步数 <span style="font-weight:400;font-size:var(--fs-sm);color:var(--sub)">Apple Watch</span></div>'+
         state+
-        (v!=null?'<div style="margin-top:6px;height:4px;border-radius:2px;background:var(--card3);overflow:hidden"><i style="display:block;height:100%;width:'+Math.min(100,Math.round(v/STEP_GOAL*100))+'%;background:'+(hit?'var(--ok)':'var(--brand)')+'"></i></div>':'')+
+        (v!=null?'<div style="margin-top:6px;height:4px;border-radius:var(--r-xs);background:var(--card3);overflow:hidden"><i style="display:block;height:100%;width:'+Math.min(100,Math.round(v/STEP_GOAL*100))+'%;background:'+(hit?'var(--ok)':'var(--brand)')+'"></i></div>':'')+
       '</div>'+
-      '<div style="display:flex;align-items:center;gap:4px;flex:0 0 auto">'+
-        '<input id="stepsIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="100" placeholder="0" value="'+(v!=null?v:'')+'" style="width:84px;min-height:38px;text-align:right;border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:15px;background:var(--card);color:var(--text)">'+
-        '<span style="font-size:12px;color:var(--sub)">步</span>'+
+      '<div style="display:flex;align-items:center;gap:var(--sp-1);flex:0 0 auto">'+
+        '<input id="stepsIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="100" placeholder="0" value="'+(v!=null?v:'')+'" style="width:84px;min-height:38px;text-align:right;border:1px solid var(--line);border-radius:var(--r-sm);padding:6px 8px;font-size:var(--fs-lg);background:var(--card);color:var(--text)">'+
+        '<span style="font-size:var(--fs-xs);color:var(--sub)">步</span>'+
       '</div>'+
     '</div>';
   var inp=$('stepsIn');
@@ -2184,19 +2503,6 @@ function renderBadge(){
   else{b.className='dot-badge';b.textContent=left;b.title='还有 '+left+' 项没完成';}
 }
 
-function renderHabits(){
-  var r=rec(todayStr());
-  $('habits').innerHTML=CFG.habits.map(function(h){
-    var on=!!r.hb[h.k];
-    return '<span class="chip'+(on?'':' bad')+'" data-k="'+h.k+'">'+(on?'✓ ':'○ ')+h.t+'<small>'+(on?'完成':'未完成')+'</small></span>';
-  }).join('');
-  Array.prototype.forEach.call($('habits').children,function(el){
-    el.onclick=function(){
-      var rr=rec(todayStr());rr.hb[el.dataset.k]=!rr.hb[el.dataset.k];save();render();
-    };
-  });
-}
-
 function renderCups(){
   var r=rec(todayStr()),h='';
   for(var i=1;i<=CFG.waterGoal;i++)h+='<div class="cup'+(r.water>=i?' on':'')+'" data-c="'+i+'">'+(r.water>=i?'💧':i)+'</div>';
@@ -2211,14 +2517,92 @@ function renderCups(){
   });
 }
 
+/* ============================================================
+   v11 三态打卡控件
+   状态值：undefined / 0 = 未记录，1 = 守住（做到），2 = 破戒（没做到）
+   设计依据：默认「守住」会制造虚假正面反馈 —— 未记录必须独立成第三态，
+   既不表扬也不指责（参照 Zero 的空心环、Apple Fitness 的反馈诚实原则）。
+   ============================================================ */
+function triGet(obj,k){var v=obj[k];return (v===1||v===2)?v:0;}
+function triCycle(obj,k){var v=triGet(obj,k);obj[k]=(v===0?1:(v===1?2:0));if(obj[k]===0)delete obj[k];}
+function triRender(list,state,goodText,badText){
+  var keep=0,broke=0,un=0;
+  var html=list.map(function(x){
+    var st=triGet(state,x.k);
+    var cls=st===1?' keep':(st===2?' broke':'');
+    var ic=st===1?'✓':(st===2?'✕':'');
+    var sm=st===0?'未记录':(st===1?goodText:badText);
+    return '<button type="button" class="chip3'+cls+'" data-k="'+x.k+'" aria-pressed="'+(st===1)+'">'+
+      '<span class="ic">'+ic+'</span>'+x.t+'<small>'+sm+'</small></button>';
+  }).join('');
+  list.forEach(function(x){
+    var st=triGet(state,x.k);
+    if(st===1)keep++;else if(st===2)broke++;else un++;
+  });
+  var total=list.length||1;
+  var bar='<div class="tri-bar">'+
+    '<i class="g" style="width:'+(keep/total*100)+'%"></i>'+
+    '<i class="b" style="width:'+(broke/total*100)+'%"></i>'+
+    '<i class="u" style="width:'+(un/total*100)+'%"></i></div>';
+  var meta='<span class="tri-meta'+(broke?' has-bad':'')+'">'+
+    '<b>'+keep+'</b> / '+total+
+    (broke?'　<span class="bad-n">破 '+broke+'</span>':'')+'</span>';
+  return {html:html,bar:bar,meta:meta,keep:keep,broke:broke,un:un};
+}
 function renderRedlines(){
   var r=rec(todayStr());
-  $('redlines').innerHTML=CFG.redlines.map(function(x){
-    var bad=!!r.rl[x.k];
-    return '<span class="chip'+(bad?' bad':'')+'" data-k="'+x.k+'">'+(bad?'✕ ':'✓ ')+x.t+'<small>'+(bad?'破戒':'守住')+'</small></span>';
-  }).join('');
+  var o=triRender(CFG.redlines,r.rl,'守住','破戒');
+  /* 卡片头：右侧显示「守住 N/6」+ 一键全守住 */
+  var hd=$('rlHead');
+  if(hd){
+    hd.innerHTML='<span class="tri-meta'+(o.broke?' has-bad':'')+'">'+
+      '<b>'+o.keep+'</b> / '+CFG.redlines.length+
+      (o.broke?'　<span class="bad-n">破 '+o.broke+'</span>':'')+'</span>'+
+      (o.un>0?'<button type="button" class="btn sm onekey" id="rlAll">今天全守住</button>':'');
+  }
+  $('rlBar').innerHTML=o.bar.replace('<div class="tri-bar">','').replace(/<\/div>$/,'');
+  $('redlines').innerHTML=o.html;
+  var all=$('rlAll');
+  if(all)all.onclick=function(){
+    var rr=rec(todayStr());CFG.redlines.forEach(function(x){rr.rl[x.k]=1;});
+    if(typeof haptic==='function')haptic('success');
+    if(typeof beep==='function')beep(880,90,0.05);
+    save();render();
+  };
   Array.prototype.forEach.call($('redlines').children,function(el){
-    el.onclick=function(){var rr=rec(todayStr());rr.rl[el.dataset.k]=!rr.rl[el.dataset.k];save();render();};
+    el.onclick=function(){
+      var rr=rec(todayStr());triCycle(rr.rl,el.dataset.k);
+      if(typeof haptic==='function')haptic('light');
+      save();render();
+    };
+  });
+}
+
+function renderHabits(){
+  var r=rec(todayStr());
+  var o=triRender(CFG.habits,r.hb,'做到','没做到');
+  var hd=$('hbHead');
+  if(hd){
+    hd.innerHTML='<span class="tri-meta'+(o.broke?' has-bad':'')+'">'+
+      '<b>'+o.keep+'</b> / '+CFG.habits.length+
+      (o.broke?'　<span class="bad-n">缺 '+o.broke+'</span>':'')+'</span>'+
+      (o.un>0?'<button type="button" class="btn sm onekey" id="hbAll">全部做到</button>':'');
+  }
+  $('hbBar').innerHTML=o.bar.replace('<div class="tri-bar">','').replace(/<\/div>$/,'');
+  $('habits').innerHTML=o.html;
+  var all=$('hbAll');
+  if(all)all.onclick=function(){
+    var rr=rec(todayStr());CFG.habits.forEach(function(x){rr.hb[x.k]=1;});
+    if(typeof haptic==='function')haptic('success');
+    if(typeof beep==='function')beep(880,90,0.05);
+    save();render();
+  };
+  Array.prototype.forEach.call($('habits').children,function(el){
+    el.onclick=function(){
+      var rr=rec(todayStr());triCycle(rr.hb,el.dataset.k);
+      if(typeof haptic==='function')haptic('light');
+      save();render();
+    };
   });
 }
 
@@ -2230,15 +2614,15 @@ function renderWorkout(){
     var idx=CFG.trainDays.indexOf(dw);
     var names=['下肢日','上肢日','全身循环'];
     var lv=[3,2,3][idx];
-    h+='<div class="muted" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">今日训练 · '+names[idx]+'（约 30 分钟）'+
+    h+='<div class="muted" style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap">今日训练 · '+names[idx]+'（约 30 分钟）'+
       '<span class="inten i'+lv+'">'+(function(){var o='';for(var q=1;q<=4;q++)o+='<i class="'+(q<=lv?'on':'')+'"></i>';return o;})()+'</span>'+
       '<span class="muted">'+(lv===3?'强度高':lv===2?'强度中':'强度低')+'</span></div>';
 
     h+='<div class="muted" style="margin-top:4px">深蹲 / 推举 / 硬拉 / 划船 / 弯举 / 平板 / 臀桥，具体做法见「计划」页配图</div>';
-    h+='<button class="btn full" id="btnWk" style="margin-top:10px">'+(r.workout?'✓ 已完成训练（点击撤销）':'完成训练')+'</button>';
+    h+='<button class="btn full" id="btnWk" class="sec-sm">'+(r.workout?'✓ 已完成训练（点击撤销）':'完成训练')+'</button>';
   }else{
     h+='<div class="muted">今天不是训练日 · 走够 8000 步 + 爬楼 3 趟</div>';
-    h+='<div class="muted" style="margin-top:5px;font-size:11.5px">步数填在上方「今天必做」里，填够 '+STEP_GOAL+' 步这里自动打勾'+(r.workout?' · <b style="color:var(--ok)">今天已达标 ✓</b>':'')+'</div>';
+    h+='<div class="muted" style="margin-top:5px;font-size:var(--fs-xs)">步数填在上方「今天必做」里，填够 '+STEP_GOAL+' 步这里自动打勾'+(r.workout?' · <b style="color:var(--ok)">今天已达标 ✓</b>':'')+'</div>';
   }
   h+='<div style="margin:11px 0 2px">'+wkProgress()+'</div>';
   $('workoutBox').innerHTML=h;
@@ -2250,8 +2634,15 @@ function isLate(s){
   var h=parseInt(s.split(':')[0],10);
   return h>=1&&h<5;
 }
-function rlBroken(r){
-  var n=0;CFG.redlines.forEach(function(x){if(r.rl&&r.rl[x.k])n++;});
+/* v11 三态判定出口 —— 所有统计一律走这三个函数，禁止再写裸真值判断
+     v1(守住) / 2(破戒) / 0 或 undefined(未记录)
+   旧数据 rl[k]=true 会被判为「未记录」（=0），这是有意的：true 表达不了三态语义 */
+function triVal(o,k){var v=o?o[k]:undefined;return (v===1||v===2)?v:0;}
+function triIsKeep(o,k){return triVal(o,k)===1;}       /* 明确「守住/做到」 */
+function triIsBroke(o,k){return triVal(o,k)===2;}      /* 明确「破戒/没做到」 */
+function rlBroken(r){                                   /* 破戒条数（只有 ===2 才算） */
+  if(!r)return 0;                                       /* v11：自己容错，调用点不必判空 */
+  var n=0;CFG.redlines.forEach(function(x){if(triIsBroke(r.rl,x.k))n++;});
   return n;
 }
 
@@ -2262,16 +2653,24 @@ function renderWeekStrip(){
     var dt=new Date();dt.setDate(dt.getDate()-i);
     var ds=fmt(dt);
     var r=DB.records[ds];
-    var dots='';
-    dots+='<span class="dot'+(r&&r.weight!=null&&r.weight!==''?' g':'')+'"></span>';
     var dw=dt.getDay();
-    if([2,4,6].indexOf(dw)>=0){
-      dots+='<span class="dot'+(r&&r.workout?' g':' y')+'"></span>';
-    }
-    var bad=0;
-    if(r&&r.rl)CFG.redlines.forEach(function(x){if(r.rl[x.k])bad++;});
-    if(bad>0)dots+='<span class="dot r"></span>';
-    out+='<div class="wd'+(i===0?' today':'')+'"><div class="dl">周'+names[dw]+'<br>'+(dt.getMonth()+1)+'/'+dt.getDate()+'</div><div class="dots">'+dots+'</div></div>';
+    var isTrainDay=CFG.trainDays.indexOf(dw)>=0;
+    /* v11：固定 3 槽位，每列恒 3 根棒 → 高度齐平，且能竖着对比同一维度
+       槽 1 = 体重（记了=绿，没记=灰）
+       槽 2 = 训练（训练日：完成=绿 / 未完成=黄 / 非训练日=灰）
+       槽 3 = 红线（有破戒=红 / 没破=绿 / 当天无任何记录=灰） */
+    var s1=r&&r.weight!=null&&r.weight!==''?' g':'';
+    var s2=isTrainDay?((r&&r.workout)?' g':' y'):'';
+    var bad=rlBroken(r);
+    var hasRec=r&&((r.weight!=null&&r.weight!=='')||r.water>0||r.workout||
+      triVal(r.hb,'breakfast')||triVal(r.hb,'add17')||triVal(r.hb,'brush')||
+      triVal(r.rl,'milk')||triVal(r.rl,'night')||triVal(r.rl,'snack')||
+      triVal(r.rl,'carb')||triVal(r.rl,'fast')||triVal(r.rl,'soda'));
+    var s3=bad>0?' r':(hasRec?' g':'');
+    var dots='<span class="dot'+s1+'"></span><span class="dot'+s2+'"></span><span class="dot'+s3+'"></span>';
+    out+='<div class="wd'+(i===0?' today':'')+'" title="'+(dt.getMonth()+1)+'/'+dt.getDate()+'：体重'+(s1?'✓':'-')+' · 训练'+(isTrainDay?(s2===' g'?'✓':'✗'):'—')+' · 红线'+(s3===' r'?'破':'—')+'">'+
+      '<div class="dl">周'+names[dw]+'<br>'+(dt.getMonth()+1)+'/'+dt.getDate()+'</div>'+
+      '<div class="dots">'+dots+'</div></div>';
   }
   $('weekStrip').innerHTML=out;
 }
@@ -2285,8 +2684,9 @@ function renderScore(){
     if(r.weight!=null&&r.weight!=='')wN++;
     if(r.sleep&&!isLate(r.sleep))sN++;   /* v9：凌晨 1-5 点睡不计分，原来填了就满分 */
     if(r.water>=8)waN++;
-    CFG.habits.forEach(function(h){hT++;if(r.hb&&r.hb[h.k])hN++;});
-    CFG.redlines.forEach(function(x){if(r.rl&&r.rl[x.k])rlN++;});
+    /* v11：习惯算「做到」、红线算「破戒」——三态下必须显式判 ===1 / ===2 */
+    CFG.habits.forEach(function(h){hT++;if(triIsKeep(r.hb,h.k))hN++;});
+    CFG.redlines.forEach(function(x){if(triIsBroke(r.rl,x.k))rlN++;});
     var dow=parseD(d).getDay();
     if([2,4,6].indexOf(dow)>=0){wkT++;if(r.workout)wkOk++;}
   });
@@ -2306,6 +2706,9 @@ function renderScore(){
       '<strong>'+v+'/'+tg+'（'+pt+'分）</strong></div>';
   }
   var gdeg=-45+Math.max(0,Math.min(100,total))*1.8;
+  /* v11：把总分同步到卡片标题右侧，让标题行就能扫到结论，不用读环形 */
+  var sv=$('scoreVal');
+  if(sv){sv.textContent=total+' 分';sv.className='hval '+(total>=85?'good':(total>=70?'':'bad'));}
   $('scoreCard').innerHTML='<div class="gauge"><div class="arc"></div>'+
     '<div class="val" style="transform:rotate('+gdeg.toFixed(1)+'deg);border-top-color:'+col+';border-left-color:'+col+'"></div>'+
     '<div class="num" style="color:'+col+'">'+total+'</div></div>'+
@@ -2338,10 +2741,11 @@ function renderCoach(){
   var nb=0,na=0,nbr=0;
   for(var m=0;m<7;m++){
     var rd=DB.records[addDays(t,-m)];
-    if(!rd||!rd.hb)continue;
-    if(!rd.hb.breakfast)nb++;
-    if(!rd.hb.add17)na++;
-    if(!rd.hb.brush)nbr++;
+    if(!rd)continue;
+    /* v11：只有明确点了「没做到」才算缺；未记录不算缺（不冤枉用户） */
+    if(triIsBroke(rd.hb,'breakfast'))nb++;
+    if(triIsBroke(rd.hb,'add17'))na++;
+    if(triIsBroke(rd.hb,'brush'))nbr++;
   }
   if(nb>=3||na>=3||nbr>=3){
     var parts=[];
@@ -2365,7 +2769,7 @@ function renderCoach(){
   if(late>=3)out.push(['🌙 近两周有 '+late+' 天凌晨 1 点后才睡','熬夜会直接推高第二天的食欲和胰岛素抵抗。睡觉是减脂的一部分，不是休息。']);
 
   var cnt={};CFG.redlines.forEach(function(x){cnt[x.k]=0;});
-  wd14.forEach(function(x){CFG.redlines.forEach(function(rl){if(x.rl&&x.rl[rl.k])cnt[rl.k]++;});});
+  wd14.forEach(function(x){CFG.redlines.forEach(function(rl){if(triIsBroke(x.rl,rl.k))cnt[rl.k]++;});});
   var top=null;CFG.redlines.forEach(function(x){if(!top||cnt[x.k]>cnt[top.k])top=x;});
   if(top&&cnt[top.k]>=3){
     var fix={milk:'把奶茶换成无糖茶或气泡水，先撑 7 天，味觉会重置。',
@@ -2500,7 +2904,7 @@ function renderWeek(){
   days.forEach(function(d){
     var r=DB.records[d];
     if(r.water>=CFG.waterGoal)okW++;
-    if(r.hb&&r.hb.breakfast)okB++;
+    if(triIsKeep(r.hb,'breakfast'))okB++;   /* v11：只有明确「做到」才计入 */
     if(CFG.trainDays.indexOf(parseD(d).getDay())>=0){tCnt++;if(r.workout)okT++;}
     broken+=rlBroken(r);
   });
@@ -2517,7 +2921,7 @@ function renderWeek(){
   h+='</table>';
   if(ca&&pa){
     var d2=round1(ca-pa);
-    h+='<div class="coach'+(d2<=0?' ok':'')+'" style="margin-top:10px"><b>本周判读</b>'+
+    h+='<div class="coach'+(d2<=0?' ok':'')+' sec-sm"><b>本周判读</b>'+
       (d2<-0.2?('周均下降 '+Math.abs(d2).toFixed(1)+'kg，节奏正常。别改方案，继续照做。')
        :d2>0.2?('周均上升 '+d2.toFixed(1)+'kg。先别加运动量，回头查主食和夜宵——90% 的反弹是从这两项开始的。')
        :'周均基本持平，处在平台期。连续两周不动，再来找我调方案。')+'</div>';
@@ -2531,7 +2935,7 @@ function renderRL(){
   for(var i=0;i<14;i++){
     var r=DB.records[addDays(t,-i)];
     if(!r)continue;
-    CFG.redlines.forEach(function(x){if(r.rl&&r.rl[x.k]){cnt[x.k]++;tot++;}});
+    CFG.redlines.forEach(function(x){if(triIsBroke(r.rl,x.k)){cnt[x.k]++;tot++;}});
   }
   var h='<table><tr><th>红线</th><th class="num">破戒</th><th class="num">状态</th></tr>';
   CFG.redlines.forEach(function(x){
@@ -2541,6 +2945,12 @@ function renderRL(){
   });
   h+='</table>';
   h+='<div class="muted" style="margin-top:8px">近 14 天累计破戒 <b>'+tot+'</b> 次。'+(tot===0?'完美，继续保持。':tot<=5?'整体可控，别让"偶尔"变成"常态"。':'破戒偏多，说明现在的打法太硬了。挑最常破的那一条，先只攻它。')+'</div>';
+  /* v11：结论上标题行 —— 0 次给绿（这是真正值得庆祝的），其余按量升色阶 */
+  var rv=$('rlVal');
+  if(rv){
+    rv.textContent=tot===0?'0 次 · 全守住':tot+' 次';
+    rv.className='hval'+(tot===0?' good':(tot>5?' bad':''));
+  }
   $('rlStat').innerHTML=h;
 }
 
@@ -2554,7 +2964,7 @@ function renderHist(){
     h+='<tr><td><span class="hd">'+md(d)+'</span><span class="wd-b '+(_isTrain?'train':'rest')+'">周'+['日','一','二','三','四','五','六'][_dw]+'</span></td>'+
       '<td class="num">'+(r.weight!=null&&r.weight!==''?parseFloat(r.weight).toFixed(1):'—')+'</td>'+
       '<td class="num">'+r.water+'</td>'+
-      '<td class="num">'+((r.hb&&r.hb.breakfast)?'✓':'—')+'</td>'+
+      '<td class="num">'+(triIsKeep(r.hb,'breakfast')?'✓':'—')+'</td>'+
       '<td class="num">'+(r.workout?'✓':'—')+'</td>'+
       '<td class="num">'+(rlBroken(r)||'—')+'</td></tr>';
   });
@@ -2572,7 +2982,7 @@ function renderMoves(){
         (Array.isArray(m.gif)?m.gif.join('<div style="height:8px"></div>'):m.gif)+
         '<div class="ok" style="margin-top:8px"><b>要点</b>'+m.ok+'</div>'+
         '<div class="no"><b>常见错误</b>'+m.no+'</div>'+
-      '</div>':'<div class="muted" style="margin-top:6px;font-size:12.5px">点开看图示 + 要点 + 常见错误</div>')+
+      '</div>':'<div class="muted" style="margin-top:6px;font-size:var(--fs-sm)">点开看图示 + 要点 + 常见错误</div>')+
       '</div>';
   }).join('');
   var heads=$('movesBox').querySelectorAll('.mv');
@@ -2862,7 +3272,7 @@ function bind(){
     if(t.tagName==='IMG'&&t.closest('.gif-card')){
       t.style.display='none';
       var d=document.createElement('div');
-      d.style.cssText='color:var(--brand-text);font-size:13px;padding:10px';
+      d.style.cssText='color:var(--brand-text);font-size:var(--fs-md);padding:10px';
       d.textContent='GIF加载失败（网慢或图库变更），请直接看下方「要点」和「常见错误」';
       t.insertAdjacentElement('afterend',d);
     }
@@ -2979,7 +3389,7 @@ function eatPie(T){
   if(tot<=0)return '';
   var a=Math.round(ck/tot*100), b=Math.round((ck+fk)/tot*100);
   var pp=Math.round(pk/tot*100), cp=Math.round(ck/tot*100), fp=Math.round(fk/tot*100);
-  return '<div class="pie-wrap" style="margin-top:14px;padding-top:13px;border-top:1px solid var(--line)">'+
+  return '<div class="pie-wrap hr-sec">'+
     '<div class="pie" style="--a:'+a+';--b:'+b+'"><span>'+Math.round(T.k)+'<br>kcal</span></div>'+
     '<div class="legend">'+
       '<div><i style="background:var(--brand)"></i>碳水 <b>'+Math.round(T.ca)+'g · '+cp+'%</b></div>'+
@@ -2998,7 +3408,7 @@ function girthBars(){
   var items=[{k:'waist',n:'腰围'},{k:'thigh',n:'右腿'},{k:'hip',n:'臀围'}];
   var mx=0;items.forEach(function(o){mx=Math.max(mx,def[o.k]||0,cur[o.k]||0);});
   if(!mx)return '';
-  var h='<div class="bars" style="margin-top:12px">';
+  var h='<div class="bars sec-sm">';
   items.forEach(function(o){
     var dv=def[o.k]||0,cv=cur[o.k]||0;
     var dh=Math.round(dv/mx*100),ch=Math.round(cv/mx*100);
@@ -3055,11 +3465,11 @@ function initA2HS(){
   var dismissed=false;
   try{dismissed=localStorage.getItem('fitdesk_a2hs')==='1';}catch(e){}
   if(standalone||dismissed||!isiOS)return;
-  box.innerHTML='<div style="display:flex;gap:11px;align-items:flex-start">'+
+  box.innerHTML='<div style="display:flex;gap:var(--sp-3);align-items:flex-start">'+
     '<span class="ic-badge b" style="margin-top:2px"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></svg></span>'+
-    '<div style="flex:1;min-width:0"><b style="font-size:14px">加到主屏幕，用起来像 App</b>'+
+    '<div style="flex:1;min-width:0"><b style="font-size:var(--fs-md)">加到主屏幕，用起来像 App</b>'+
     '<div class="muted" style="margin-top:3px">Safari 底部「分享」→「添加到主屏幕」，之后全屏打开、断网也能用。</div>'+
-    '<div style="margin-top:9px;display:flex;gap:8px"><button class="btn ghost" id="a2hsNo" style="min-height:36px;padding:8px 14px;font-size:13px;flex:1">知道了</button></div>'+
+    '<div style="margin-top:9px;display:flex;gap:var(--sp-2)"><button class="btn ghost" id="a2hsNo" style="min-height:36px;padding:8px 14px;font-size:var(--fs-md);flex:1">知道了</button></div>'+
     '</div></div>';
   setTimeout(function(){box.classList.add('show');},2200);
   document.getElementById('a2hsNo').onclick=function(){
@@ -3186,19 +3596,15 @@ function initPlanTabs(){
   if(!pg)return;
   // [标题匹配, 分组, 是否默认收起]
   var DEF=[
-    [/吃 · 双模式/,'eat',0],
-    [/我的食材/,'eat',0],
-    [/你现在能做的/,'eat',0],
-    [/再买一样/,'eat',0],
+    [/吃 · 双模式/,'eat',1],      // v12：改默认收起（路径② 长文折叠）
+    [/我的食材/,'eat',0],         // v12：三卡合并后统一叫「我的食材」
     [/采购建议/,'eat',0],
     [/周末/,'eat',1],
     [/薄肌路线图/,'train',0],
-    [/墙面三件套/,'train',0],
-    [/动 · /,'train',0],
+    [/每日执行细则/,'train',0],    // v12：睡 + 墙面三件套 + 动 三卡合并
     [/目标节奏/,'train',0],
-    [/睡 · /,'life',0],
-    [/护肤/,'life',1],
-    [/气 · /,'life',1]
+    [/护肤/,'life',1],            // v12：改默认收起（路径②）
+    [/气 · /,'life',1]            // v12：改默认收起（路径②）
   ];
   var cards=[],route=null,pace=null;
   Array.prototype.forEach.call(pg.children,function(el){
@@ -3232,13 +3638,37 @@ function initPlanTabs(){
   function planAutoTimer(el){
     clearPlanT();
     if(!el||el.classList.contains('fold'))return;
-    planT=setTimeout(function(){el.classList.add('fold');},20000);
+    planT=setTimeout(function(){
+      el.classList.add('fold');
+      if(typeof syncFoldAria==='function')syncFoldAria(el);   // v12：自动收起也要同步读屏状态
+    },20000);
   }
   function resetPlanT(){
     var open=pg.querySelector('.card.foldable:not(.fold)');
     if(open)planAutoTimer(open);
   }
-  function closePlanAll(){clearPlanT();cards.forEach(function(el){el.classList.add('fold');});}
+  function closePlanAll(){
+    clearPlanT();
+    cards.forEach(function(el){el.classList.add('fold');syncFoldAria(el);});
+  }
+  /* v12 无障碍：折叠状态必须能被读屏软件感知。
+     role=button + aria-expanded 是 WAI-ARIA 手风琴的标准写法；
+     h2 默认不是交互元素，只加 click 会让键盘/读屏用户完全无法操作。 */
+  function syncFoldAria(el){
+    var h2=el.querySelector('h2');
+    if(!h2)return;
+    if(!h2.getAttribute('role'))h2.setAttribute('role','button');
+    if(h2.tabIndex<0||h2.tabIndex===undefined)h2.tabIndex=0;
+    h2.setAttribute('aria-expanded',el.classList.contains('fold')?'false':'true');
+    // 关联展开区：给卡的第一个内容块一个稳定 id，供 aria-controls 指向
+    var body=el.querySelector('.peek-lead')||el.children[1];
+    if(body){
+      if(!body.id)body.id='foldbody-'+(el.dataset.pf||el.dataset.fb||Math.abs(el.outerHTML.length*31%99999));
+      h2.setAttribute('aria-controls',body.id);
+      if(!body.getAttribute('role'))body.setAttribute('role','region');
+      body.setAttribute('aria-hidden',el.classList.contains('fold')?'true':'false');
+    }
+  }
   cards.forEach(function(el){
     var h2=el.querySelector('h2');
     if(!h2)return;
@@ -3246,10 +3676,18 @@ function initPlanTabs(){
     h2.onclick=function(){
       var willOpen=el.classList.contains('fold');
       clearPlanT();
-      cards.forEach(function(x){x.classList.add('fold');});   // 手风琴
+      cards.forEach(function(x){x.classList.add('fold');syncFoldAria(x);});   // 手风琴
       if(willOpen)el.classList.remove('fold');
       if(willOpen)planAutoTimer(el);
+      syncFoldAria(el);
     };
+    /* v12 无障碍：键盘 Enter / Space 等效于点击 */
+    h2.onkeydown=function(ev){
+      if(ev.key==='Enter'||ev.key===' '||ev.key==='Spacebar'){
+        ev.preventDefault();h2.onclick();
+      }
+    };
+    syncFoldAria(el);
   });
   ['scroll','touchstart','input','keydown'].forEach(function(ev){
     pg.addEventListener(ev,resetPlanT,true);
@@ -3276,14 +3714,28 @@ function initPlanTabs(){
 }
 
 initSplash();initOffline();initA2HS();initPlanTabs();initEatTabs();initQuickBar();
-/* 今日页叮嘱卡等 .foldable：点标题展开/收起 */
+/* 今日页叮嘱卡等 .foldable：点标题展开/收起
+   v12 无障碍：这一组也补 role=button + aria-expanded + 键盘支持，
+   与 initPlanTabs 内的 syncFoldAria 保持同一套语义。 */
 (function(){
+  function sync(el){
+    var h2=el.querySelector('h2');if(!h2)return;
+    if(!h2.getAttribute('role'))h2.setAttribute('role','button');
+    if(!h2.hasAttribute('tabindex'))h2.tabIndex=0;
+    h2.setAttribute('aria-expanded',el.classList.contains('fold')?'false':'true');
+  }
   document.querySelectorAll('.card.foldable').forEach(function(el){
     if(el.dataset.fb)return; el.dataset.fb=1;
     if(el.dataset.pf)return;         // 计划页卡片：手风琴/自动收起由 initPlanTabs 独占处理
     var h2=el.querySelector('h2');
     if(!h2)return;
-    h2.addEventListener('click',function(){el.classList.toggle('fold');});
+    h2.addEventListener('click',function(){el.classList.toggle('fold');sync(el);});
+    h2.addEventListener('keydown',function(ev){
+      if(ev.key==='Enter'||ev.key===' '||ev.key==='Spacebar'){
+        ev.preventDefault();el.classList.toggle('fold');sync(el);
+      }
+    });
+    sync(el);
   });
 })();
 
