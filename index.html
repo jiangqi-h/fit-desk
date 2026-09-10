@@ -166,6 +166,10 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 /* v11：全局数字等宽 —— 让上下行数字纵向对齐，是投入最小、观感提升最直接的调整 */
 body{font-variant-numeric:tabular-nums;-webkit-font-variant-numeric:tabular-nums}
+/* v13e：全局关掉长按弹出菜单。这是应用不是网页，长按要留给交互手势（如 -1 数量），
+   系统级的「复制 / 查询 / 分享」气泡只会打断操作。输入框单独放行，方便复制粘贴数据。 */
+body{-webkit-touch-callout:none}
+input,textarea,select{-webkit-touch-callout:default;user-select:text;-webkit-user-select:text}
 /* v11：主题切换过渡 —— 深浅色切换不再硬闪 */
 body{margin:0;background:var(--bg);color:var(--text);
   font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
@@ -195,7 +199,13 @@ h1{font-size:var(--fs-xl);margin:0}
 .muted{color:var(--sub);font-size:var(--fs-md)}
 .between{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--sp-2)}
+/* v13e 修复：iOS 上 input[type=time] 有固有最小宽度，会把 grid 列撑破、右侧溢出错位。
+   给网格项和控件都加 min-width:0，让列宽由容器决定，而不是由控件内容决定。 */
+.grid2>*{min-width:0}
+.grid2 input,.grid2 select,.grid2 textarea{min-width:0;max-width:100%;box-sizing:border-box}
 input,select,textarea{min-height:44px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);padding:10px 12px;font:inherit;width:100%}
+input[type=time]{-webkit-appearance:none;appearance:none;min-width:0;text-align:left}
+input[type=time]::-webkit-date-and-time-value{text-align:left}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 input[type=checkbox]{min-height:auto;width:auto}
 input[type=file]{min-height:auto;padding:0}
@@ -236,7 +246,10 @@ input[type=file]{min-height:auto;padding:0}
 /* 分段控件 */
 .segmented{display:flex;background:var(--card2);padding:3px;border-radius:var(--r-sm);gap:var(--sp-1)}
 .segmented button{min-height:38px;flex:1;border:0;background:transparent;border-radius:var(--r-sm);padding:0 4px;color:var(--sub);font-weight:700;font-size:var(--fs-md);font-family:inherit;cursor:pointer}
-.segmented button.on{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+/* v13e：选中态原来用 var(--card) 盖在 var(--card2) 上，两色太近、几乎看不出选中。
+   改为「实底高亮 + 品牌色文字」，灰度下也读得出来。 */
+.segmented button.on{background:var(--card3);color:var(--brand-text);
+  box-shadow:0 2px 8px rgba(0,0,0,.18),inset 0 0 0 1px var(--line)}
 /* 周条 */
 /* v11：圆点 → 短棒。7px 圆点在 34px 宽里挤 3 个会折行；24×4px 短棒抗折行，
    且「有几条亮着」在灰度下也能读，不只靠颜色 */
@@ -413,6 +426,24 @@ header .inner{max-width:560px;margin:0 auto}
   transition:transform var(--dur) var(--ease);touch-action:pan-y;will-change:transform}
 .dsw-fg.sw-open{transform:translateX(-76px)}
 .dsw-fg.sw-snap{transition:transform var(--dur-fast) var(--ease)}
+/* v13e 餐食记录行：左圆环（该条热量占单日目标 1/3 的比重）+ 右名称/克数
+   做法收进 title，不再逐行摊开（"蒸/煮/水煮/生食"会把行撑成两行） */
+.mrow{display:flex;align-items:center;gap:var(--sp-3);padding:8px 2px;
+  border-bottom:1px solid var(--line);font-size:var(--fs-md);background:var(--card)}
+.mrow:last-child{border-bottom:none}
+.mring{--p:0;--sz:36px;--th:4px;
+  width:var(--sz);height:var(--sz);border-radius:50%;flex:none;
+  display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--brand) calc(var(--p)*1%),var(--card3) 0)}
+.mring:after{content:"";position:absolute;inset:var(--th);border-radius:50%;background:var(--card)}
+/* 数字用 11px（全站规范：正文/数字不得小于 11px，10px 会被小字检测判违规） */
+.mring>span{position:relative;z-index:1;font-family:var(--num-font);
+  font-size:11px;font-weight:700;color:var(--brand-text);letter-spacing:-.4px}
+.mmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+/* 标题行单独包一层：标签与名称同一行，避免 flex 纵向把标签排成独立一行撑高 */
+.mline{display:flex;align-items:center;min-width:0}
+.mline>b{font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msub{font-size:var(--fs-sm);color:var(--sub);line-height:1.25;white-space:nowrap}
 /* v13c 来源标记：只标「外采」（家中是默认，不重复刷屏） */
 .srctag{display:inline-block;font-size:var(--fs-xs);font-weight:700;
   padding:1px 6px;border-radius:var(--r-full);margin-right:5px;vertical-align:1px}
@@ -439,11 +470,17 @@ tr.ap-miss td{opacity:.72}
 .srcbtn.on{background:var(--brand-dim);color:var(--brand-dim-fg);
   border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
 .srchint{flex:none;font-size:var(--fs-xs)}
-/* v13c 食材库存：可点数量胶囊 */.pchip{display:inline-flex;align-items:center;gap:var(--sp-2);
+/* v13c 食材库存：可点数量胶囊
+   v13e：长按要能减数量，不能被系统「长按复制/查询」打断 ——
+   除了 user-select:none，还必须关掉 -webkit-touch-callout，
+   否则 iOS 长按仍会弹复制菜单（子元素要一起继承）。 */
+.pchip{display:inline-flex;align-items:center;gap:var(--sp-2);
   padding:7px 8px 7px 13px;border-radius:var(--r-full);
   background:var(--bg);color:var(--sub);border:1px dashed var(--line);
-  font-size:var(--fs-md);font-weight:600;cursor:pointer;user-select:none;
+  font-size:var(--fs-md);font-weight:600;cursor:pointer;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
   min-height:38px;transition:all var(--dur-fast) var(--ease)}
+.pchip>*{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;pointer-events:none}
 .pchip.on{background:var(--card2);color:var(--text);border:1px solid var(--line);border-style:solid}
 .pchip:active{transform:scale(.96)}
 .pchip:focus-visible{outline:none;box-shadow:var(--ring)}
@@ -939,8 +976,21 @@ h2:has(.hring){display:flex;align-items:center;gap:var(--sp-2)}
 .vac-sw input:checked + .tr i{transform:translateX(14px)}
 .vac-sw .vl{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
 .vac-sw input:checked ~ .vl{color:var(--warn-text)}
-/* v9 C1：连胜徽章 */
-.streak{display:inline-flex;align-items:center;gap:var(--sp-1);margin-left:8px;padding:2px 7px;border-radius:var(--r-full);
+/* v13e：「能做饭」开关 —— 复用假期开关视觉，挂在「今天怎么吃」标题右侧
+   默认关（在公司，只能免烹饪）；打开才排开火的菜 */
+.cook-sw{display:inline-flex;align-items:center;gap:var(--sp-2);cursor:pointer;
+  user-select:none;margin-left:auto;padding:4px 2px;min-height:32px;flex:none}
+.cook-sw input{position:absolute;opacity:0;width:0;height:0}
+.cook-sw .tr{width:34px;height:20px;border-radius:var(--r-full);background:var(--card3);
+  position:relative;transition:background .2s;flex:none}
+.cook-sw .tr i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.22);transition:transform .2s}
+.cook-sw input:checked + .tr{background:var(--warn)}
+.cook-sw input:checked + .tr i{transform:translateX(14px)}
+.cook-sw .vl{font-size:var(--fs-sm);color:var(--sub);font-weight:600;white-space:nowrap}
+.cook-sw input:checked ~ .vl{color:var(--warn-text)}
+.cook-sw:focus-within .tr{box-shadow:var(--ring)}
+/* v9 C1：连胜徽章 */.streak{display:inline-flex;align-items:center;gap:var(--sp-1);margin-left:8px;padding:2px 7px;border-radius:var(--r-full);
   background:var(--brand-soft);color:var(--brand-text);font-size:var(--fs-sm);font-weight:700;white-space:nowrap}
 /* v12：紧凑档 —— 标题栏同时挂 假期/连胜/第N天 时用，省下 20px 横向空间
    图标走内联 SVG，不依赖 emoji 字体 */
@@ -1259,7 +1309,7 @@ body.kb #a2hs{display:none}
 <div class="page" id="p-eat" data-page-node-id="ecZBPAjaKzWpIGnrzvzgPk">
   <div class="segmented eat-seg" id="eatSeg" data-page-node-id="VbMxil7j1KsV4XZWbbvED0">
     <button class="on" data-g="rec" data-page-node-id="GJkYZ4X9E6N3Zt72DqeGVZ">记一笔</button>
-    <button data-g="see" data-page-node-id="5HXMvVgdHxzD3pRElmljH3">今天的账</button>
+    <button data-g="see" data-page-node-id="5HXMvVgdHxzD3pRElmljH3">餐食记录</button>
     <button data-g="hist" data-page-node-id="WQHA91easJQ9ZBBaOp5wtZ">回看</button>
   </div>
   <div class="card" data-page-node-id="61LfDjwLyzvBYcAJGG8eZn">
@@ -1329,7 +1379,13 @@ body.kb #a2hs{display:none}
 <div class="page" id="p-plan" data-page-node-id="nDAsaGIzNZB4dFP3kz79dx">
   <!-- v13c：按库存自动排这一天的吃法（库存为空时给补货引导） -->
   <div class="card" data-page-node-id="v13cAutoCard">
-    <h2 data-page-node-id="v13cAutoH">今天怎么吃 <span class="tag" data-page-node-id="v13cAutoTag">按库存自动排</span></h2>
+    <h2 data-page-node-id="v13cAutoH">今天怎么吃 <span class="tag" data-page-node-id="v13cAutoTag">按库存自动排</span>
+      <label class="cook-sw" id="cookWrap" title="打开后，自动配餐会加入需要开火的菜（炒、煮、蒸）" data-page-node-id="v13eCookSw">
+        <input type="checkbox" id="swCook" data-page-node-id="v13eSwCook">
+        <span class="tr" data-page-node-id="v13eCookTr"><i data-page-node-id="v13eCookI"></i></span>
+        <span class="vl" data-page-node-id="v13eCookLbl">能做饭</span>
+      </label>
+    </h2>
     <div id="autoPlan" data-page-node-id="v13cAutoPlan"></div>
   </div>
 
@@ -1673,47 +1729,61 @@ var KEY='fitdesk_v1';
 var PROTEIN=[{k:'egg',t:'鸡蛋'},{k:'tofu',t:'豆腐'},{k:'chicken',t:'鸡胸'},{k:'ham',t:'火腿'},{k:'milk',t:'牛奶'},{k:'soy',t:'豆浆'}];
 var CARB=[{k:'rice',t:'米饭'},{k:'sweetpotato',t:'红薯'},{k:'noodle',t:'面条'},{k:'bread',t:'全麦面包'},{k:'potato',t:'土豆'}];
 var VEG=[{k:'lettuce',t:'生菜'},{k:'tomato',t:'西红柿'},{k:'pepper',t:'辣椒'},{k:'cucumber',t:'黄瓜'},{k:'cabbage',t:'白菜'},{k:'broccoli',t:'西兰花'}];
+/* v13e：fire=1 表示需要开火（炒/煮/蒸/炖/煎）。
+   在公司或没开火条件时，自动配餐只会从 fire=0 的里挑。
+   判定口径：水煮蛋/即食鸡胸/生食凉拌/牛奶豆浆 = 免开火；
+   炒、汤、羹、炖、煎、煮面 = 要开火。 */
 var MEALS=[
-{n:'水煮蛋 + 凉拌生菜西红柿',need:['egg','lettuce','tomato'],kc:200,pr:15,
+{n:'水煮蛋 + 凉拌生菜西红柿',need:['egg','lettuce','tomato'],kc:200,pr:15,fire:0,
  how:'2 个水煮蛋；生菜撕碎 + 西红柿切块，<b>醋 + 生抽 + 蒜</b>拌匀，别淋油。'},
-{n:'辣椒炒蛋（少油版）',need:['egg','pepper'],kc:260,pr:22,
+{n:'辣椒炒蛋（少油版）',need:['egg','pepper'],kc:260,pr:22,fire:1,
  how:'3 个蛋 + 辣椒，不粘锅 <b>5g 油</b>（半汤匙），炒到刚凝固就出锅，别炒老。'},
-{n:'蒸红薯 + 水煮蛋',need:['sweetpotato','egg'],kc:260,pr:16,
+{n:'蒸红薯 + 水煮蛋',need:['sweetpotato','egg'],kc:260,pr:16,fire:1,
  how:'红薯蒸熟<b>替代米饭</b>当主食，配 2 个水煮蛋。'},
-{n:'凉拌豆腐 + 生菜',need:['tofu','lettuce'],kc:200,pr:19,
+{n:'凉拌豆腐 + 生菜',need:['tofu','lettuce'],kc:200,pr:19,fire:1,
  how:'豆腐焯水 1 分钟，生抽 + 醋 + 蒜，配生菜。2 块钱能买到 16g 蛋白质。'},
-{n:'豆腐蛋羹',need:['tofu','egg'],kc:220,pr:24,
+{n:'豆腐蛋羹',need:['tofu','egg'],kc:220,pr:24,fire:1,
  how:'2 个蛋 + 半块豆腐，加水 1:1.5 蒸 10 分钟，出锅淋生抽。蛋白质最密的一顿。'},
-{n:'鸡胸炒辣椒',need:['chicken','pepper'],kc:280,pr:40,
+{n:'鸡胸炒辣椒',need:['chicken','pepper'],kc:280,pr:40,fire:1,
  how:'鸡胸 150g 切片，抓点生抽淀粉，<b>少油快炒</b>。蛋白质天花板。'},
-{n:'西红柿蛋汤',need:['tomato','egg'],kc:180,pr:15,
+{n:'西红柿蛋汤',need:['tomato','egg'],kc:180,pr:15,fire:1,
  how:'西红柿炒软加水煮开，淋入 2 个蛋液。<b>出锅前别加油</b>。'},
-{n:'水煮蛋 + 凉拌黄瓜',need:['egg','cucumber'],kc:190,pr:15,
+{n:'水煮蛋 + 凉拌黄瓜',need:['egg','cucumber'],kc:190,pr:15,fire:0,
  how:'2 个水煮蛋 + 黄瓜拍碎，醋 + 蒜。最简单的一顿。'},
-{n:'米饭 + 豆腐 + 青菜',need:['rice','tofu','lettuce'],kc:420,pr:24,
+{n:'米饭 + 豆腐 + 青菜',need:['rice','tofu','lettuce'],kc:420,pr:24,fire:1,
  how:'<b>半碗</b>饭 + 豆腐 + 水煮青菜（不加油，出锅再调味）。'},
-{n:'火腿生菜卷',need:['ham','lettuce'],kc:200,pr:14,
+{n:'火腿生菜卷',need:['ham','lettuce'],kc:200,pr:14,fire:0,
  how:'火腿 <b>只吃 1 根</b>，生菜卷着吃。钠太高，吃两根明天必水肿。'},
-{n:'辣椒炒蛋 + 凉拌生菜',need:['egg','pepper','lettuce'],kc:320,pr:25,
+{n:'辣椒炒蛋 + 凉拌生菜',need:['egg','pepper','lettuce'],kc:320,pr:25,fire:1,
  how:'3 蛋炒辣椒（少油）+ 生菜凉拌。你 15 点那顿的升级版。'},
-{n:'红薯 + 水煮蛋 + 西红柿',need:['sweetpotato','egg','tomato'],kc:280,pr:16,
+{n:'红薯 + 水煮蛋 + 西红柿',need:['sweetpotato','egg','tomato'],kc:280,pr:16,fire:1,
  how:'红薯当主食，配 2 个蛋 + 西红柿。适合加餐或晚餐。'},
-{n:'白菜豆腐汤',need:['cabbage','tofu'],kc:180,pr:18,
+{n:'白菜豆腐汤',need:['cabbage','tofu'],kc:180,pr:18,fire:1,
  how:'白菜煮软加豆腐，出锅调味。热乎、便宜、蛋白质够。'},
-{n:'土豆炖鸡胸',need:['potato','chicken'],kc:380,pr:42,
+{n:'土豆炖鸡胸',need:['potato','chicken'],kc:380,pr:42,fire:1,
  how:'鸡胸 150g + 土豆块，少油煎一下再加水炖。蛋白质最高的一顿。'},
-{n:'全麦面包 + 煎蛋',need:['bread','egg'],kc:280,pr:18,
+{n:'全麦面包 + 煎蛋',need:['bread','egg'],kc:280,pr:18,fire:1,
  how:'不粘锅无油煎蛋，配 2 片全麦面包。适合赶时间的早餐。'},
-{n:'豆浆 + 水煮蛋',need:['soy','egg'],kc:220,pr:20,
+{n:'豆浆 + 水煮蛋',need:['soy','egg'],kc:220,pr:20,fire:0,
  how:'无糖豆浆 300ml + 2 个水煮蛋。最便宜的早餐组合。'},
-{n:'西兰花炒鸡胸',need:['broccoli','chicken'],kc:300,pr:42,
+{n:'西兰花炒鸡胸',need:['broccoli','chicken'],kc:300,pr:42,fire:1,
  how:'西兰花焯水，鸡胸少油快炒。<b>少油</b>是关键。'},
-{n:'牛奶 + 红薯',need:['milk','sweetpotato'],kc:260,pr:10,
+{n:'牛奶 + 红薯',need:['milk','sweetpotato'],kc:260,pr:10,fire:0,
  how:'红薯 + 250ml 牛奶。<b>蛋白质偏低，记得配 2 个蛋</b>。'},
-{n:'凉拌黄瓜豆腐',need:['cucumber','tofu'],kc:190,pr:18,
+{n:'凉拌黄瓜豆腐',need:['cucumber','tofu'],kc:190,pr:18,fire:0,
  how:'黄瓜拍碎 + 豆腐，醋 + 生抽 + 蒜，不加油。'},
-{n:'西红柿鸡蛋面（少油）',need:['noodle','tomato','egg'],kc:420,pr:20,
- how:'面条<b>只放一半</b>，西红柿炒软煮汤，加 2 个蛋。<b>别煮纯光面</b>。'}
+{n:'西红柿鸡蛋面（少油）',need:['noodle','tomato','egg'],kc:420,pr:20,fire:1,
+ how:'面条<b>只放一半</b>，西红柿炒软煮汤，加 2 个蛋。<b>别煮纯光面</b>。'},
+{n:'即食鸡胸 + 黄瓜',need:['chicken','cucumber'],kc:200,pr:30,fire:0,
+ how:'即食鸡胸 1 袋撕开 + 黄瓜拍碎。<b>免烹饪</b>，在公司最省事的一顿。'},
+{n:'即食鸡胸 + 生菜西红柿',need:['chicken','lettuce','tomato'],kc:210,pr:30,fire:0,
+ how:'即食鸡胸 + 生菜西红柿撕块拌匀，醋 + 生抽。<b>免开火</b>、蛋白高。'},
+{n:'牛奶 + 全麦面包',need:['milk','bread'],kc:280,pr:15,fire:0,
+ how:'牛奶 250ml + 全麦面包 2 片。<b>不用开火</b>，适合赶时间或在公司。'},
+{n:'豆浆 + 全麦面包',need:['soy','bread'],kc:260,pr:14,fire:0,
+ how:'无糖豆浆 300ml + 全麦面包 2 片。免开火，饱腹感够。'},
+{n:'火腿 + 牛奶',need:['ham','milk'],kc:230,pr:16,fire:0,
+ how:'火腿 1 根 + 牛奶 250ml。<b>应急用</b>，钠偏高，别当主力。'}
 ];
 function foodName(k){
   var all=PROTEIN.concat(CARB,VEG);
@@ -2146,10 +2216,15 @@ function renderMeals(){
       '<span class="savecb" data-slot="'+s.k+'">存套餐</span></div>';
     list.forEach(function(o){
       var srcTag=o.m.src==='out'?'<span class="srctag out">外采</span>':'';
+      /* v13e：做法不再逐行摊开（"蒸/煮/水煮/生食"太长会把行撑成两行）。
+         收进 title/aria，视觉上只留「食物名 · 克数」。 */
       html+='<div class="dswipe" data-del="'+o.i+'">'+
         '<div class="dsw-bg"><span>删除</span></div>'+
-        '<div class="kv dsw-fg"><span>'+srcTag+o.m.n+' · '+o.m.g+'g · '+o.m.cook+'</span>'+
-        '<b>'+o.m.k+' kcal / 蛋白 '+o.m.p+'g</b></div></div>';
+        '<div class="mrow dsw-fg" title="'+escHtml(o.m.cook)+'" aria-label="'+escHtml(o.m.n)+'，'+o.m.g+'克，'+escHtml(o.m.cook)+'，'+o.m.k+'千卡，蛋白'+o.m.p+'克">'+
+          '<span class="mring" style="--p:'+Math.min(100,Math.round(o.m.k/EAT_TG.k*100*3))+'" role="img" aria-label="'+o.m.k+' 千卡"><span>'+o.m.k+'</span></span>'+
+          '<span class="mmain"><span class="mline">'+srcTag+'<b>'+escHtml(o.m.n)+'</b></span>'+
+            '<span class="msub">'+o.m.g+'g · 蛋白 '+o.m.p+'g</span></span>'+
+        '</div></div>';
     });
     html+='</div>';
   });
@@ -2224,9 +2299,9 @@ function load(){
   try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.records)DB=o;}}catch(e){}
   if(!DB.records)DB.records={};
   if(!DB.girth)DB.girth={};
-  if(!DB.pantry)DB.pantry={};          /* v13c：改为对象 {k:数量} */
-  migratePantry();                     /* v13c：旧数组 → 对象，只跑一次 */
+  if(!DB.pantry)DB.pantry={};          /* v13c：改为对象 {k:数量} */  migratePantry();                     /* v13c：旧数组 → 对象，只跑一次 */
   if(DB.vacation==null)DB.vacation=false;
+  if(DB.canCook==null)DB.canCook=false;   /* v13e：能不能开火做饭（默认否，在公司） */
   if(!DB.meals)DB.meals={};
   if(DB.whispers===undefined)DB.whispers=[];
   if(!DB.myFoods)DB.myFoods=[];   /* v9 A12：自定义食物 */
@@ -2642,10 +2717,14 @@ function renderAutoPlan(){
       '</div>';
     return;
   }
-  /* 按蛋白目标贪心挑，同一样菜不重复 */
+  /* 按蛋白目标贪心挑，同一样菜不重复。
+     v13e：能不能开火决定候选池 —— 关（默认，在公司）只挑 fire=0 的免烹饪；
+     开（在家/能做饭）才把炒菜汤羹放进来。 */
+  var canCook=!!DB.canCook;
+  var pool0=MEALS.filter(function(m){return canCook||!m.fire;});
   var used={},rows=[],cum=0;
   SLOT_TARGET.forEach(function(s){
-    var pool=MEALS.filter(function(m){
+    var pool=pool0.filter(function(m){
       return !used[m.n]&&m.need.every(function(n){return pq(n)>0;});
     });
     var pick=null,gap=s.pr-cum;
@@ -2663,7 +2742,8 @@ function renderAutoPlan(){
       used[pick.n]=1;cum+=pick.pr;
       rows.push({slot:s,pick:pick,ok:true});
     }else{
-      var near=MEALS.map(function(m){
+      /* 找「差一样就解锁」的，同样只在当前候选池里找 */
+      var near=pool0.map(function(m){
         var miss=m.need.filter(function(n){return pq(n)<=0;});
         return {m:m,miss:miss};
       }).filter(function(o){return o.miss.length===1;})
@@ -2674,7 +2754,8 @@ function renderAutoPlan(){
   var done=rows.filter(function(r){return r.ok;});
   var short=rows.filter(function(r){return !r.ok;});
   var h='<div class="ap-head"><b>按你冰箱里的 '+have.length+' 样排的</b>'+
-    '<span class="muted">鸡蛋存量 '+pq('egg')+' 个 · 覆盖 '+done.length+'/'+rows.length+' 餐</span></div>';
+    '<span class="muted">'+(canCook?'能开火 · 含炒煮蒸':'免开火 · 在公司也能吃')+
+    ' · 覆盖 '+done.length+'/'+rows.length+' 餐</span></div>';
   h+='<table><tr><th>时间</th><th>吃什么</th><th class="num">蛋白</th></tr>';
   rows.forEach(function(r){
     var s=r.slot;
@@ -3620,6 +3701,7 @@ function renderMe(){
   $('kBMR').textContent=Math.round(bmr)+' kcal';
   $('kTDEE').textContent=Math.round(bmr*1.2)+' kcal';
   $('swVac').checked=!!DB.vacation;
+  if($('swCook'))$('swCook').checked=!!DB.canCook;
   // 今日多言：从 DB.whispers 取最新一条（结构化渲染）
   var wArr=Array.isArray(DB.whispers)?DB.whispers:[];
   var w=wArr.length?wArr[wArr.length-1]:null;
@@ -3946,13 +4028,21 @@ function bind(){
         if(moved)host._swT=Date.now();
         row=null;
       },{passive:true});
-      /* 已划开时点右侧 = 删除；点其它地方 = 收回去 */
+      /* v13e 修正：划开后露出的红色区域是 .dsw-bg，点击目标是它而不是 .dsw-fg，
+         老逻辑 closest('.dsw-fg') 取 null → 点「删除」两个字删不掉。
+         改为先定位整行 .dswipe，再按点的部位分派：
+           点红色区 = 删除 / 点卡片本体 = 收起（iOS 标准，避免误删） */
       host.addEventListener('click',function(e){
         if(Date.now()-(host._swT||0)<320)return;
-        var fg=e.target.closest?e.target.closest('.dsw-fg'):null;
-        if(!fg)return;
-        if(fg.classList.contains('sw-open')){
-          doDelete(EAT_D,parseInt(fg.parentNode.dataset.del,10));
+        var t=e.target;if(!t||!t.closest)return;
+        var wrap=t.closest('.dswipe');if(!wrap)return;
+        var fg=wrap.querySelector('.dsw-fg');
+        if(!fg||!fg.classList.contains('sw-open'))return;
+        if(t.closest('.dsw-bg')){
+          doDelete(EAT_D,parseInt(wrap.dataset.del,10));
+        }else{
+          fg.classList.add('sw-snap');fg.classList.remove('sw-open');
+          setTimeout(function(){fg.classList.remove('sw-snap');},200);
         }
       });
     })();
@@ -3994,6 +4084,14 @@ function bind(){
     haptic(this.checked?'success':'light');
     toast(this.checked?'🛡️ 假期模式开启 · 连胜已护住，只保「称重 + 喝水」两条底线':'假期模式关闭 · 恢复完整清单');
   };
+  /* v13e：「能做饭」开关 —— 控制自动配餐是否排开火的菜 */
+  if($('swCook')){
+    $('swCook').onchange=function(){
+      DB.canCook=this.checked;save();renderAutoPlan();
+      haptic(this.checked?'success':'light');
+      toast(this.checked?'🍳 能做饭：配餐已加入炒/煮/蒸的菜':'🏢 不能开火：只排免烹饪的（水煮蛋 / 即食鸡胸 / 凉拌 / 牛奶）');
+    };
+  }
   if($('swFB')){
     $('swFB').checked=FB_ON;
     $('fbLbl').textContent=FB_ON?'开':'关';
