@@ -82,10 +82,14 @@
 :root{
   /* ---- 海拔层：靠明度差产生层级，不靠阴影 ---- */
   /* v10：暖夜 + 琥珀（UI 专家提案 C 案：#15120E 底 + #FFB020 强调） */
-  --bg:#14110D;    --bg2:#1D1813;
-  --card:#221C15;  --card2:#2B241A;  --card3:#3A2F22;
+  /* v13：底再压暗半档（#14110D→#100D0A），对比 16.22→17.4:1，质感更接近「深空」 */
+  /* v13b：卡片回提一档（v13 的 #1E1913 偏「沉」，浮起感不足）——
+     底不变，只把上层抬亮，卡片 vs 底 的明度差从 +14 拉到 +20，层级更「通透」 */
+  --bg:#100D0A;    --bg2:#181410;
+  /* card3 不能跟着抬太亮：它是「最内层」，--sub 打上去要守住 AA（#3E3325 只有 4.28:1） */
+  --card:#241E17;  --card2:#2E271C;  --card3:#362C20;
   /* ---- 文字 ---- */
-  --text:#F5EDE2;  --text2:#CFC0AC;  --sub:#A6967F;  --line:#3A3026;
+  --text:#F5EDE2;  --text2:#CFC0AC;  --sub:#A6967F;  --line:#3E332A;
   /* ---- 主强调：琥珀（唯一主角） ---- */
   --brand:#FFB020; --brand2:#FFC451; --brand3:#D98F14;
   --brand-soft:rgba(255,176,32,.13); --brand-soft2:rgba(255,176,32,.24);
@@ -289,6 +293,11 @@ header .inner{max-width:560px;margin:0 auto}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-1);-webkit-tap-highlight-color:transparent}
 .hero .qbar button:active{background:var(--card3);transform:scale(.96)}
 .hero .qbar em{font-style:normal;font-size:var(--fs-xl);line-height:1;margin-bottom:1px}
+/* v12：快捷条图标改用内联 SVG —— emoji 依赖系统字体（部分机型/WebView 渲染成方框），
+   SVG 走同一套 stroke 语言，不依赖字体，任何设备都稳。 */
+.hero .qbar em svg{width:20px;height:20px;display:block;fill:none;stroke:var(--brand);stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.hero .qbar button:active em svg{stroke:var(--brand-text)}
 .hero .qbar b{font-size:var(--fs-md);font-weight:600;line-height:1.25;color:var(--text)}
 .hero .qbar small{font-size:var(--fs-xs);color:var(--sub);line-height:1.25}
 /* v11：旧类保留兼容，取值全部改指 token —— 原 .bar 圆角 4px 是笔误，已统一为全圆 */
@@ -795,7 +804,9 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 /* v11 修复：hero 卡的文字色改为配套变量 --brand-dim-fg，
    不再用 var(--text)（它会随主题变深变浅，但背景明度是固定的 → 必然有一边看不清） */
 .wc-hero{background:var(--brand-dim);color:var(--brand-dim-fg);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;border:1px solid color-mix(in srgb,var(--brand-dim-fg) 16%,transparent)}
-.wc-kicker{font-size:var(--fs-sm);font-weight:600;color:var(--brand-dim-fg);opacity:.78;letter-spacing:.4px;margin-bottom:9px}
+/* v12 修复对比度：原 opacity:.78 把 --brand-dim-fg 从 5.38:1 压到 3.96:1（低于 AA）。
+   去掉 opacity 衰减，改用不透明的次级色，保住「比标题弱一档」的层级又不再牺牲可读性。 */
+.wc-kicker{font-size:var(--fs-sm);font-weight:600;color:var(--brand-dim-fg);letter-spacing:.4px;margin-bottom:9px;opacity:.94}
 .wc-title{font-size:var(--fs-xl);font-weight:800;line-height:1.35;letter-spacing:.2px}
 .wc-sub{font-size:var(--fs-md);line-height:1.7;margin-top:6px;opacity:.96}
 .wc-sec{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:8px}
@@ -836,8 +847,14 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 .vac-sw .vl{font-size:var(--fs-sm);color:var(--sub);font-weight:600}
 .vac-sw input:checked ~ .vl{color:var(--warn-text)}
 /* v9 C1：连胜徽章 */
-.streak{display:inline-flex;align-items:center;gap:var(--sp-1);margin-left:8px;padding:2px 8px;border-radius:var(--r-full);
+.streak{display:inline-flex;align-items:center;gap:var(--sp-1);margin-left:8px;padding:2px 7px;border-radius:var(--r-full);
   background:var(--brand-soft);color:var(--brand-text);font-size:var(--fs-sm);font-weight:700;white-space:nowrap}
+/* v12：紧凑档 —— 标题栏同时挂 假期/连胜/第N天 时用，省下 20px 横向空间
+   图标走内联 SVG，不依赖 emoji 字体 */
+.streak.compact{margin-left:4px;padding:3px 7px;letter-spacing:0;gap:3px}
+.streak svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.streak b{font-weight:700;font-variant-numeric:tabular-nums}
 /* v10 修复撞色：大连胜徽章不再拿图形色当文字色 */
 .streak.big{background:var(--brand-soft2);color:var(--brand-text)}
 .streak.shield{background:var(--warn-soft);color:var(--warn-text)}
@@ -884,6 +901,127 @@ body.kb #a2hs{display:none}
   outline:none;box-shadow:var(--ring)}
 @media(prefers-reduced-motion:reduce){.todo .item,.chip,.cup{transition-duration:.01ms}}
 
+/* ============================================================
+   v13 · TOP ONE（今天最重要的一件事）+ 每晚三档复盘
+   设计来源：借鉴 RESET（chongqi30.site）的 top-one-card / night-review
+   原则：只借「形式」，不碰配色体系、不加量表与游戏化
+   ============================================================ */
+
+/* ---- kicker：全大写小字母分区标签（借鉴 RESET 的 10px / 0.22em）---- */
+.kicker{
+  font-family:var(--num-font);
+  font-size:var(--fs-xs);font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brand-text);margin:0 0 var(--sp-2);line-height:1;
+}
+.kicker.dim{color:var(--sub)}
+
+/* ---- TOP ONE 卡：唯一带强调的「今日指令」 ---- */
+.topone{
+  border:1px solid var(--brand-soft2);
+  background:linear-gradient(180deg,var(--brand-soft) 0%,transparent 62%),var(--card);
+}
+.topone .to-head{margin-bottom:var(--sp-3)}
+.topone .to-h{
+  font-size:var(--fs-xl);font-weight:800;line-height:1.3;letter-spacing:-.2px;
+  margin:0;color:var(--text);
+}
+
+/* —— 未填写 —— */
+.topone .to-input-wrap{display:flex;gap:var(--sp-2);align-items:stretch}
+.topone input[type=text]{
+  flex:1;min-width:0;height:var(--h-lg);padding:0 var(--sp-3);
+  background:var(--card2);border:1px solid var(--line);border-radius:var(--r-sm);
+  color:var(--text);font:inherit;font-size:var(--fs-lg);
+}
+.topone input[type=text]::placeholder{color:var(--sub)}
+.topone input[type=text]:focus{outline:none;border-color:var(--brand);box-shadow:var(--ring)}
+.topone .to-set{
+  flex:none;width:var(--h-lg);height:var(--h-lg);border-radius:var(--r-sm);
+  border:none;background:var(--brand);color:var(--on-brand);
+  font-size:var(--fs-xl);font-weight:800;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.topone .to-hint{font-size:var(--fs-sm);color:var(--sub);margin:var(--sp-2) 0 0}
+
+/* —— 已填写 —— */
+.topone .to-body{display:flex;gap:var(--sp-3);align-items:flex-start}
+.topone .to-check{
+  flex:none;width:30px;height:30px;margin-top:1px;
+  border-radius:var(--r-full);border:2px solid var(--brand);
+  background:transparent;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.topone .to-check svg{
+  width:16px;height:16px;fill:none;stroke:var(--on-brand);
+  stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  opacity:0;transition:opacity var(--dur-fast);
+}
+.topone.done .to-check{background:var(--brand)}
+.topone.done .to-check svg{opacity:1}
+.topone .to-text{
+  flex:1;min-width:0;font-size:var(--fs-lg);font-weight:600;line-height:1.45;
+  color:var(--text);word-break:break-word;cursor:pointer;
+}
+.topone.done .to-text{color:var(--sub);text-decoration:line-through;text-decoration-thickness:1.5px}
+.topone .to-meta{
+  display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3);
+  margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line);
+  font-size:var(--fs-sm);color:var(--sub);min-height:22px;
+}
+.topone .to-meta b{color:var(--brand-text);font-variant-numeric:tabular-nums}
+.topone .to-edit{
+  background:none;border:none;padding:var(--sp-1) 0;
+  color:var(--sub);font:inherit;font-size:var(--fs-sm);text-decoration:underline;
+  text-underline-offset:3px;cursor:pointer;
+}
+/* 有连续天数时，天数靠左、改靠右；没有时只留「改」，整行右对齐 */
+.topone .to-streak{margin-right:auto}
+.topone .to-streak{display:inline-flex;align-items:center;gap:3px;margin-right:auto}
+.topone .to-streak svg{
+  width:13px;height:13px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- 已完成：降噪（不再抢 hero 的戏） ---- */
+.topone.done{border-color:var(--line);background:var(--card)}
+.topone.done .kicker{color:var(--sub)}
+
+/* ---- 每晚三档复盘 ---- */
+.night{margin-top:var(--sp-4);padding-top:var(--sp-4);border-top:1px solid var(--line)}
+.night .nr-q{font-size:var(--fs-lg);font-weight:700;margin:0 0 var(--sp-3);color:var(--text)}
+.mood{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)}
+.mood button{
+  height:var(--hit);border-radius:var(--r-sm);border:1px solid var(--line);
+  background:var(--card2);color:var(--text2);font:inherit;font-size:var(--fs-md);font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:background var(--dur-fast),border-color var(--dur-fast),color var(--dur-fast);
+}
+.mood button:active{transform:scale(.97)}
+.mood button:focus-visible{outline:none;box-shadow:var(--ring)}
+.mood button.on{background:var(--brand-soft2);border-color:var(--brand);color:var(--brand-text);font-weight:700}
+.mood .dot{width:7px;height:7px;border-radius:var(--r-full);flex:none;background:currentColor;opacity:.55}
+.mood button.on .dot{opacity:1}
+.night .nr-note{
+  width:100%;box-sizing:border-box;margin-top:var(--sp-3);min-height:56px;resize:vertical;
+  background:var(--card2);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:var(--sp-3);color:var(--text);font:inherit;font-size:var(--fs-md);line-height:1.5;
+}
+.night .nr-note::placeholder{color:var(--sub)}
+.night .nr-note:focus{outline:none;border-color:var(--brand);box-shadow:var(--ring)}
+.night .nr-past{
+  margin-top:var(--sp-3);padding:var(--sp-3);
+  background:var(--card2);border-radius:var(--r-sm);
+  font-size:var(--fs-sm);color:var(--sub);line-height:1.5;
+}
+.night .nr-past b{color:var(--text2)}
+
+/* v13 无障碍：TOP ONE / 复盘 的可点元素补触摸与键盘反馈 */
+.topone .to-check:focus-visible,.topone .to-edit:focus-visible,.topone .to-text:focus-visible{
+  outline:none;box-shadow:var(--ring);border-radius:var(--r-xs)}
+@media(prefers-reduced-motion:reduce){
+  .topone .to-check svg,.mood button{transition-duration:.01ms}
+  .mood button:active{transform:none}
+}
+
 </style>
 </head>
 <body data-page-node-id="jNblIOfsveXpJj6K3aLSVn">
@@ -901,8 +1039,7 @@ body.kb #a2hs{display:none}
           <span class="tr" data-page-node-id="1MRVNVmuTFXNxY3Ttfbfli"><i data-page-node-id="EZRPRjjiDQsgyQz5EIIaq0"></i></span>
           <span class="vl" id="vacLbl" data-page-node-id="DR8B7kA6Eg7iUXrpCkVtAd">假期</span>
         </label>
-        <span class="streak" id="hdrStreak" style="display:none" data-page-node-id="k0oHCrC8ErFKANejESaYwW">🔥 0 天</span>
-        <span class="pill" id="hdrDay" data-page-node-id="ocQTyMIo1ZSJFmSmvaPUuQ">—</span>
+        <span class="streak" id="hdrStreak" style="display:none" data-page-node-id="k0oHCrC8ErFKANejESaYwW">🔥 0 天</span>        <span class="pill" id="hdrDay" data-page-node-id="ocQTyMIo1ZSJFmSmvaPUuQ">—</span>
       </div>
     </div>
     <div class="subline" id="hdrSub" data-page-node-id="lFJ5BarKb0NLbTYJ6cAWpy">—</div>
@@ -924,13 +1061,32 @@ body.kb #a2hs{display:none}
     </div>
     <!-- 常驻快捷条：每天重复最多次的三个动作，不用滚屏也能点到 -->
     <div class="qbar" data-page-node-id="7d5nBuiwOEHAF1U7hqDE39">
-      <button type="button" id="qbWater" data-page-node-id="M6dU1q0ORMOckT9GXsWgGk"><em data-page-node-id="CH3qtcEQHlStX02ur7fNj2">💧</em><b data-page-node-id="LXEtiipLlOfvvvn1PtlMmH">喝水 +1</b><small id="qbWaterTxt" data-page-node-id="KoUMzEOaeakZQu6D4Cfe4o">0/8 杯</small></button>
-      <button type="button" id="qbWeigh" data-page-node-id="8T0jJ7w9d5276YlheIWkqV"><em data-page-node-id="wgCIpBVUX14Z3xRkqv06Cg">⚖️</em><b data-page-node-id="ml5aLrsl3J7oSD8oK3AzcD">记体重</b><small data-page-node-id="noyd10WVH4NqmsozIuSvhZ">跳到输入框</small></button>
-      <button type="button" id="qbEat" data-page-node-id="qHme7OjzkfGo5IQPEgIU76"><em data-page-node-id="m1P4Fyz0NNdHW3yfZAhLSW">🍽️</em><b data-page-node-id="uO95Ecl8rx0Yc45Xx3x47i">记一笔</b><small data-page-node-id="TaAO10cQGwTppBCW84GC66">打开选择</small></button>
+      <button type="button" id="qbWater" data-page-node-id="M6dU1q0ORMOckT9GXsWgGk"><em data-page-node-id="CH3qtcEQHlStX02ur7fNj2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c3.4 3.9 6 7.1 6 10.2a6 6 0 0 1-12 0c0-3.1 2.6-6.3 6-10.2z"/></svg></em><b data-page-node-id="LXEtiipLlOfvvvn1PtlMmH">喝水 +1</b><small id="qbWaterTxt" data-page-node-id="KoUMzEOaeakZQu6D4Cfe4o">0/8 杯</small></button>
+      <button type="button" id="qbWeigh" data-page-node-id="8T0jJ7w9d5276YlheIWkqV"><em data-page-node-id="wgCIpBVUX14Z3xRkqv06Cg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 12.5 15.4 9"/></svg></em><b data-page-node-id="ml5aLrsl3J7oSD8oK3AzcD">记体重</b><small data-page-node-id="noyd10WVH4NqmsozIuSvhZ">跳到输入框</small></button>
+      <button type="button" id="qbEat" data-page-node-id="qHme7OjzkfGo5IQPEgIU76"><em data-page-node-id="m1P4Fyz0NNdHW3yfZAhLSW"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v7a2 2 0 0 0 4 0V3M8 10v11"/><path d="M16 3c2.2 0 3.5 1.6 3.5 3.6S18.2 9 16 9v12"/></svg></em><b data-page-node-id="uO95Ecl8rx0Yc45Xx3x47i">记一笔</b><small data-page-node-id="TaAO10cQGwTppBCW84GC66">打开选择</small></button>
     </div>
   </div>
 
   <div id="staleTip" data-page-node-id="UvcTDaXQRGCSnuCKOaUdxo"></div>
+
+  <!-- v13 · TOP ONE + 每晚三档复盘（借鉴 RESET 的形式，配色/布局沿用暖夜琥珀） -->
+  <div class="card topone" id="topOneCard">
+    <div class="to-head">
+      <p class="kicker">Today · Top One</p>
+      <h2 class="to-h" id="toH">今天最重要的一件事是什么？</h2>
+    </div>
+    <div id="topOneBody"></div>
+    <div class="night" id="nightRow">
+      <p class="kicker dim">Night Review · 今晚状态</p>
+      <p class="nr-q" id="nrQ">今天整体感觉怎么样？</p>
+      <div class="mood" id="nrMood">
+        <button type="button" data-m="1"><span class="dot"></span>有点乱</button>
+        <button type="button" data-m="2"><span class="dot"></span>还可以</button>
+        <button type="button" data-m="3"><span class="dot"></span>状态好</button>
+      </div>
+      <textarea class="nr-note" id="nrNote" rows="2" maxlength="200" placeholder="一句话记下今天（可留空）"></textarea>
+    </div>
+  </div>
 
   <div class="card foldable peek fold" data-page-node-id="m2z7QiEAXUQe1TbDkYtzjw">
     <h2 data-page-node-id="JmrqIukAwmGMoqA6vghVkt">今天要叮嘱你的 <span class="tag" data-page-node-id="f3bzcFQXasmqaMcYHnIjgM">按你的数据实时生成</span></h2>
@@ -2021,6 +2177,11 @@ function rec(d){
   if(!r.hb)r.hb={};
   if(r.water==null)r.water=0;
   if(r.workout==null)r.workout=false;
+  /* v13：TOP ONE + 每晚复盘（缺省不写，保持旧记录 JSON 干净） */
+  if(r.top==null)r.top='';
+  if(r.topDone==null)r.topDone=false;
+  if(r.mood==null)r.mood=0;
+  if(r.rv==null)r.rv='';
   return r;
 }
 function allDates(){return Object.keys(DB.records).sort();}
@@ -2030,7 +2191,7 @@ function startWeight(){var ds=wDates();return ds.length?parseFloat(DB.records[ds
 
 /* ================= 渲染 ================= */
 function render(){
-  renderHeader();renderHero();renderStaleTip();renderPants();renderGirth();renderTodo();renderHabits();renderCups();renderRedlines();renderWorkout();
+  renderHeader();renderHero();renderStaleTip();renderTopOne();renderNight();renderPants();renderGirth();renderTodo();renderHabits();renderCups();renderRedlines();renderWorkout();
   renderCoach();renderChart();renderGChart();renderWeek();renderRL();renderHist();renderMoves();renderPantry();renderMe();renderMeals();renderWeekStrip();renderScore();renderBadge();
   renderBackupTip();
   updQuickBar();
@@ -2066,6 +2227,156 @@ function initQuickBar(){
     setTimeout(function(){var b=$('btnEatOpen'); if(b)b.click();},260);
   };
   updQuickBar();
+}
+
+/* ============================================================
+   v13 · TOP ONE + 每晚三档复盘
+   借鉴 RESET 的 top-one-card / night-review 形式：
+     · 每天只聚焦一件最重要的事，完成后有专属状态
+     · 每晚 3 档感受（有点乱 / 还可以 / 状态好）+ 一句话
+   数据落在 rec(d)：top / topDone / mood(0-3) / rv
+   ============================================================ */
+function topStreak(){
+  /* 连续几天设定了 TOP ONE（含今天，可含未完成的昨天）——只回看 30 天，够了 */
+  var n=0,d=new Date();
+  for(var i=0;i<30;i++){
+    var s=fmt(d);
+    var r=DB.records[s];
+    if(r&&r.top){n++;}
+    else if(i>0){break;}   /* i=0（今天）还没设，不算断，继续回看 */
+    else{/* 今天没设，继续往昨天找 */}
+    d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+function renderTopOne(){
+  var card=$('topOneCard');if(!card)return;
+  var t=todayStr(),r=rec(t);
+  var body=$('topOneBody');if(!body)return;
+
+  if(!r.top){
+    card.classList.remove('done');
+    $('toH').textContent='今天最重要的一件事是什么？';
+    body.innerHTML=
+      '<div class="to-input-wrap">'+
+        '<input type="text" id="toInput" maxlength="40" placeholder="只写一件，写完就别改" '+
+          'autocomplete="off" enterkeyhint="done" aria-label="今天最重要的一件事">'+
+        '<button type="button" class="to-set" id="toSet" aria-label="设定">→</button>'+
+      '</div>'+
+      '<p class="to-hint">一次只填一件。填完它就常驻在这儿，直到你勾掉。</p>';
+    setUpTopOneHandlers();
+    return;
+  }
+
+  var st=topStreak();
+  card.classList.toggle('done',!!r.topDone);
+  $('toH').textContent=r.topDone?'今天这件事已经拿下':'今天，先把这件事做完';
+  body.innerHTML=
+    '<div class="to-body">'+
+      '<button type="button" class="to-check" id="toCheck" role="checkbox" '+
+        'aria-checked="'+(r.topDone?'true':'false')+'" aria-label="标记完成">'+
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>'+
+      '</button>'+
+      '<div class="to-text" id="toText" role="button" tabindex="0">'+escHtml(r.top)+'</div>'+
+    '</div>'+
+    '<div class="to-meta">'+
+      (st>1?('<span class="to-streak">'+
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c.6 3.3-1.2 4.6-2.6 6.1C8 10.6 7 11.9 7 14a5 5 0 0 0 10 0c0-2.3-1.2-3.7-2.2-5.2-.9-1.4-.6-3.3-2.8-5.8z"/></svg>'+
+        '连续 <b>'+st+'</b> 天</span>'):'')+
+      '<button type="button" class="to-edit" id="toEdit">改</button>'+
+    '</div>';
+  setUpTopOneHandlers();
+}
+function setUpTopOneHandlers(){
+  var t=todayStr();
+  var inp=$('toInput');
+  if(inp){
+    var commit=function(){
+      var v=(inp.value||'').trim();
+      if(!v){toast('先写点什么再定');return;}
+      var r=rec(t);r.top=v.slice(0,40);r.topDone=false;save();haptic('success');renderTopOne();
+      toast('今天的第一件事已锁定');
+    };
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();commit();}});
+    var b=$('toSet');if(b)b.onclick=commit;
+    return;
+  }
+  var ck=$('toCheck');
+  if(ck)ck.onclick=function(){
+    var r=rec(t);r.topDone=!r.topDone;save();
+    haptic(r.topDone?'success':'light');
+    if(r.topDone){beep(880,0.1,0.05);setTimeout(function(){beep(1174,0.12,0.045);},95);toast('拿下 · '+r.top);}
+    renderTopOne();renderScore();renderBadge();
+  };
+  var ed=$('toEdit');
+  if(ed)ed.onclick=function(){
+    var r=rec(t);r.top='';r.topDone=false;save();renderTopOne();
+    setTimeout(function(){var i=$('toInput');if(i)i.focus();},60);
+  };
+  var tx=$('toText');
+  if(tx){
+    tx.onclick=function(){var b=$('toCheck');if(b)b.click();};
+    tx.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();var b=$('toCheck');if(b)b.click();}
+    });
+  }
+}
+/* ---- 每晚三档复盘 ---- */
+function renderNight(){
+  var t=todayStr(),r=rec(t);
+  var wrap=$('nightRow');if(!wrap)return;
+
+  /* 还没到晚上（20 点前）且今天没记过 → 弱化，避免白天被追问 */
+  var h=new Date().getHours();
+  var show=(h>=20)||!!r.mood;
+  wrap.style.display=show?'':'none';
+  if(!show)return;
+
+  var mb=$('nrMood');
+  if(mb){
+    [].forEach.call(mb.querySelectorAll('button'),function(b){
+      var on=String(r.mood)===b.getAttribute('data-m');
+      b.classList.toggle('on',on);
+      b.setAttribute('aria-pressed',on?'true':'false');
+      b.onclick=function(){
+        var v=parseInt(b.getAttribute('data-m'),10);
+        var rr=rec(t);rr.mood=(rr.mood===v?0:v);save();
+        haptic('select');beep(660,0.06,0.035);
+        renderNight();
+      };
+    });
+  }
+  var nt=$('nrNote');
+  if(nt&&nt.value!==r.rv)nt.value=r.rv||'';
+
+  /* 昨日回顾：只在今天写下东西后展示，不打扰 */
+  var y=new Date();y.setDate(y.getDate()-1);
+  var ys=fmt(y),yr=DB.records[ys];
+  var old=$('nrPast');
+  if(yr&&(yr.mood||yr.rv)){
+    var word={1:'有点乱',2:'还可以',3:'状态好'}[yr.mood]||'未记';
+    var html='昨晚 <b>'+word+'</b>'+(yr.rv?' · '+escHtml(yr.rv):'')+
+      (yr.top?('　｜　当天 TOP ONE：'+escHtml(yr.top)+(yr.topDone?' ✅':' ✗')):'');
+    if(!old){old=document.createElement('div');old.className='nr-past';old.id='nrPast';wrap.appendChild(old);}
+    old.innerHTML=html;
+  }else if(old){old.parentNode.removeChild(old);}
+}
+function initNight(){
+  var nt=$('nrNote');
+  if(nt){
+    var commit=function(){
+      var rr=rec(todayStr());
+      var v=(nt.value||'').trim();
+      if(rr.rv===v)return;
+      rr.rv=v;save();
+    };
+    nt.addEventListener('change',commit);
+    nt.addEventListener('blur',commit);
+  }
+  var mb=$('nrMood');
+  if(mb){[].forEach.call(mb.querySelectorAll('button'),function(b){
+    b.addEventListener('focus',function(){});
+  });}
 }
 
 /* ---- 食材与搭配 ---- */
@@ -2260,10 +2571,15 @@ function renderStreak(){
   var n=streakDays();
   if(n<=0){el.style.display='none';return;}
   el.style.display='inline-flex';
-  var cls='streak'+(n>=30?' big':(DB.vacation?' shield':''));
+  var cls='streak compact'+(n>=30?' big':(DB.vacation?' shield':''));
   el.className=cls;
-  el.textContent=(DB.vacation?'🛡️ ':'🔥 ')+n+' 天';
-  el.title=DB.vacation?'连胜护符生效中：假期期间不清零':'连续记录 '+n+' 天';
+  /* v12：标题栏三件套（假期/连胜/第N天）在 390px 下太挤 → 收成「图标+数字」短版；
+     图标改用内联 SVG（火焰/盾牌），不再依赖 emoji 字体，任何设备都不会出现方框。 */
+  var ico=DB.vacation
+    ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/></svg>'
+    : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c.6 3.3-1.2 4.6-2.6 6.1C8 10.6 7 11.9 7 14a5 5 0 0 0 10 0c0-2.3-1.2-3.7-2.2-5.2-.9-1.4-.6-3.3-2.8-5.8z"/><path d="M12 21a3.4 3.4 0 0 0 3.4-3.4c0-1.6-1-2.5-1.9-3.6-.5-.7-.6-1.4-1.5-2.4-.4 1.4-1.3 2-2 2.9-.7.8-1.4 1.7-1.4 3.1A3.4 3.4 0 0 0 12 21z"/></svg>';
+  el.innerHTML=ico+'<b>'+n+'</b>';
+  el.title=DB.vacation?'连胜护符生效中：假期期间不清零 · 连续 '+n+' 天':'连续记录 '+n+' 天';
 }
 function renderHeader(){
   var t=todayStr(),d=new Date();
@@ -3713,7 +4029,7 @@ function initPlanTabs(){
   apply();
 }
 
-initSplash();initOffline();initA2HS();initPlanTabs();initEatTabs();initQuickBar();
+initSplash();initOffline();initA2HS();initPlanTabs();initEatTabs();initQuickBar();initNight();
 /* 今日页叮嘱卡等 .foldable：点标题展开/收起
    v12 无障碍：这一组也补 role=button + aria-expanded + 键盘支持，
    与 initPlanTabs 内的 syncFoldAria 保持同一套语义。 */
