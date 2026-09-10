@@ -14,28 +14,31 @@
    ============================================================ */
 :root{
   /* ---- 海拔层：靠明度差产生层级，不靠阴影 ---- */
-  --bg:#0B1117;    --bg2:#111A23;
-  --card:#141F2A;  --card2:#1C2937;  --card3:#28394C;
+  /* v10：暖夜 + 琥珀（UI 专家提案 C 案：#15120E 底 + #FFB020 强调） */
+  --bg:#14110D;    --bg2:#1D1813;
+  --card:#221C15;  --card2:#2B241A;  --card3:#3A2F22;
   /* ---- 文字 ---- */
-  --text:#E9F2FA;  --text2:#B4C6D6;  --sub:#8FA5B8;  --line:#223142;
-  /* ---- 主强调：青柠薄荷（唯一主角） ---- */
-  --brand:#7DF9C0; --brand2:#5FE0AC; --brand3:#3FB98A;
-  --brand-soft:rgba(125,249,192,.12); --brand-soft2:rgba(125,249,192,.22);
-  --brand-dim:#2E6B54;
-  --brand-grad:#7DF9C0;
+  --text:#F5EDE2;  --text2:#CFC0AC;  --sub:#A6967F;  --line:#3A3026;
+  /* ---- 主强调：琥珀（唯一主角） ---- */
+  --brand:#FFB020; --brand2:#FFC451; --brand3:#D98F14;
+  --brand-soft:rgba(255,176,32,.13); --brand-soft2:rgba(255,176,32,.24);
+  --brand-dim:#8A5A0E;
+  --brand-grad:#FFB020;
   /* ---- 语义色（只用于数据，不用于装饰） ---- */
-  --ok:#37E0A0; --ok2:#5FE8B8; --ok-soft:rgba(55,224,160,.13);
-  --ok-grad:#37E0A0;
-  --warn:#FFB020; --warn2:#FFC85C; --warn-soft:rgba(255,176,32,.13);
-  --warn-grad:#FFB020;
+  --ok:#3FD68C; --ok2:#63E3A6; --ok-soft:rgba(63,214,140,.13);
+  --ok-grad:#3FD68C;
+  /* v10：warn 必须与琥珀品牌色拉开 —— 挪成深橙红，否则两者撞色分不清 */
+  --warn:#FF8A3D; --warn2:#FFA868; --warn-soft:rgba(255,138,61,.14);
+  --warn-grad:#FF8A3D;
   --danger:#FF5F56; --danger2:#FF8B84; --danger-soft:rgba(255,95,86,.13);
   --danger-grad:#FF5F56;
-  /* ---- 文字专用色：保证 WCAG AA（图形色太亮，做文字不达标） ---- */
-  --ok-text:#37E0A0; --warn-text:#FFB020; --danger-text:#FF7A70; --brand-text:#7DF9C0;
-  /* ---- 兼容旧变量名（橙色系退役，统一并入青柠） ---- */
-  --peach:#7DF9C0; --peach-soft:rgba(125,249,192,.12);
-  --accent:#7DF9C0; --accent2:#5FE0AC; --accent-soft:rgba(125,249,192,.12);
-  --accent-grad:#7DF9C0;
+  /* ---- 文字专用色：保证 WCAG AA（图形色太亮/太暗，做文字常不达标） ---- */
+  /* v10：全部按暖夜底重算，不再复用图形色 */
+  --ok-text:#5FE0A0; --warn-text:#FFAE6E; --danger-text:#FF8B84; --brand-text:#FFC65C;
+  /* ---- 兼容旧变量名（青柠/橙系退役，统一并入琥珀） ---- */
+  --peach:#FFB020; --peach-soft:rgba(255,176,32,.13);
+  --accent:#FFB020; --accent2:#FFC451; --accent-soft:rgba(255,176,32,.13);
+  --accent-grad:#FFB020;
   /* ---- 形状：圆角收一档（20→16 / 14→12） ---- */
   --radius:16px; --radius-sm:12px; --radius-xs:8px;
   --shadow:none;                                  /* 深色下阴影无效，层级改由明度差承担 */
@@ -50,27 +53,28 @@
 }
 /* 浅色主题：备用（白天户外）—— 深色为默认 */
 [data-theme=light]{
-  --bg:#F3F7FC;    --bg2:#E9F0F9;
-  --card:#FFFFFF;  --card2:#F1F6FC;  --card3:#E4EDF7;
-  --text:#152330;  --text2:#33475C;  --sub:#4E657C;  --line:#E2EBF5;
-  /* 浅色底上青柠不可读，强调色改用深青 */
-  --brand:#0E9F6E; --brand2:#12B886; --brand3:#3AD9A6;
-  --brand-soft:#E4FAF3; --brand-soft2:#C6F2E2;
-  --brand-dim:#0A7A57;
-  --brand-grad:#0E9F6E;
-  --ok:#0A9E70; --ok2:#12B886; --ok-soft:#E4FAF3;
-  --ok-grad:#0A9E70;
-  --warn:#B26A00; --warn2:#F0952E; --warn-soft:#FEF6E9;
-  --warn-grad:#B26A00;
+  --bg:#FAF6F0;    --bg2:#F4EEE5;
+  --card:#FFFFFF;  --card2:#F6F1E9;  --card3:#EDE5D8;
+  --text:#22190F;  --text2:#4A3B28;  --sub:#6B5940;  --line:#E6DCCC;
+  /* v10：浅底上琥珀不可读，强调色改用深棕橙（4.5:1+） */
+  --brand:#A85E00; --brand2:#C47411; --brand3:#8A5A0E;
+  --brand-soft:#FDF2E0; --brand-soft2:#F8E2BE;
+  --brand-dim:#8A5A0E;
+  --brand-grad:#A85E00;
+  --ok:#0A7A4E; --ok2:#12A268; --ok-soft:#E4F7EE;
+  --ok-grad:#0A7A4E;
+  --warn:#B0521A; --warn2:#D9722E; --warn-soft:#FDF0E7;
+  --warn-grad:#B0521A;
   --danger:#C0392B; --danger2:#E8554C; --danger-soft:#FDEDEB;
   --danger-grad:#C0392B;
-  --ok-text:#0A7A57; --warn-text:#8A5A00; --danger-text:#B93327; --brand-text:#0A7A57;
-  --peach:#0E9F6E; --peach-soft:#E4FAF3;
-  --accent:#0E9F6E; --accent2:#12B886; --accent-soft:#E4FAF3;
-  --accent-grad:#0E9F6E;
-  --shadow:0 1px 2px rgba(16,35,48,.04),0 6px 20px rgba(16,35,48,.06);
-  --shadow-lg:0 2px 6px rgba(16,35,48,.05),0 16px 44px rgba(16,35,48,.10);
-  --shadow-brand:0 6px 20px rgba(14,159,110,.24);
+  /* v10：浅色下四个文字专用色全部独立压深，避免新增元素退化回深色值 */
+  --ok-text:#0A7A4E; --warn-text:#96440F; --danger-text:#B93327; --brand-text:#8A4E00;
+  --peach:#A85E00; --peach-soft:#FDF2E0;
+  --accent:#A85E00; --accent2:#C47411; --accent-soft:#FDF2E0;
+  --accent-grad:#A85E00;
+  --shadow:0 1px 2px rgba(48,35,16,.04),0 6px 20px rgba(48,35,16,.06);
+  --shadow-lg:0 2px 6px rgba(48,35,16,.05),0 16px 44px rgba(48,35,16,.10);
+  --shadow-brand:0 6px 20px rgba(168,94,0,.24);
   --hl:none;
   --ring:0 0 0 3px var(--brand-soft2);
 }
@@ -292,18 +296,28 @@ nav .nb{font-size:12.5px}
 .swipe{position:relative;overflow:hidden;border-radius:12px;touch-action:pan-y;user-select:none}
 .swipe .sw-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;
   padding:0 15px;font-size:12.5px;font-weight:700;color:var(--sub);background:var(--card2);border-radius:12px}
-.swipe .sw-bg.okbg{background:var(--brand-dim);color:#fff}
+/* v10 修复穿模：滑出层文案默认不可见，只有 .sw-front 真的被移开时才透出来 */
+.swipe .sw-bg .l,.swipe .sw-bg .r{opacity:0;transition:opacity .12s}
+.swipe.open-bg .sw-bg .l,.swipe.open-bg .sw-bg .r{opacity:1}
+/* v10 修复穿模：滑出层不再用低对比的 brand-dim + 白字，改用实心琥珀 + 深字 */
+.swipe .sw-bg.okbg{background:var(--brand);color:#2B1D00}
 .sw-front{position:relative;z-index:2;transform:translateX(0);transition:transform .24s cubic-bezier(.2,.8,.2,1);will-change:transform;
   display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:var(--card2);color:var(--text);font-size:14px}
-.sw-front.done{background:var(--ok-soft);color:var(--ok-text)}
+/* v10 修复撞色：完成态改用不透明语义底，文字色走独立专用变量 */
+.sw-front.done{background:#1E3A2C;color:var(--ok-text)}
 /* v9 A11：逾期顺延项标红，进首屏就能看见 */
-.swipe.late .sw-front:not(.done){border-left:3px solid var(--danger)}
+/* v10 修复穿模：逾期项改不透明底色，不再靠半透明叠色（会漏出底层文案） */
+.swipe.late .sw-front:not(.done){background:#3B211E;border-left:3px solid var(--danger)}
 .swipe.late .sw-front:not(.done) .txt{color:var(--danger-text);font-weight:600}
 .swipe.late .sw-front:not(.done) .dot{border-color:var(--danger)}
 .sw-front .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sub);flex:none;display:flex;align-items:center;justify-content:center;font-size:12.5px}
-.sw-front.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.sw-front.done .dot{background:var(--ok);border-color:var(--ok);color:#0B2A1C}
 .sw-front .txt{flex:1;min-width:0}
 .sw-front .hint{font-size:12.5px;color:var(--sub);flex:none;opacity:.7}
+/* v10：浅色下侧滑各态专用覆盖，避免退化 */
+[data-theme=light] .swipe .sw-bg.okbg{background:var(--brand);color:#fff}
+[data-theme=light] .sw-front.done{background:#DCF3E7;color:var(--ok-text)}
+[data-theme=light] .swipe.late .sw-front:not(.done){background:#FBE2DF}
 
 /* 吃：日期切换 + 近 7 天汇总 */
 .datenav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
@@ -402,8 +416,8 @@ button:active,.chip:active,.cup:active,.wd:active,.eat-opt:active{transform:scal
 .btn{display:block;width:100%;min-height:48px;border:0;border-radius:var(--radius-sm);
   font:600 15px/1 var(--font);cursor:pointer;padding:14px;
   background:var(--card2);color:var(--text);border:1px solid var(--line)}   /* v9：补回背景/文字色 */
-.btn.primary{background:var(--brand);color:#0B1117;border-color:transparent}
-.btn.accent{background:var(--brand-dim);color:var(--brand);border-color:transparent}
+.btn.primary{background:var(--brand);color:#2B1D00;border-color:transparent}   /* v10：琥珀底配深棕字 */
+.btn.accent{background:var(--brand-soft2);color:var(--brand-text);border-color:transparent}  /* v10：dim 底对比不足，改 soft 底 + 专用文字色 */
 .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
 .btn:active{transform:scale(.975)}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -612,8 +626,11 @@ button:focus-visible,select:focus-visible{outline:none;box-shadow:var(--ring)}
 /* v9 C1：连胜徽章 */
 .streak{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 8px;border-radius:99px;
   background:var(--brand-soft);color:var(--brand-text);font-size:12.5px;font-weight:700;white-space:nowrap}
-.streak.big{background:var(--accent-soft);color:var(--accent)}
+/* v10 修复撞色：大连胜徽章不再拿图形色当文字色 */
+.streak.big{background:var(--brand-soft2);color:var(--brand-text)}
 .streak.shield{background:var(--warn-soft);color:var(--warn-text)}
+/* v10：浅色下连胜徽章专用覆盖 */
+[data-theme=light] .streak.big{background:var(--brand-soft2);color:var(--brand-text)}
 /* ---- iOS 键盘防飘移：键盘弹出时收起底导航 / 悬浮件 ---- */
 body.kb nav{display:none}
 body.kb .toast-stack{bottom:calc(12px + env(safe-area-inset-top))}
@@ -2079,17 +2096,18 @@ function bindSwipe(){
     function move(e){
       if(!dragging)return;
       var dx=px(e)-sx;
-      if(Math.abs(dx)>6)moved=true;
+      if(Math.abs(dx)>6){moved=true;sw.classList.add('open-bg');}   /* v10：真的滑开了才显示底层文案 */
       front.style.transform='translateX('+Math.round(dx*0.8)+'px)';
     }
     function up(e){
       if(!dragging)return;dragging=false;
       var dx=px(e)-sx;
       front.style.transition='';front.style.transform='';
+      sw.classList.remove('open-bg');
       if(dx<-56)toggleTodo(i,true);
       else if(dx>56)toggleTodo(i,false);
     }
-    function cancel(){if(dragging){dragging=false;front.style.transition='';front.style.transform='';}}
+    function cancel(){if(dragging){dragging=false;front.style.transition='';front.style.transform='';sw.classList.remove('open-bg');}}
     sw.addEventListener('touchstart',down,{passive:true});
     sw.addEventListener('touchmove',move,{passive:true});
     sw.addEventListener('touchend',up);
@@ -2456,8 +2474,10 @@ function renderChart(){
       var A=vals.slice(n-half*2,n-half),B=vals.slice(n-half);
       if(A.length&&B.length){
         var dlt=B.reduce(function(a,b){return a+b;},0)/B.length-A.reduce(function(a,b){return a+b;},0)/A.length;
-        var cls=dlt<-0.15?'down':(dlt>0.15?'up':'flat');
-        var arw=cls==='down'?'▼':(cls==='up'?'▲':'▬');
+        /* v10 修复方向反转：dlt<0 = 体重下降 = 好事 = 绿▼（与 hero 的 weeklyRate 口径统一）
+           改前：cls=dlt<-0.15?'down' → 掉秤被标红，与 hero 徽章自相矛盾 */
+        var cls=dlt<-0.15?'up':(dlt>0.15?'down':'flat');
+        var arw=cls==='up'?'▼':(cls==='down'?'▲':'▬');
         var txt=(dlt>0?'+':'')+dlt.toFixed(2)+' kg';
         el.innerHTML='<span class="trend '+cls+'">'+arw+' '+txt+'</span><span class="muted" style="margin-left:6px">近期对比</span>';
       }else el.innerHTML='';
